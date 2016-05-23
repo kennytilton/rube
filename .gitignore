@@ -1,3 +1,4 @@
+cljsbuild-output-minify
 pom.xml
 pom.xml.asc
 *jar
