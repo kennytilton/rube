@@ -1,8 +1,8 @@
-(ns tiltontec.rube.utility
+(ns tiltontec.util.core
   (:require [clojure.string :as $]
-            #?(:cljs [tiltontec.rube.ut-macros :as utm
+            #?(:cljs [tiltontec.util.base :as utm
                       :refer-macros [prog1 b-when wtrx]]
-               :clj  [tiltontec.rube.ut-macros :as utm
+               :clj  [tiltontec.util.base :as utm
                       :refer :all])))
 
 #?(:cljs
@@ -107,27 +107,3 @@
      (first @q)
      (#?(:clj alter :cljs swap!) q subvec 1))))
 
-;;; --- learning curve exercises
-;;
-
-
-(comment
-  (loop [[slot v & r]  '(:a 0 :b 1 :c 9)
-         acc (transient {})]
-    (if (nil? slot)
-      (persistent! acc)
-      (recur r (assoc! acc
-                       slot
-                       (cond 
-                        (typep v :jz)
-                        (merge {:slot slot} v)
-                        :else v)))))
-
-  (into (hash-map)
-      (map (fn [[k v]] (vector k (inc v)))
-           (partition 2 '(:a 0 :b 1 :c 9))))
-
-  (reduce (fn [m [k v]]
-          (assoc m k (inc v)))
-        (hash-map)
-        (partition 2 '(:a 0 :b 1 :c 9))))

@@ -21,7 +21,7 @@ page.open(url, function (status) {
   }
 
   page.evaluate(function() {
-    tiltontec.rube.test.run();
+    testrun.run();
   });
 
   setTimeout(function() { // https://github.com/ariya/phantomjs/issues/12697

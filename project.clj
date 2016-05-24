@@ -1,5 +1,5 @@
 (defproject rube "0.1.0-SNAPSHOT"
-            :description "A pure CLJ[S} library for building software models that run by themselves."
+            :description "A pure CLJ[S] library for building software models that run by themselves."
             :url "http://tiltontec.com"
             :license {:name "Eclipse Public License"
                       :url "http://www.eclipse.org/legal/epl-v10.html"}

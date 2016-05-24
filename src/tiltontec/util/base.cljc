@@ -1,4 +1,4 @@
-(ns tiltontec.rube.ut-macros
+(ns tiltontec.util.base
   (:require [clojure.string :as $]))
 
 #?(:cljs (enable-console-print!))
@@ -6,7 +6,6 @@
 ;; ---- debug print statement hacks ---------------------
 
 (def ^:dynamic *trx?* true)
-
 
 #_
 (alter-var-root #'*trx?* not)
@@ -44,7 +43,6 @@
                            (list ~@(rest trxargs)))))))
      ~@body))
 
-
 (defmacro prog1 [& body]
   `(let [result# ~(first body)]
      ~@(rest body)
@@ -58,8 +56,7 @@
   `(when-not ~form
      ~@body))
 
-(def obj #?(:clj Object :cljs js/Object))
-(defmacro get-obj [] `obj)
+;; --- easy access to maps in refs ----
 
 (defmacro def-rmap-slots [reader-prefix & slots]
   `(do

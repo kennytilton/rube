@@ -1,23 +1,23 @@
-(ns tiltontec.rube.utility-test
+(ns tiltontec.util.core-test
   (:require #?(:cljs [cljs.test
                       :refer-macros [deftest is are run-all-tests]]
                :clj [clojure.test :refer :all])
             [clojure.set :as cset :refer [difference]]
             
-            #?(:cljs [tiltontec.rube.ut-macros :as utm
+            #?(:cljs [tiltontec.util.base :as utm
                       :refer [*trxdepth*]
                       :refer-macros [wtrx trx prog1 b-when unless
                                      def-rmap-slots]]
-               :clj [tiltontec.rube.ut-macros :as utm
+               :clj [tiltontec.util.base :as utm
                      :refer :all])
 
-             #?(:cljs [tiltontec.rube.utility
+             #?(:cljs [tiltontec.util.core
                       :refer [cl-find set-ify any-ref? err ia-ref
                               make-fifo-queue fifo-empty? fifo-peek fifo-pop
                               fifo-data fifo-add rmap-setf
                               wtrx-test]
                       :as ut]
-               :clj [tiltontec.rube.utility :refer :all :as ut])))
+               :clj [tiltontec.util.core :refer :all :as ut])))
 
 (deftest fake-cl
   (is (= 42 (utm/prog1 42 43 44)))
@@ -85,8 +85,6 @@
            (with-out-str
              (wtrx-test 3))))
     )
-
-
 
 (deftest fifo-build
     (let [q (make-fifo-queue)]
