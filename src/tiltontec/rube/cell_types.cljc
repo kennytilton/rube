@@ -1,12 +1,12 @@
-(ns tiltontec.modeller.cell-types
+(ns tiltontec.rube.cell-types
   (:require
-   #?(:cljs [tiltontec.modeller.ut-macros :as utm
+   #?(:cljs [tiltontec.rube.ut-macros :as utm
              :refer-macros [prog1 b-when def-rmap-slots]]
-      :clj  [tiltontec.modeller.ut-macros :as utm
+      :clj  [tiltontec.rube.ut-macros :as utm
              :refer :all])
    #?(:cljs [cljs.test
              :refer-macros [deftest is]])
-   [tiltontec.modeller.utility :as ut
+   [tiltontec.rube.utility :as ut
     :refer [err any-ref? rmap-setf]]))
 
 ;; --- the Cells beef -----------------------
@@ -205,9 +205,9 @@ rule to get once behavior or just when fm-traversing to find someone"
    (deftest type-isa-test
      (is (isa? ia-types ::c-formula ::cell))))
 
-#?(:cljs (do 
-           ;;(cljs.test/run-tests))
-           ))
+#?(:cljs (do (cljs.test/run-tests)
+             ))
+
 
 :cell-types-ok
 

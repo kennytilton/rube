@@ -1,14 +1,15 @@
-(ns tiltontec.modeller.family
+(ns tiltontec.rube.family
   (:require
       [clojure.set :refer [difference]]
-   #?(:cljs [tiltontec.modeller.ut-macros
+   #?(:cljs [tiltontec.rube.ut-macros
              :refer-macros [get-obj trx prog1 *trx?* def-rmap-slots]]
-      :clj  [tiltontec.modeller.ut-macros
+      :clj  [tiltontec.rube.ut-macros
              :refer :all])
-   [tiltontec.modeller.utility
+
+   [tiltontec.rube.utility
     :refer [any-ref? type-of err rmap-setf rmap-meta-setf flz]]
-   #?(:clj [tiltontec.modeller.cell-types :refer :all :as cty]
-      :cljs [tiltontec.modeller.cell-types
+   #?(:clj [tiltontec.rube.cell-types :refer :all :as cty]
+      :cljs [tiltontec.rube.cell-types
              :refer-macros [without-c-dependency]
              :refer [cells-init c-optimized-away? c-formula? c-value c-optimize
                      c-unbound? c-input? ia-type? ia-types
@@ -21,22 +22,22 @@
                      c-pulse c-pulse-last-changed c-ephemeral? c-slot c-slots
                      *depender* *not-to-be* 
                      *c-prop-depth* md-slot-owning? c-lazy] :as cty])
-   #?(:cljs [tiltontec.modeller.integrity
+   #?(:cljs [tiltontec.rube.integrity
              :refer-macros [with-integrity]]
-      :clj [tiltontec.modeller.integrity :refer [with-integrity]])
-   #?(:clj [tiltontec.modeller.observer
+      :clj [tiltontec.rube.integrity :refer [with-integrity]])
+   #?(:clj [tiltontec.rube.observer
             :refer [defobserver fn-obs observe]]
-      :cljs [tiltontec.modeller.observer
+      :cljs [tiltontec.rube.observer
              :refer-macros [defobserver fn-obs]
              :refer [observe]])
 
-   #?(:cljs [tiltontec.modeller.cells
+   #?(:cljs [tiltontec.rube.cells
              :refer-macros [c? c?+ c-reset-next! c?once c?n]
              :refer [c-in c-reset! make-cell]]
-      :clj [tiltontec.modeller.cells :refer :all])
+      :clj [tiltontec.rube.cells :refer :all])
 
-   [tiltontec.modeller.evaluate :refer [c-get c-awaken not-to-be]]
-   [tiltontec.modeller.model-base :refer [md-get]]
+   [tiltontec.rube.evaluate :refer [c-get c-awaken not-to-be]]
+   [tiltontec.rube.model-base :refer [md-cell md-get]]
    ))
 
 (derive cty/ia-types ::family ::cty/model)
@@ -96,6 +97,12 @@
 (defn fm! [what where]
   (fget what where :me? false :inside? true :must? true :up? true))
 
+#_ ;; nope
+(defmacro mdv! [what slot & me]
+  (if (empty? me)
+    `(md-get (fm! ~what ~'me) ~slot)
+    `(md-get (fm! ~what ~(first me)) ~slot)))
+
 (defmacro mdv! [what slot & [me]]
   (let [me (or me 'me)]
     `(md-get (fm! ~what ~me) ~slot)))
@@ -113,33 +120,10 @@
 (defmethod observe [:kids ::family]
 ;;(defobserver :kids  [::family]
   [_ _ newk oldk _]
-  (trx :hello-kids-obs!!!!!! newk oldk)
   (when-not (= oldk unbound)
-    (trx :trying-diff-kids newk oldk)
     (let [lostks (difference (set oldk)(set newk))]
-      (trx :lostkids!!!!!!!!!)
-      (trx :lostkids!!!!!!!!! lostks)
-      (trx :lostkids!!!!!!!!! (flz lostks))
       (when-not (empty? lostks)
-        (trx :bingo-lost! lostks)
         (doseq [k lostks]
-          (trx :not-to-eing!!!!! k)
           (not-to-be k))))))
-
-;; (defmethod observe [:kids ::family mm-obj mm-obj]
-;;   [_ _ newk oldk _]
-;;   (when-not (= oldk unbound)
-;;     (let [lostks (difference (set oldk)(set newk))]
-;;       (trx :lostks (flz lostks))
-;;       (when-not (empty? lostks)
-;;         (trx :bingo-lost! lostks)
-;;         (doseq [k lostks]
-;;           (trx :not-to-eing!!!!! k)
-;;           (not-to-be k))))))
-
-#_
-(dosync
- (for [x #{(ref 1)}]
-   (not-to-be x)))
 
 :family-ok

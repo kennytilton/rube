@@ -1,10 +1,10 @@
-(ns tiltontec.modeller.observer
+(ns tiltontec.rube.observer
   (:require
-   #?(:clj [tiltontec.modeller.ut-macros :refer :all]
-      :cljs  [tiltontec.modeller.ut-macros :refer-macros [get-obj]])
-   [tiltontec.modeller.utility
+   #?(:clj [tiltontec.rube.ut-macros :refer :all]
+      :cljs  [tiltontec.rube.ut-macros :refer-macros [get-obj]])
+   [tiltontec.rube.utility
     :refer [rmap-setf]]
-   [tiltontec.modeller.cell-types
+   [tiltontec.rube.cell-types
     :refer [c-ref? md-ref? unbound
             +pulse+ c-slot c-value
             c-model]]))
@@ -24,13 +24,13 @@
 (defmacro defobserver [slot types params & body]
      (assert (keyword? slot) "defobserver> slot should be a keyword.")
      (let [ftypes (concat types (take-last (- 1 (count types))
-                                           '(::tiltontec.modeller.cell-types/model
+                                           '(::tiltontec.rube.cell-types/model
                                              ;;js/Object js/Object
                                              )))
            fparams (concat params
                            (take-last (- 4 (count params))
                                       '(me new-value old-value c)))]
-       `(defmethod tiltontec.modeller.observer/observe
+       `(defmethod tiltontec.rube.observer/observe
           [~slot ~@ftypes][~'slot ~@fparams]
           ~@body)))
 

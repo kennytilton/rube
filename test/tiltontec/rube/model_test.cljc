@@ -1,15 +1,15 @@
-(ns tiltontec.modeller.model-test
+(ns tiltontec.rube.model-test
   (:require
    #?(:clj [clojure.test :refer :all]
       :cljs [cljs.test
              :refer-macros [deftest is are]])
-   #?(:cljs [tiltontec.modeller.ut-macros
+   #?(:cljs [tiltontec.rube.ut-macros
              :refer-macros [trx prog1 *trx?*]]
-      :clj  [tiltontec.modeller.ut-macros
+      :clj  [tiltontec.rube.ut-macros
              :refer :all])
-   [tiltontec.modeller.utility :refer [type-of err]]
-   #?(:clj [tiltontec.modeller.cell-types :refer :all :as cty]
-      :cljs [tiltontec.modeller.cell-types
+   [tiltontec.rube.utility :refer [type-of err]]
+   #?(:clj [tiltontec.rube.cell-types :refer :all :as cty]
+      :cljs [tiltontec.rube.cell-types
              :refer-macros [without-c-dependency]
              :refer [cells-init c-optimized-away? c-formula? c-value c-optimize
                      c-unbound? c-input? ia-type? ia-types
@@ -22,29 +22,28 @@
                      c-pulse c-pulse-last-changed c-ephemeral? c-slot c-slots
                      *depender* *not-to-be* 
                      *c-prop-depth* md-slot-owning? c-lazy] :as cty])
-   #?(:cljs [tiltontec.modeller.integrity
+   #?(:cljs [tiltontec.rube.integrity
              :refer-macros [with-integrity]]
-      :clj [tiltontec.modeller.integrity :refer [with-integrity]])
-   #?(:clj [tiltontec.modeller.observer
+      :clj [tiltontec.rube.integrity :refer [with-integrity]])
+   #?(:clj [tiltontec.rube.observer
             :refer [defobserver fn-obs]]
-      :cljs [tiltontec.modeller.observer
+      :cljs [tiltontec.rube.observer
              :refer-macros [defobserver fn-obs]])
 
-   #?(:cljs [tiltontec.modeller.cells
+   #?(:cljs [tiltontec.rube.cells
              :refer-macros [c? c?+ c-reset-next! c?once c?n]
              :refer [c-in c-reset! make-cell make-c-formula]]
-      :clj [tiltontec.modeller.cells :refer :all])
+      :clj [tiltontec.rube.cells :refer :all])
 
-   [tiltontec.modeller.evaluate :refer [c-get c-awaken]]
-   [tiltontec.modeller.model-base :refer [md-get md-cz md-cell md-name]]
-   #?(:clj [tiltontec.modeller.family :refer :all :as fm]
-      :cljs [tiltontec.modeller.family 
+   [tiltontec.rube.evaluate :refer [c-get c-awaken]]
+   [tiltontec.rube.model-base :refer [md-get md-cz md-cell md-name]]
+   #?(:clj [tiltontec.rube.family :refer :all :as fm]
+      :cljs [tiltontec.rube.family 
              :refer-macros [the-kids mdv!]
              :refer [fm!]
              :as fm])
-   [tiltontec.modeller.model :refer [make md-reset! ] :as md]
+   [tiltontec.rube.model :refer [make md-reset! ] :as md]
    ))
-
 
 (derive cty/ia-types ::typetest ::cty/model)
 
@@ -167,5 +166,5 @@
       (md-reset! viz :action :knock-knock))))
 
 #?(:cljs (do
-            ;;(cljs.test/run-tests)
+           (cljs.test/run-tests)
            ))

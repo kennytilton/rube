@@ -1,14 +1,14 @@
-(ns tiltontec.modeller.observer-test
+(ns tiltontec.rube.observer-test
   (:require
    #?(:clj [clojure.test :refer :all]
       :cljs [cljs.test
              :refer-macros [deftest is are]])
-   #?(:cljs [tiltontec.modeller.ut-macros
+   #?(:cljs [tiltontec.rube.ut-macros
              :refer-macros [trx prog1]]
-      :clj  [tiltontec.modeller.ut-macros
+      :clj  [tiltontec.rube.ut-macros
              :refer :all])
-   #?(:clj [tiltontec.modeller.cell-types :refer :all :as cty]
-      :cljs [tiltontec.modeller.cell-types
+   #?(:clj [tiltontec.rube.cell-types :refer :all :as cty]
+      :cljs [tiltontec.rube.cell-types
              :refer-macros [without-c-dependency]
              :refer [c-optimized-away? c-formula? c-value c-optimize
                      c-unbound? c-input? ia-type?
@@ -21,19 +21,19 @@
                      c-pulse c-pulse-last-changed c-ephemeral? c-slot
                      *depender* *not-to-be* 
                      *c-prop-depth* md-slot-owning? c-lazy] :as cty])
-   #?(:cljs [tiltontec.modeller.integrity
+   #?(:cljs [tiltontec.rube.integrity
              :refer-macros [with-integrity]]
-      :clj [tiltontec.modeller.integrity :refer [with-integrity]])
-   [tiltontec.modeller.evaluate :refer [c-get]]
-   #?(:clj [tiltontec.modeller.observer
+      :clj [tiltontec.rube.integrity :refer [with-integrity]])
+   [tiltontec.rube.evaluate :refer [c-get]]
+   #?(:clj [tiltontec.rube.observer
             :refer [defobserver fn-obs]]
-      :cljs [tiltontec.modeller.observer
+      :cljs [tiltontec.rube.observer
              :refer-macros [defobserver fn-obs]])
 
-   #?(:cljs [tiltontec.modeller.cells
+   #?(:cljs [tiltontec.rube.cells
              :refer-macros [c? c?+]
              :refer [c-in]]
-      :clj [tiltontec.modeller.cells :refer :all])
+      :clj [tiltontec.rube.cells :refer :all])
    ))
 
 
@@ -98,7 +98,7 @@
      )))
 
 #?(:cljs (do
-            ;;(cljs.test/run-tests)
+           (cljs.test/run-tests)
              ))
 
 

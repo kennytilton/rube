@@ -1,17 +1,17 @@
-(ns tiltontec.modeller.integrity
-  (:require #?(:cljs [tiltontec.modeller.ut-macros
+(ns tiltontec.rube.integrity
+  (:require #?(:cljs [tiltontec.rube.ut-macros
                       :refer-macros [trx prog1]]
-               :clj  [tiltontec.modeller.ut-macros
+               :clj  [tiltontec.rube.ut-macros
                       :refer :all])
-            [tiltontec.modeller.utility 
+            [tiltontec.rube.utility 
              :refer [err fifo-add fifo-peek fifo-pop cl-find]]
-            #?(:cljs [tiltontec.modeller.cell-types
+            #?(:cljs [tiltontec.rube.cell-types
                       :refer-macros [un-stopped]
                       :refer [+pulse+ c-pulse c-optimized-away?
                               +client-q-handler+ c-stopped
                               *within-integrity* *defer-changes*
                               *depender* caller-ensure]]
-               :clj  [tiltontec.modeller.cell-types :refer :all])))
+               :clj  [tiltontec.rube.cell-types :refer :all])))
 
 
 ;; --- the pulse ------------------------------
@@ -82,14 +82,12 @@
    (ufb-do (ufb-queue opcode) opcode))
 
   ([q opcode]
-   ;;(println :ufb-do opcode)
    (when-let [[defer-info task] (fifo-pop q)]
      (trx nil :ufb-do-yep defer-info task)
      (task opcode defer-info)
      (recur q opcode))))
 
 (defn finish-business []
-  ;; (println :fbiz!!!!!)
   (un-stopped
    (loop [tag :tell-dependents]
      (case tag

@@ -1,14 +1,14 @@
-(ns tiltontec.modeller.evaluate
+(ns tiltontec.rube.evaluate
   (:require
       [clojure.set :refer [difference]]
-      #?(:cljs [tiltontec.modeller.ut-macros
+      #?(:cljs [tiltontec.rube.ut-macros
                       :refer-macros [trx prog1]]
-               :clj  [tiltontec.modeller.ut-macros
+               :clj  [tiltontec.rube.ut-macros
                       :refer :all])
-      [tiltontec.modeller.utility
+      [tiltontec.rube.utility
        :refer [any-ref? rmap-setf err rmap-meta-setf set-ify]]
-      #?(:clj [tiltontec.modeller.cell-types :refer :all :as cty]
-         :cljs [tiltontec.modeller.cell-types
+      #?(:clj [tiltontec.rube.cell-types :refer :all :as cty]
+         :cljs [tiltontec.rube.cell-types
                 :refer-macros [without-c-dependency]
                 :refer [c-optimized-away? c-formula? c-value c-optimize
                         c-unbound? c-input?
@@ -21,11 +21,11 @@
                         c-pulse c-pulse-last-changed c-ephemeral? c-slot
                         *depender* *not-to-be* 
                         *c-prop-depth* md-slot-owning? c-lazy] :as cty])
-      [tiltontec.modeller.observer :refer [ c-observe]]
-      #?(:cljs [tiltontec.modeller.integrity
+      [tiltontec.rube.observer :refer [ c-observe]]
+      #?(:cljs [tiltontec.rube.integrity
                 :refer-macros [with-integrity]
                 :refer [*one-pulse?* c-current?  c-pulse-update]]
-         :clj [tiltontec.modeller.integrity :refer :all])))
+         :clj [tiltontec.rube.integrity :refer :all])))
 
 #?(:cljs (set! *print-level* 3))
 
@@ -313,7 +313,6 @@ then clear our record of them."
   find a non-cell in a slot and Just Use It."
 
   [c prior-value]
-  ;;(trx :opt?! (c-formula? c))
   (when (and (c-formula? c)
              (empty? (c-useds c))
              (c-optimize c)
@@ -322,7 +321,6 @@ then clear our record of them."
              (not (c-synaptic? c)) ;; no slot to cache invariant result, so they have to stay around)
              (not (c-input? c)) ;; yes, dependent cells can be inputp
              )
-    ;;(trx :opti-away!!!! @c)
     (rmap-setf [:state c] :optimized-away) ;; leaving this for now, but we toss
                                         ; the cell below. hhack
     (c-observe c prior-value :opti-away)
@@ -360,8 +358,6 @@ then clear our record of them."
                       [(type (when me @me))]))
 
 (defmethod not-to-be :default [me]
-  (trx :n2be-deflt me)
-  (trx :n2be-deflt me (type (when me @me)))
   (doseq [c (vals (:cz (meta me)))]
     (c-quiesce c))
   (#?(:clj ref-set :cljs reset!) me nil)
@@ -379,11 +375,9 @@ then clear our record of them."
     [(when me (type @me)) slot]))
      
 (defmethod unchanged-test :default [self slotname]
-  ;;(trx :std-unchanged slotname)
   =)
 
 (defn c-value-changed? [c new-value old-value]
-  ;(trx :unchanged? (:slot @c) new-value old-value)
   (not ((or (:unchanged-if @c)
             (unchanged-test (c-model c) (c-slot c)))
         new-value old-value)))

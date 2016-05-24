@@ -1,14 +1,14 @@
-(ns tiltontec.modeller.model
+(ns tiltontec.rube.model
   (:require
       [clojure.set :refer [difference]]
-   #?(:cljs [tiltontec.modeller.ut-macros
+   #?(:cljs [tiltontec.rube.ut-macros
              :refer-macros [trx prog1 *trx?* def-rmap-slots]]
-      :clj  [tiltontec.modeller.ut-macros
+      :clj  [tiltontec.rube.ut-macros
              :refer :all])
-   [tiltontec.modeller.utility
+   [tiltontec.rube.utility
     :refer [any-ref? type-of err rmap-setf rmap-meta-setf]]
-   #?(:clj [tiltontec.modeller.cell-types :refer :all :as cty]
-      :cljs [tiltontec.modeller.cell-types
+   #?(:clj [tiltontec.rube.cell-types :refer :all :as cty]
+      :cljs [tiltontec.rube.cell-types
              :refer-macros [without-c-dependency]
              :refer [cells-init c-optimized-away? c-formula? c-value c-optimize
                      c-unbound? c-input? ia-type? ia-types
@@ -21,31 +21,30 @@
                      c-pulse c-pulse-last-changed c-ephemeral? c-slot c-slots
                      *depender* *not-to-be* 
                      *c-prop-depth* md-slot-owning? c-lazy] :as cty])
-   #?(:cljs [tiltontec.modeller.integrity
+   #?(:cljs [tiltontec.rube.integrity
              :refer-macros [with-integrity]]
-      :clj [tiltontec.modeller.integrity :refer [with-integrity]])
-   #?(:clj [tiltontec.modeller.observer
+      :clj [tiltontec.rube.integrity :refer [with-integrity]])
+   #?(:clj [tiltontec.rube.observer
             :refer [defobserver fn-obs observe]]
-      :cljs [tiltontec.modeller.observer
+      :cljs [tiltontec.rube.observer
              :refer-macros [defobserver fn-obs]
              :refer [observe]])
 
-   #?(:cljs [tiltontec.modeller.cells
+   #?(:cljs [tiltontec.rube.cells
              :refer-macros [c? c?+ c-reset-next! c?once c?n]
              :refer [c-in c-reset! make-cell]]
-      :clj [tiltontec.modeller.cells :refer :all])
+      :clj [tiltontec.rube.cells :refer :all])
 
-   [tiltontec.modeller.evaluate :refer [c-get c-awaken]]
-   [tiltontec.modeller.model-base
+   [tiltontec.rube.evaluate :refer [c-get c-awaken]]
+   [tiltontec.rube.model-base
     :refer [md-get md-cell md-install-cell md-awaken]]
-   [tiltontec.modeller.family :refer [*par*]]
+   [tiltontec.rube.family :refer [*par*]]
    ))
 
 
 ;;; --- accessors ----
 
 (defn md-reset! [me slot new-value]
-  ;;(trx :md-reset!!!!!!! slot (md-name me) new-value)
   (if-let [c  (md-cell me slot)]
     (c-reset! c new-value)
     (do

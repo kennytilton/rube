@@ -1,15 +1,15 @@
-(ns tiltontec.modeller.integrity-test
+(ns tiltontec.rube.integrity-test
   (:require
    #?(:clj [clojure.test :refer :all]
       :cljs [cljs.test
              :refer-macros [deftest is are]])
-   #?(:cljs [tiltontec.modeller.ut-macros
+   #?(:cljs [tiltontec.rube.ut-macros
              :refer-macros [trx prog1]]
-      :clj  [tiltontec.modeller.ut-macros
+      :clj  [tiltontec.rube.ut-macros
              :refer :all])
-   [tiltontec.modeller.utility :refer [type-of err]]
-   #?(:clj [tiltontec.modeller.cell-types :refer :all :as cty]
-      :cljs [tiltontec.modeller.cell-types
+   [tiltontec.rube.utility :refer [type-of err]]
+   #?(:clj [tiltontec.rube.cell-types :refer :all :as cty]
+      :cljs [tiltontec.rube.cell-types
              :refer-macros [without-c-dependency]
              :refer [cells-init c-optimized-away? c-formula? c-value c-optimize
                      c-unbound? c-input? ia-type?
@@ -22,27 +22,24 @@
                      c-pulse c-pulse-last-changed c-ephemeral? c-slot
                      *depender* *not-to-be* 
                      *c-prop-depth* md-slot-owning? c-lazy] :as cty])
-   #?(:cljs [tiltontec.modeller.integrity
+   #?(:cljs [tiltontec.rube.integrity
              :refer-macros [with-integrity]]
-      :clj [tiltontec.modeller.integrity :refer [with-integrity]])
-   [tiltontec.modeller.evaluate :refer [c-get]]
-   #?(:clj [tiltontec.modeller.observer
+      :clj [tiltontec.rube.integrity :refer [with-integrity]])
+   [tiltontec.rube.evaluate :refer [c-get]]
+   #?(:clj [tiltontec.rube.observer
             :refer [defobserver fn-obs]]
-      :cljs [tiltontec.modeller.observer
+      :cljs [tiltontec.rube.observer
              :refer-macros [defobserver fn-obs]])
 
-   #?(:cljs [tiltontec.modeller.cells
+   #?(:cljs [tiltontec.rube.cells
              :refer-macros [c? c?+ c-reset-next!]
              :refer [c-in c-reset!]]
-      :clj [tiltontec.modeller.cells :refer :all])
+      :clj [tiltontec.rube.cells :refer :all])
    ))
 
-
-(deftest integ-1
-  (is (= 4 (+ 2 2))))
-
 (defn obsdbg []
-  (fn-obs (trx :obsdbg slot new old (type-of c))))
+  ;;(fn-obs (trx :obsdbg slot new old (type-of c)))
+  )
 
 
 (deftest obs-setf
@@ -51,21 +48,19 @@
   (do ;;binding [*dp-log* true]
     (let [alarm (c-in :undefined :obs (obsdbg))
           act (c-in nil :obs (obsdbg))
-          loc (c?+ [:obs (fn-obs (trx :loc-obs-runs!!!!)
-                                 
-                                 (when-not (= new :missing)
-                                   (assert (= @+pulse+ 2))
-                                   (c-reset-next! alarm
-                                                  (case new
-                                                    :home :off
-                                                    :away :on
-                                                    (err #?(:clj format :cljs str) "unexpected loc %s" new)))))]
+          loc (c?+ [:obs (fn-obs                                 
+                          (when-not (= new :missing)
+                            (assert (= @+pulse+ 2))
+                            (c-reset-next! alarm
+                                           (case new
+                                             :home :off
+                                             :away :on
+                                             (err #?(:clj format :cljs str) "unexpected loc %s" new)))))]
                    (case (c-get act)
                      :leave :away
                      :return :home
                      :missing))
           alarm-speak (c?+ [:obs (fn-obs 
-                                  (trx :alarm-speak (c-get act) :sees (c-get alarm) (c-get loc))
                                   (is (= (c-get alarm) (case (c-get act)
                                                          :return :off
                                                          :leave :on
@@ -92,16 +87,16 @@
 
   (let [alarm (c-in :undefined :obs (obsdbg))
         act (c-in nil :obs (obsdbg))
-        loc (c?+ [:obs (fn-obs (trx :loc-obs-runs!!!!)
-                                (is (thrown-with-msg?
-                                     #?(:clj Exception :cljs js/Error)
-                                     #"c-reset!> change"
-                                     (c-reset! act :leave)))
-                               (when-not (= new :missing)
-                                 (c-reset-next! alarm (case new
-                                                   :home :off
-                                                   :away :on
-                                                   (err #?(:clj format :cljs str) "unexpected loc %s" new)))))]
+        loc (c?+ [:obs (fn-obs
+                        (is (thrown-with-msg?
+                             #?(:clj Exception :cljs js/Error)
+                             #"c-reset!> change"
+                             (c-reset! act :leave)))
+                        (when-not (= new :missing)
+                          (c-reset-next! alarm (case new
+                                                 :home :off
+                                                 :away :on
+                                                 (err #?(:clj format :cljs str) "unexpected loc %s" new)))))]
                  (case (c-get act)
                    :leave :away
                    :return :home
@@ -168,5 +163,5 @@
     
         
 #?(:cljs (do
-           ;;(cljs.test/run-tests)
+           (cljs.test/run-tests)
            ))

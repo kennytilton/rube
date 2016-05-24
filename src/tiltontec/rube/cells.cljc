@@ -1,7 +1,7 @@
-(ns tiltontec.modeller.cells
-  (:require [tiltontec.modeller.utility :refer []]
-            #?(:clj [tiltontec.modeller.cell-types :refer :all :as cty]
-               :cljs [tiltontec.modeller.cell-types
+(ns tiltontec.rube.cells
+  (:require [tiltontec.rube.utility :refer []]
+            #?(:clj [tiltontec.rube.cell-types :refer :all :as cty]
+               :cljs [tiltontec.rube.cell-types
                       :refer-macros [without-c-dependency]
                       :refer [c-optimized-away? c-formula? c-value c-optimize
                               c-unbound? c-input? unbound
@@ -15,12 +15,12 @@
                               *depender* *not-to-be* 
                               *c-prop-depth* md-slot-owning? c-lazy] :as cty])
             
-            [tiltontec.modeller.observer :refer []]
-            #?(:clj [tiltontec.modeller.integrity :refer :all]
-               :cljs [tiltontec.modeller.integrity
+            [tiltontec.rube.observer :refer []]
+            #?(:clj [tiltontec.rube.integrity :refer :all]
+               :cljs [tiltontec.rube.integrity
                       :refer-macros [with-integrity]
                       :refer []])
-            [tiltontec.modeller.evaluate :refer [c-value-assume]]))
+            [tiltontec.rube.evaluate :refer [c-value-assume]]))
 
 #?(:cljs (set! *print-level* 3))
 
@@ -37,7 +37,7 @@
                  :input? true
                  }
                 options)
-         :meta {:type ::tiltontec.modeller.cell-types/cell})))
+         :meta {:type ::tiltontec.rube.cell-types/cell})))
 
 (defn make-c-formula [& kvs]
   (let [options (apply hash-map kvs)
@@ -57,7 +57,7 @@
                  :input? false ;; not redundant: can start with rule, continue as input
                  }
                 options)
-         :meta {:type ::tiltontec.modeller.cell-types/c-formula})))
+         :meta {:type ::tiltontec.rube.cell-types/c-formula})))
 
 ;;___________________ constructors _______________________________
 ;; I seem to have created a zillion of these, but I normally

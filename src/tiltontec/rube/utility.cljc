@@ -1,7 +1,7 @@
 (ns tiltontec.rube.utility
   (:require [clojure.string :as $]
             #?(:cljs [tiltontec.rube.ut-macros :as utm
-                      :refer-macros [prog1 b-when wtrx trx]]
+                      :refer-macros [prog1 b-when wtrx]]
                :clj  [tiltontec.rube.ut-macros :as utm
                       :refer :all])))
 
@@ -21,13 +21,13 @@
     (some #{sought} coll)))
 
 ;; --- refs with maps conveniences -------------------
+
 (defn ia-ref [x]
   (#?(:clj ref :cljs atom) x))
 
 (defn any-ref? [x]
   (instance? #?(:cljs cljs.core.Atom
                 :clj clojure.lang.Ref) x))
-
 
 (defn rmap-setf [[slot ref] new-value]
   (assert (any-ref? ref))
@@ -52,7 +52,7 @@
             ($/join " " (cons "jz/err>" bits))))))
 
 ;; (defn upabc [a b c]
-;;   (tiltontec.modeller.ut-macros/pabc2 a))
+;;   (tiltontec.rube.ut-macros/pabc2 a))
 
 (defn flz [x]
   (if (isa? (type x) #?(:cljs cljs.core.LazySeq
@@ -63,7 +63,7 @@
 (flz (map even? [1 2 3]))
 
 (defn wtrx-test [n]
-  (utm/wtrx
+  (wtrx
    (0 10 "test" n)
    (when (> n 0)
      (wtrx-test (dec n)))))
@@ -88,24 +88,24 @@
 ;;; --- FIFO Queue -----------------------------
 
 (defn make-fifo-queue []
-  (atom []))
+  (#?(:clj ref :cljs atom) []))
 
 (defn fifo-data [q] @q)
 (defn fifo-clear [q]
-  (swap! q empty))
+  (#?(:clj alter :cljs swap!) q empty))
 (defn fifo-empty? [q]
   (empty? @q))
 (defn fifo-peek [q]
   (first @q))
 
 (defn fifo-add [q new]
-  (swap! q conj new))
+  (#?(:clj alter :cljs swap!) q conj new))
 
 (defn fifo-pop [q]
   (when-not (fifo-empty? q)
     (utm/prog1
      (first @q)
-     (swap! q subvec 1))))
+     (#?(:clj alter :cljs swap!) q subvec 1))))
 
 ;;; --- learning curve exercises
 ;;

@@ -33,12 +33,6 @@
   (is (= 42 (utm/unless (= 2 3) 3 42)))
   (is (nil? (utm/unless (= 2 2) 3 42))))
 
-
-(deftest no-set
-  (is (do ;;(trx :hi-mom!!!!!!!!!!!!!!!!!!!!!!)
-          (= #{42} (cset/difference #{43 42} #{43})))))
-
-
 (deftest setify
     (is (= #{1 2 3} (set-ify [1 1 2 2 3 3])))
     (is (= #{1 2 3} (set-ify (list 1 1 2 2 3 3))))
@@ -50,9 +44,7 @@
            (cset/difference (set-ify [1 2 42])
                        (set-ify (list 1 2))))))
 
-
 (def-rmap-slots jj- boom)
-
 
 (deftest test-rmap
     (let [x (ia-ref {:value 0 :boom 42})]
@@ -102,13 +94,13 @@
       (is (nil? (fifo-peek q)))
       (is (nil? (fifo-pop q)))
       (is (empty? (fifo-data q)))
-      (do
+      (#?(:clj dosync :cljs do)
        (fifo-add q 1)
        (is (not (fifo-empty? q)))
        (is (= 1 (fifo-peek q)))
        (is (= 1 (fifo-pop q)))
        (is (fifo-empty? q)))
-      (do
+      (#?(:clj dosync :cljs do)
        (fifo-add q 1)
        (fifo-add q 2)
        (is (not (fifo-empty? q)))
@@ -124,13 +116,13 @@
       (is (nil? (fifo-peek q)))
       (is (nil? (fifo-pop q)))
       (is (empty? (fifo-data q)))
-      (do
+      (#?(:clj dosync :cljs do)
        (fifo-add q 1)
        (is (not (fifo-empty? q)))
        (is (= 1 (fifo-peek q)))
        (is (= 1 (fifo-pop q)))
        (is (fifo-empty? q)))
-      (do
+      (#?(:clj dosync :cljs do)
        (fifo-add q 1)
        (fifo-add q 2)
        (is (not (fifo-empty? q)))
