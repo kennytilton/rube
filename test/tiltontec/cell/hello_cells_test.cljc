@@ -1,4 +1,4 @@
-(ns tiltontec.cell.hello-world-test
+(ns tiltontec.cell.hello-cells-test
   (:require
    #?(:clj [clojure.test :refer :all]
       :cljs [cljs.test

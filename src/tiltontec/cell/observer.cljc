@@ -1,7 +1,5 @@
 (ns tiltontec.cell.observer
   (:require
-   #?(:clj [tiltontec.util.base :refer :all]
-      :cljs  [tiltontec.util.base :refer-macros [get-obj]])
    [tiltontec.util.core
     :refer [rmap-setf]]
    [tiltontec.cell.base

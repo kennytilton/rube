@@ -2,7 +2,7 @@
   (:require
       [clojure.set :refer [difference]]
    #?(:cljs [tiltontec.util.base
-             :refer-macros [get-obj trx prog1 *trx?* def-rmap-slots]]
+             :refer-macros [trx prog1 *trx?* def-rmap-slots]]
       :clj  [tiltontec.util.base
              :refer :all])
 
@@ -37,7 +37,7 @@
       :clj [tiltontec.cell.core :refer :all])
 
    [tiltontec.cell.evaluate :refer [c-get c-awaken not-to-be]]
-   [tiltontec.model.core-base :refer [md-cell md-get]]
+   [tiltontec.model.base :refer [md-cell md-get]]
    ))
 
 (derive cty/ia-types ::family ::cty/model)
