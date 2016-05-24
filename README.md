@@ -21,8 +21,8 @@ Another tip of the hat to Andrew Vida for a huge leg up on testing via PhantomJS
 And I guess a double tip of the hat to the makers of Clojurescript for achieving so much portability. 
 #### Next Up: Qxia
 Qxia (pronounced cooks-ee-uh, ending like asphyxia), a Web or mobile (see below) framework built atop Rube. Exactly what client Rube should drive is still a toss-up, so email me your votes:
-* recreate in clj my qooxlisp Web framework driving qooxdoo from server-side Lisp with Cells Inside(tm);
-* mess around with Sabolon long enough to see if ReactJS adds value when Cells has a superset of cability;
+* recreate in clj my qooxlisp Web framework driving qooxdoo from server-side Clojure with Cells (Rube) Inside(tm);
+* mess around with Sablono long enough to see if ReactJS adds value when Cells has a superset of capability (if it does);
 * forget CLJ and go straight to CLJS+qooxdoo mobile;
 * other __________________.
 
