@@ -52,7 +52,7 @@
             ($/join " " (cons "jz/err>" bits))))))
 
 ;; (defn upabc [a b c]
-;;   (tiltontec.rube.ut-macros/pabc2 a))
+;;   (tiltontec.util.base/pabc2 a))
 
 (defn flz [x]
   (if (isa? (type x) #?(:cljs cljs.core.LazySeq
