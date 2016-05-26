@@ -9,9 +9,19 @@
             :test-paths ["test"]
             :cljsbuild {:builds {;; go back to 5/26 for minify
                                  :qxia {:source-paths ["src"]
-                                       :compiler {:output-to "resources/identica/source/script/qxia.js"
+                                       :compiler {:externs ["externs.js"]
+                                                  :foreign-libs [{:file "resources/identica/source/script/identica.js"
+                                                                   :provides ["identica"]}]
+                                                  :output-to "resources/identica/source/script/qxia.js"
                                                   :output-dir "resources/identica/source/script/out"
                                                   :optimizations :whitespace}}
+                                 ;; :qxiabuild {:source-paths ["src"]
+                                 ;;       :compiler {:externs ["externs.js"]
+                                 ;;                  :foreign-libs [{:file "resources/identica/source/script/identica.js"
+                                 ;;                                   :provides ["identica"]}]
+                                 ;;                  :output-to "resources/identica/build/script/qxia.js"
+                                 ;;                  :output-dir "resources/identica/build/script/out"
+                                 ;;                  :optimizations :whitespace}}
                                  ;; :dev {:source-paths ["src"]
                                  ;;       :compiler {:output-to "resources/public/js/main.js"
                                  ;;                  :output-dir "resources/public/js/out"
