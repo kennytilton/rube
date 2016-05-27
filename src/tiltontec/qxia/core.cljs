@@ -1,5 +1,6 @@
 (ns tiltontec.qxia.core
   (:require
+   [tiltontec.cell.base :refer [ia-type]]
    [tiltontec.cell.core
              :refer-macros [c? c?+ c-reset-next! c?once c?n]
              :refer [c-in c-reset! make-cell]]
@@ -26,21 +27,58 @@
     ::Mobile nil ;; mobile app instance is provided by qooxdoo runtime
     (throw (js/Error. (str "qx-class-new does not know about " type)))))
 
+(defmulti qx-finalize ia-type)
 
-(defn qx-finalize [x]
-  (println (str "Not finalizing " x
-                " type " (type x))))
+(defmethod qx-finalize :default [me]
+  (println (str "Not finalizing type "
+                (ia-type me))))
+
+(defmethod qx-finalize ::Button [me]
+  (when-let [lbl (md-get me :label)]
+    (. (md-get me :qx-me)
+       (setLabel lbl)))
+  (doseq [[name handler] (md-get me :listeners)]
+    (. (md-get me :qx-me)
+       (addListener name handler))))
+
+(defmethod qx-finalize ::NavigationPage [page]
+  (println :qx-final-page!!! page)
+  (let [qx-page (md-get page :qx-me)]
+
+    ;; pattern will be to do nought unless requested so
+    ;; Qxia widgets default as do qooxdoo widgets
+
+    (when-let [x  (md-get page :title)]
+      (println :page-title!!! x)
+      (. qx-page (setTitle x)))
+
+    (when-let [x (md-get page :showBackButton)]
+      (. qx-page (setShowBackButton x)))
+
+    (when-let [x (md-get page :backButtonText)]
+      (. qx-page (setBackButtonText x)))
+
+    
+    (when-let [kids (md-get page :kids)]
+      (println :nav-page-kids!!! kids)
+      (. qx-page (addListener
+                  "initialize"
+                  (fn []
+                    (let [content (. qx-page (getContent))]
+                      (doseq [k kids]
+                        (let [qxk (md-get k :qx-me)]
+                          (assert qxk)
+                          (. content (add qxk))))))
+                  qx-page)))))
+
 
 (defn qx-make [type & initargs]
   (let [me (apply md/make
                   :type type
                   :qx-me (qx-class-new type)
                   initargs)]
-    (when-let [qx-me (md-get me :qx-me)]
-      (. qx-me (addListener 
-                "initialize"
-                (fn []            
-                  (qx-finalize me)))))
+    (when (md-get me :qx-me)
+      (qx-finalize me))
     me))
 
 #_
