@@ -201,13 +201,3 @@ rule to get once behavior or just when fm-traversing to find someone"
   ;; hhack
   false)
 
-#?(:cljs
-   (deftest type-isa-test
-     (is (isa? ia-types ::c-formula ::cell))))
-
-#?(:cljs (do (cljs.test/run-tests)
-             ))
-
-
-:cell-types-ok
-
