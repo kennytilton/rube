@@ -16,7 +16,7 @@ qx.Class.define("identica.Bingo",
   construct : function()
   {
     this.base(arguments);
-    this.setTitle("Bingo");
+    this.setTitle("Bingo Title");
   },
 
 
@@ -35,7 +35,7 @@ qx.Class.define("identica.Bingo",
 
 
       // Login Button
-      var loginButton = new qx.ui.mobile.form.Button("Bingo");
+      var loginButton = new qx.ui.mobile.form.Button("Bingo2");
       loginButton.addListener("tap", this._onButtonTap, this);
 
       var loginForm = this.__form = new qx.ui.mobile.form.Form();
@@ -43,19 +43,14 @@ qx.Class.define("identica.Bingo",
 
 
       // Use form renderer
+      console.log('bingo content ' + this.getContent());
+
       this.getContent().add(new qx.ui.mobile.form.renderer.Single(loginForm));
       this.getContent().add(loginButton);
     },
 
-
-    /**
-     * Event handler for <code>tap</code> on the login button.
-     */
     _onButtonTap: function() {
-      // use form validation
-      if (this.__form.validate()) {
         qx.core.Init.getApplication().getRouting().executeGet("/overview");
-      }
     }
   }
 

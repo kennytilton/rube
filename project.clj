@@ -21,7 +21,7 @@
                                  ;;                                   :provides ["identica"]}]
                                  ;;                  :output-to "resources/identica/build/script/qxia.js"
                                  ;;                  :output-dir "resources/identica/build/script/out"
-                                 ;;                  :optimizations :whitespace}}
+                                                  ;; :optimizations :whitespace}}
                                  ;; :dev {:source-paths ["src"]
                                  ;;       :compiler {:output-to "resources/public/js/main.js"
                                  ;;                  :output-dir "resources/public/js/out"

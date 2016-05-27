@@ -24,14 +24,14 @@ return tiltontec.util.core.rmap_setf.call(null,new cljs.core.PersistentVector(nu
 });
 tiltontec.model.core.make = (function tiltontec$model$core$make(){
 var args__5600__auto__ = [];
-var len__5593__auto___12699 = arguments.length;
-var i__5594__auto___12700 = (0);
+var len__5593__auto___9521 = arguments.length;
+var i__5594__auto___9522 = (0);
 while(true){
-if((i__5594__auto___12700 < len__5593__auto___12699)){
-args__5600__auto__.push((arguments[i__5594__auto___12700]));
+if((i__5594__auto___9522 < len__5593__auto___9521)){
+args__5600__auto__.push((arguments[i__5594__auto___9522]));
 
-var G__12701 = (i__5594__auto___12700 + (1));
-i__5594__auto___12700 = G__12701;
+var G__9523 = (i__5594__auto___9522 + (1));
+i__5594__auto___9522 = G__9523;
 continue;
 } else {
 }
@@ -46,20 +46,20 @@ tiltontec.model.core.make.cljs$core$IFn$_invoke$arity$variadic = (function (iarg
 if(cljs.core.odd_QMARK_.call(null,cljs.core.count.call(null,iargs))){
 return cljs.core.apply.call(null,tiltontec.model.core.make,new cljs.core.Keyword(null,"type","type",1174270348),iargs);
 } else {
-var me = cljs.core.atom.call(null,cljs.core.merge.call(null,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"par","par",-61778778),tiltontec.model.family._STAR_par_STAR_], null),cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,cljs.core.map.call(null,(function (p__12691){
-var vec__12692 = p__12691;
-var k = cljs.core.nth.call(null,vec__12692,(0),null);
-var v = cljs.core.nth.call(null,vec__12692,(1),null);
+var me = cljs.core.atom.call(null,cljs.core.merge.call(null,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"par","par",-61778778),tiltontec.model.family._STAR_par_STAR_], null),cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,cljs.core.map.call(null,(function (p__9513){
+var vec__9514 = p__9513;
+var k = cljs.core.nth.call(null,vec__9514,(0),null);
+var v = cljs.core.nth.call(null,vec__9514,(1),null);
 return (new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,[k,(cljs.core.truth_(tiltontec.cell.base.c_ref_QMARK_.call(null,v))?tiltontec.cell.base.unbound:v)],null));
-}),cljs.core.filter.call(null,(function (p__12693){
-var vec__12694 = p__12693;
-var slot = cljs.core.nth.call(null,vec__12694,(0),null);
-var v = cljs.core.nth.call(null,vec__12694,(1),null);
+}),cljs.core.filter.call(null,(function (p__9515){
+var vec__9516 = p__9515;
+var slot = cljs.core.nth.call(null,vec__9516,(0),null);
+var v = cljs.core.nth.call(null,vec__9516,(1),null);
 return !(cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"type","type",1174270348),slot));
-}),cljs.core.partition.call(null,(2),iargs))))),new cljs.core.Keyword(null,"meta","meta",1499536964),cljs.core.merge.call(null,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"state","state",-1988618099),new cljs.core.Keyword(null,"nascent","nascent",443401807)], null),cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,cljs.core.map.call(null,cljs.core.vec,cljs.core.filter.call(null,(function (p__12695){
-var vec__12696 = p__12695;
-var slot = cljs.core.nth.call(null,vec__12696,(0),null);
-var v = cljs.core.nth.call(null,vec__12696,(1),null);
+}),cljs.core.partition.call(null,(2),iargs))))),new cljs.core.Keyword(null,"meta","meta",1499536964),cljs.core.merge.call(null,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"state","state",-1988618099),new cljs.core.Keyword(null,"nascent","nascent",443401807)], null),cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,cljs.core.map.call(null,cljs.core.vec,cljs.core.filter.call(null,(function (p__9517){
+var vec__9518 = p__9517;
+var slot = cljs.core.nth.call(null,vec__9518,(0),null);
+var v = cljs.core.nth.call(null,vec__9518,(1),null);
 return cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"type","type",1174270348),slot);
 }),cljs.core.partition.call(null,(2),iargs))))));
 if(cljs.core.truth_(cljs.core.meta.call(null,me))){
@@ -68,10 +68,10 @@ throw (new Error([cljs.core.str("Assert failed: "),cljs.core.str(cljs.core.pr_st
 }
 
 tiltontec.util.core.rmap_meta_setf.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"cz","cz",1670864932),me], null),cljs.core.into.call(null,cljs.core.PersistentArrayMap.EMPTY,cljs.core.map.call(null,cljs.core.vec,cljs.core.filter.call(null,((function (me){
-return (function (p__12697){
-var vec__12698 = p__12697;
-var slot = cljs.core.nth.call(null,vec__12698,(0),null);
-var v = cljs.core.nth.call(null,vec__12698,(1),null);
+return (function (p__9519){
+var vec__9520 = p__9519;
+var slot = cljs.core.nth.call(null,vec__9520,(0),null);
+var v = cljs.core.nth.call(null,vec__9520,(1),null);
 return tiltontec.model.base.md_install_cell.call(null,me,slot,v);
 });})(me))
 ,cljs.core.partition.call(null,(2),iargs)))));
@@ -89,6 +89,6 @@ return me;
 
 tiltontec.model.core.make.cljs$lang$maxFixedArity = (0);
 
-tiltontec.model.core.make.cljs$lang$applyTo = (function (seq12690){
-return tiltontec.model.core.make.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.call(null,seq12690));
+tiltontec.model.core.make.cljs$lang$applyTo = (function (seq9512){
+return tiltontec.model.core.make.cljs$core$IFn$_invoke$arity$variadic(cljs.core.seq.call(null,seq9512));
 });

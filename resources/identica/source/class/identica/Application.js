@@ -47,24 +47,25 @@ qx.Class.define("identica.Application",
         Remove or edit the following code to create your application.
       -------------------------------------------------------------------------
       */
-      identica.Bingo;
+      /*
 
-	    console.log('hi mom');
-	    tiltontec.qxia.core.booya('mom');
+      We start by simply mentioning the QX classes we want to "new" on the fly
+      so generate.py will include them. Otherwise you will see "<class> unknown"
+      or some such at run time.
+
+      n.b. After modifying this list, we need to re-generate.py source and build
+      before using them. (Just build if that's the way you roll.)
+
+      */
+      qx.ui.mobile.page.NavigationPage;
+      identica.page.Overview;
+      identica.Bingo;
+      qx.ui.mobile.form.TextField;
+      qx.ui.mobile.form.Button;
 
       var manager = new qx.ui.mobile.page.Manager(false);
+
 	    tiltontec.qxia.core.appinit(this, manager, this._show);
-      //bingo = new identica.Bingo();
-      //var login = new identica.page.Login();
-      //var overview = new identica.page.Overview();
-
-      // Add the pages to the page manager.
-      //manager.addDetail([bingo]);
-
-      // Initialize the application routing
-      console.log('routing in app.js is '+this.getRouting());
-      //this.getRouting().onGet("/", this._show, bingo);
-      //this.getRouting().onGet("/overview", this._show, overview);
 
       this.getRouting().init();
     },

@@ -11,16 +11,46 @@ return cljs.core.println.call(null,[cljs.core.str("booya 11 "),cljs.core.str(tag
 });
 goog.exportSymbol('tiltontec.qxia.core.booya', tiltontec.qxia.core.booya);
 tiltontec.qxia.core.appinit = (function tiltontec$qxia$core$appinit(this$,pager,shower){
-cljs.core.println.call(null,[cljs.core.str("the app is "),cljs.core.str(this$),cljs.core.str(", pager is "),cljs.core.str(pager),cljs.core.str(", shower is "),cljs.core.str(shower)].join(''));
+cljs.core.println.call(null,[cljs.core.str("the CLJS app is "),cljs.core.str(this$),cljs.core.str(", pager is "),cljs.core.str(pager),cljs.core.str(", shower is "),cljs.core.str(shower)].join(''));
 
-var login = (new identica.Bingo());
-cljs.core.println.call(null,[cljs.core.str("login is "),cljs.core.str(login)].join(''));
+var bingo2 = (new identica.Bingo());
+var bingo = (new qx.ui.mobile.page.NavigationPage());
+var over = (new identica.page.Overview());
+cljs.core.println.call(null,[cljs.core.str("bingo is "),cljs.core.str(bingo)].join(''));
 
-pager.addDetail([login]);
+bingo.setTitle("BingOMG");
+
+bingo.addListener("initialize",((function (bingo2,bingo,over){
+return (function (){
+var content = bingo.getContent();
+var gogo = (new qx.ui.mobile.form.Button("Go!"));
+cljs.core.println.call(null,[cljs.core.str("bgobeef is"),cljs.core.str(content)].join(''));
+
+gogo.addListener("tap",((function (content,gogo,bingo2,bingo,over){
+return (function (){
+var rtg = this$.getRouting();
+cljs.core.println.call(null,"btn rtg is ",rtg);
+
+cljs.core.println.call(null,"gogo tap!");
+
+return rtg.executeGet("/overview");
+});})(content,gogo,bingo2,bingo,over))
+,bingo);
+
+return content.add(gogo);
+});})(bingo2,bingo,over))
+,this$);
+
+
+cljs.core.println.call(null,[cljs.core.str("over is "),cljs.core.str(over)].join(''));
+
+pager.addDetail([bingo,over]);
 
 var routing = this$.getRouting();
 cljs.core.println.call(null,[cljs.core.str("routing is "),cljs.core.str(routing)].join(''));
 
-return routing.onGet("/",shower,login);
+routing.onGet("/",shower,bingo);
+
+return routing.onGet("/overview",shower,over);
 });
 goog.exportSymbol('tiltontec.qxia.core.appinit', tiltontec.qxia.core.appinit);
