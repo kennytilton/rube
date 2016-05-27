@@ -107,8 +107,15 @@ rule to get once behavior or just when fm-traversing to find someone"
       (derive ::cell ::object)
       (derive ::c-formula ::cell)))
 
+(defn ia-type [it]
+  (println (str "ia-type " it (meta it)))
+  #?(:clj (type it)
+     :cljs (when-let [m (meta it)]
+             (:type m))))
+
 (defn ia-type? [it typ]
-  (isa? ia-types #?(:clj (type it) :cljs (:type (meta it))) typ))
+  (println (str "ia-type? " typ it (meta it)))
+  (isa? ia-types (ia-type it)))
 
 (defn c-formula? [c]
   (ia-type? c ::c-formula))

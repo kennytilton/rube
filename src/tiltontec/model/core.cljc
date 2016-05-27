@@ -51,6 +51,7 @@
       (err str "change to slot %s not mediated by cell" slot)
       (rmap-setf [slot me] new-value))))
 
+
 (defn make [& iargs]
   (cond
     (odd? (count iargs)) (apply make :type iargs)
@@ -74,6 +75,7 @@
                                      (map vec)
                                      (into {}))))]
        (assert (meta me))
+       (println (str "make mops??" (nth iargs 1)))
        (rmap-meta-setf
         [:cz me]
         (->> iargs

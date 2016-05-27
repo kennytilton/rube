@@ -1,5 +1,6 @@
 (ns tiltontec.qxia.core
-  (:require
+  (:require   
+   [tiltontec.cell.base :refer [ia-type]]
    [tiltontec.cell.core
              :refer-macros [c? c?+ c-reset-next! c?once c?n]
              :refer [c-in c-reset! make-cell]]
@@ -27,51 +28,55 @@
     (throw (js/Error. (str "qx-class-new does not know about " type)))))
 
 
-(defn qx-finalize [x]
-  (println (str "Not finalizing " x
-                " type " (type x))))
+(defmulti qx-finalize ia-type)
+
+(defmethod qx-finalize :default [me]
+  (println (str "Not finalizing type " (type me)
+                (ia-type me)
+                (meta me))))
+
+(defmethod qx-finalize ::NavigationPage [page]
+  (println :qx-final-page!!! page)
+  (let [qx-page (md-get page :qx-me)]
+
+    ;; pattern will be to do nought unless requested so
+    ;; Qxia widgets default as do qooxdoo widgets
+
+    (when-let [x  (md-get page :title)]
+      (println :page-title!!! x)
+      (. qx-page (setTitle x)))
+
+    (when-let [x (md-get page :showBackButton)]
+      (. qx-page (setShowBackButton x)))
+
+    (when-let [x (md-get page :backButtonText)]
+      (. qx-page (setBackButtonText x)))
+
+    (when-let [kids (md-get page :kids)]
+      (. qx-page (addListener 
+                  "initialize"
+                  (fn []
+                    (let [content (. page (getContent))]
+                      (doseq [k kids]
+                        (. content (add k)))))
+                  page)))))
+
+(defmethod qx-finalize ::Button [me]
+  (when-let [lbl (md-get me :label)]
+    (. (md-get me :qx-me)
+       (setLabel lbl))))
+
 
 (defn qx-make [type & initargs]
+  (println (str "qx-making " type))
+  
   (let [me (apply md/make
                   :type type
                   :qx-me (qx-class-new type)
                   initargs)]
-    (when-let [qx-me (md-get me :qx-me)]
-      (. qx-me (addListener 
-                "initialize"
-                (fn []            
-                  (qx-finalize me)))))
+    (println (str "qx-made " (ia-type me)))
+    (when (md-get me :qx-me)
+      (qx-finalize me))
+    (println (str "fina;ized " (ia-type me) :boo ))
     me))
 
-#_
-(defn ^:export appinit [this pager shower]
-  (let [bingo (new js/qx.ui.mobile.page.NavigationPage)
-        over (new js/identica.page.Overview)]
-    (. bingo (setTitle "BingOMG"))
-    (. bingo
-       (addListener
-        "initialize"
-        (fn []
-          (let [content (. bingo (getContent))
-                gogo (new qx.ui.mobile.form.Button "Go!")]
-            (. gogo (addListener 
-                     "tap"
-                     (fn []
-                       (let [rtg (. this (getRouting))]
-                         (println "gogo tap!")
-                         (. rtg (executeGet "/overview"))))
-                     bingo))
-            (. content (add gogo))))
-        this))
-      
-    ;;(let [;;uname (new qx.ui.mobile.form.TextField)
-    (comment
-      (. uname (setRequired true))
-      (. pgbeef (add uname "Username"))
-      (. pgbeef (add gogo "Go!")))
-
-    (. pager (addDetail #js [bingo, over]))
-
-    (let [routing (. this (getRouting))]
-      (. routing (onGet "/" shower bingo))
-      (. routing (onGet "/overview" shower over)))))

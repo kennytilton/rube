@@ -44,8 +44,6 @@
         (when-let [ept (md-get page :end-point)]
           (. routing (onGet ept shower qx-page)))))))
 
-      
-
 #_
 (defn ^:export appinit [this pager shower]
   (let [bingo (new js/qx.ui.mobile.page.NavigationPage)
