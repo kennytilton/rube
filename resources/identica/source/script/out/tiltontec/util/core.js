@@ -32,10 +32,10 @@ return cljs.core.atom.call(null,x);
 tiltontec.util.core.any_ref_QMARK_ = (function tiltontec$util$core$any_ref_QMARK_(x){
 return (x instanceof cljs.core.Atom);
 });
-tiltontec.util.core.rmap_setf = (function tiltontec$util$core$rmap_setf(p__10392,new_value){
-var vec__10394 = p__10392;
-var slot = cljs.core.nth.call(null,vec__10394,(0),null);
-var ref = cljs.core.nth.call(null,vec__10394,(1),null);
+tiltontec.util.core.rmap_setf = (function tiltontec$util$core$rmap_setf(p__11754,new_value){
+var vec__11756 = p__11754;
+var slot = cljs.core.nth.call(null,vec__11756,(0),null);
+var ref = cljs.core.nth.call(null,vec__11756,(1),null);
 if(cljs.core.truth_(tiltontec.util.core.any_ref_QMARK_.call(null,ref))){
 } else {
 throw (new Error([cljs.core.str("Assert failed: "),cljs.core.str(cljs.core.pr_str.call(null,cljs.core.list(new cljs.core.Symbol(null,"any-ref?","any-ref?",-153183574,null),new cljs.core.Symbol(null,"ref","ref",-1364538802,null))))].join('')));
@@ -50,10 +50,10 @@ cljs.core.swap_BANG_.call(null,ref,cljs.core.assoc,slot,new_value);
 
 return new_value;
 });
-tiltontec.util.core.rmap_meta_setf = (function tiltontec$util$core$rmap_meta_setf(p__10395,new_value){
-var vec__10397 = p__10395;
-var slot = cljs.core.nth.call(null,vec__10397,(0),null);
-var ref = cljs.core.nth.call(null,vec__10397,(1),null);
+tiltontec.util.core.rmap_meta_setf = (function tiltontec$util$core$rmap_meta_setf(p__11757,new_value){
+var vec__11759 = p__11757;
+var slot = cljs.core.nth.call(null,vec__11759,(0),null);
+var ref = cljs.core.nth.call(null,vec__11759,(1),null);
 if(cljs.core.truth_(cljs.core.meta.call(null,ref))){
 } else {
 throw (new Error([cljs.core.str("Assert failed: "),cljs.core.str(cljs.core.pr_str.call(null,cljs.core.list(new cljs.core.Symbol(null,"meta","meta",-1154898805,null),new cljs.core.Symbol(null,"ref","ref",-1364538802,null))))].join('')));
@@ -72,25 +72,25 @@ var cached_hierarchy__5451__auto__ = cljs.core.atom.call(null,cljs.core.Persiste
 var hierarchy__5452__auto__ = cljs.core.get.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"hierarchy","hierarchy",-1053470341),cljs.core.get_global_hierarchy.call(null));
 return (new cljs.core.MultiFn(cljs.core.symbol.call(null,"tiltontec.util.core","err"),((function (method_table__5448__auto__,prefer_table__5449__auto__,method_cache__5450__auto__,cached_hierarchy__5451__auto__,hierarchy__5452__auto__){
 return (function() { 
-var G__10398__delegate = function (a1,args){
+var G__11760__delegate = function (a1,args){
 return cljs.core.fn_QMARK_.call(null,a1);
 };
-var G__10398 = function (a1,var_args){
+var G__11760 = function (a1,var_args){
 var args = null;
 if (arguments.length > 1) {
-var G__10399__i = 0, G__10399__a = new Array(arguments.length -  1);
-while (G__10399__i < G__10399__a.length) {G__10399__a[G__10399__i] = arguments[G__10399__i + 1]; ++G__10399__i;}
-  args = new cljs.core.IndexedSeq(G__10399__a,0);
+var G__11761__i = 0, G__11761__a = new Array(arguments.length -  1);
+while (G__11761__i < G__11761__a.length) {G__11761__a[G__11761__i] = arguments[G__11761__i + 1]; ++G__11761__i;}
+  args = new cljs.core.IndexedSeq(G__11761__a,0);
 } 
-return G__10398__delegate.call(this,a1,args);};
-G__10398.cljs$lang$maxFixedArity = 1;
-G__10398.cljs$lang$applyTo = (function (arglist__10400){
-var a1 = cljs.core.first(arglist__10400);
-var args = cljs.core.rest(arglist__10400);
-return G__10398__delegate(a1,args);
+return G__11760__delegate.call(this,a1,args);};
+G__11760.cljs$lang$maxFixedArity = 1;
+G__11760.cljs$lang$applyTo = (function (arglist__11762){
+var a1 = cljs.core.first(arglist__11762);
+var args = cljs.core.rest(arglist__11762);
+return G__11760__delegate(a1,args);
 });
-G__10398.cljs$core$IFn$_invoke$arity$variadic = G__10398__delegate;
-return G__10398;
+G__11760.cljs$core$IFn$_invoke$arity$variadic = G__11760__delegate;
+return G__11760;
 })()
 ;})(method_table__5448__auto__,prefer_table__5449__auto__,method_cache__5450__auto__,cached_hierarchy__5451__auto__,hierarchy__5452__auto__))
 ,new cljs.core.Keyword(null,"default","default",-1987822328),hierarchy__5452__auto__,method_table__5448__auto__,prefer_table__5449__auto__,method_cache__5450__auto__,cached_hierarchy__5451__auto__));
@@ -98,47 +98,47 @@ return G__10398;
 }
 
 cljs.core._add_method.call(null,tiltontec.util.core.err,true,(function() { 
-var G__10401__delegate = function (fn,mas){
+var G__11763__delegate = function (fn,mas){
 return tiltontec.util.core.err.call(null,cljs.core.apply.call(null,fn,mas));
 };
-var G__10401 = function (fn,var_args){
+var G__11763 = function (fn,var_args){
 var mas = null;
 if (arguments.length > 1) {
-var G__10402__i = 0, G__10402__a = new Array(arguments.length -  1);
-while (G__10402__i < G__10402__a.length) {G__10402__a[G__10402__i] = arguments[G__10402__i + 1]; ++G__10402__i;}
-  mas = new cljs.core.IndexedSeq(G__10402__a,0);
+var G__11764__i = 0, G__11764__a = new Array(arguments.length -  1);
+while (G__11764__i < G__11764__a.length) {G__11764__a[G__11764__i] = arguments[G__11764__i + 1]; ++G__11764__i;}
+  mas = new cljs.core.IndexedSeq(G__11764__a,0);
 } 
-return G__10401__delegate.call(this,fn,mas);};
-G__10401.cljs$lang$maxFixedArity = 1;
-G__10401.cljs$lang$applyTo = (function (arglist__10403){
-var fn = cljs.core.first(arglist__10403);
-var mas = cljs.core.rest(arglist__10403);
-return G__10401__delegate(fn,mas);
+return G__11763__delegate.call(this,fn,mas);};
+G__11763.cljs$lang$maxFixedArity = 1;
+G__11763.cljs$lang$applyTo = (function (arglist__11765){
+var fn = cljs.core.first(arglist__11765);
+var mas = cljs.core.rest(arglist__11765);
+return G__11763__delegate(fn,mas);
 });
-G__10401.cljs$core$IFn$_invoke$arity$variadic = G__10401__delegate;
-return G__10401;
+G__11763.cljs$core$IFn$_invoke$arity$variadic = G__11763__delegate;
+return G__11763;
 })()
 );
 
 cljs.core._add_method.call(null,tiltontec.util.core.err,new cljs.core.Keyword(null,"default","default",-1987822328),(function() { 
-var G__10404__delegate = function (bits){
+var G__11766__delegate = function (bits){
 throw (new Error(clojure.string.join.call(null," ",cljs.core.cons.call(null,"jz/err>",bits))));
 };
-var G__10404 = function (var_args){
+var G__11766 = function (var_args){
 var bits = null;
 if (arguments.length > 0) {
-var G__10405__i = 0, G__10405__a = new Array(arguments.length -  0);
-while (G__10405__i < G__10405__a.length) {G__10405__a[G__10405__i] = arguments[G__10405__i + 0]; ++G__10405__i;}
-  bits = new cljs.core.IndexedSeq(G__10405__a,0);
+var G__11767__i = 0, G__11767__a = new Array(arguments.length -  0);
+while (G__11767__i < G__11767__a.length) {G__11767__a[G__11767__i] = arguments[G__11767__i + 0]; ++G__11767__i;}
+  bits = new cljs.core.IndexedSeq(G__11767__a,0);
 } 
-return G__10404__delegate.call(this,bits);};
-G__10404.cljs$lang$maxFixedArity = 0;
-G__10404.cljs$lang$applyTo = (function (arglist__10406){
-var bits = cljs.core.seq(arglist__10406);
-return G__10404__delegate(bits);
+return G__11766__delegate.call(this,bits);};
+G__11766.cljs$lang$maxFixedArity = 0;
+G__11766.cljs$lang$applyTo = (function (arglist__11768){
+var bits = cljs.core.seq(arglist__11768);
+return G__11766__delegate(bits);
 });
-G__10404.cljs$core$IFn$_invoke$arity$variadic = G__10404__delegate;
-return G__10404;
+G__11766.cljs$core$IFn$_invoke$arity$variadic = G__11766__delegate;
+return G__11766;
 })()
 );
 tiltontec.util.core.flz = (function tiltontec$util$core$flz(x){
@@ -149,7 +149,7 @@ return x;
 }
 });
 tiltontec.util.core.wtrx_test = (function tiltontec$util$core$wtrx_test(n){
-var _STAR_trxdepth_STAR_10408 = tiltontec.util.base._STAR_trxdepth_STAR_;
+var _STAR_trxdepth_STAR_11770 = tiltontec.util.base._STAR_trxdepth_STAR_;
 tiltontec.util.base._STAR_trxdepth_STAR_ = (tiltontec.util.base._STAR_trxdepth_STAR_ + (1));
 
 try{if((((0) <= tiltontec.util.base._STAR_trxdepth_STAR_)) && ((tiltontec.util.base._STAR_trxdepth_STAR_ <= (10)))){
@@ -166,7 +166,7 @@ return tiltontec$util$core$wtrx_test.call(null,(n - (1)));
 } else {
 return null;
 }
-}finally {tiltontec.util.base._STAR_trxdepth_STAR_ = _STAR_trxdepth_STAR_10408;
+}finally {tiltontec.util.base._STAR_trxdepth_STAR_ = _STAR_trxdepth_STAR_11770;
 }});
 tiltontec.util.core.slot_users = (function tiltontec$util$core$slot_users(me,slot){
 return cljs.core.set.call(null,cljs.core.map.call(null,new cljs.core.Keyword(null,"slotq","slotq",1456717980),cljs.core.map.call(null,cljs.core.deref,new cljs.core.Keyword(null,"callers","callers",-1991542784).cljs$core$IFn$_invoke$arity$2(cljs.core.deref.call(null,slot.call(null,cljs.core.deref.call(null,me))),cljs.core.PersistentHashSet.EMPTY))));
@@ -196,9 +196,9 @@ tiltontec.util.core.fifo_pop = (function tiltontec$util$core$fifo_pop(q){
 if(cljs.core.truth_(tiltontec.util.core.fifo_empty_QMARK_.call(null,q))){
 return null;
 } else {
-var result__10135__auto__ = cljs.core.first.call(null,cljs.core.deref.call(null,q));
+var result__11492__auto__ = cljs.core.first.call(null,cljs.core.deref.call(null,q));
 cljs.core.swap_BANG_.call(null,q,cljs.core.subvec,(1));
 
-return result__10135__auto__;
+return result__11492__auto__;
 }
 });

@@ -65,7 +65,7 @@ qx.Class.define("identica.Application",
 
       var manager = new qx.ui.mobile.page.Manager(false);
 
-	    tiltontec.qxia.core.appinit(this, manager, this._show);
+	    hello_mobile.core.appinit(this, manager, this._show);
 
       this.getRouting().init();
     },

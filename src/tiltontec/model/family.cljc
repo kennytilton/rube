@@ -113,6 +113,9 @@
   `(binding [*par* ~'me]
      (remove nil? (flatten (list ~@tree)))))
 
+(defmacro c?kids [& tree]
+  `(c? (the-kids ~@tree)))
+
 (def mm-obj #?(:clj Object :cljs js/Object))
 
 (defmethod observe [:kids ::family]
