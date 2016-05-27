@@ -3,6 +3,7 @@
    [tiltontec.cell.core
              :refer-macros [c? c?+ c-reset-next! c?once c?n]
              :refer [c-in c-reset! make-cell]]
+   [tiltontec.model.base :refer [md-get]]
    [tiltontec.model.core :refer [make] :as md]
    ))
 
@@ -23,19 +24,24 @@
     ::NavigationPage (new js/qx.ui.mobile.page.NavigationPage)
     ::Button (new js/qx.ui.mobile.form.Button)
     ::Mobile nil ;; mobile app instance is provided by qooxdoo runtime
-    :default
-    (throw (js/Error. (str "new-qx-class does not know about " type)))))
+    (throw (js/Error. (str "qx-class-new does not know about " type)))))
 
 
 (defn qx-finalize [x]
-  (println (str "Not finalizing " x)))
+  (println (str "Not finalizing " x
+                " type " (type x))))
 
 (defn qx-make [type & initargs]
   (let [me (apply md/make
                   :type type
                   :qx-me (qx-class-new type)
                   initargs)]
-    (qx-finalize me)))
+    (when-let [qx-me (md-get me :qx-me)]
+      (. qx-me (addListener 
+                "initialize"
+                (fn []            
+                  (qx-finalize me)))))
+    me))
 
 #_
 (defn ^:export appinit [this pager shower]

@@ -12,11 +12,14 @@ Manager.getRouting = function() {};
 
 Routing.onGet = function() {};
 Routing.executeGet = function (){};
+
 NavigationPage.add = function() {};
 NavigationPage.setTitle = function() {};
 NavigationPage.getContent = function() {};
-Bingo.getContent = function() {};
-Overview.getContent = function() {};
+NavigationPage.setShowBackButton = function() {};
+NavigationPage.setBackButtonText = function() {};
+
+NavigationPage.getContent = function() {};
 
 TextField.setRequired = function () {};
 
