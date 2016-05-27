@@ -99,7 +99,7 @@ rule to get once behavior or just when fm-traversing to find someone"
   (when-not +stop+
     (println (apply str "WARNING: " args))))
 
-;; ---------------------------------------------------------
+;; ------------------------------------------------------
 
 (defonce ia-types
   (-> (make-hierarchy)
@@ -108,14 +108,14 @@ rule to get once behavior or just when fm-traversing to find someone"
       (derive ::c-formula ::cell)))
 
 (defn ia-type [it]
-  (println (str "ia-type " it (meta it)))
-  #?(:clj (type it)
-     :cljs (when-let [m (meta it)]
-             (:type m))))
+ #?(:clj (type it)
+    :cljs (cond
+            (instance? cljs.core.Atom it)
+            (:type (meta it))
+            :default (type it))))
 
 (defn ia-type? [it typ]
-  (println (str "ia-type? " typ it (meta it)))
-  (isa? ia-types (ia-type it)))
+  (isa? ia-types (ia-type it) typ))
 
 (defn c-formula? [c]
   (ia-type? c ::c-formula))

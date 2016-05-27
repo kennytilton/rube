@@ -29,13 +29,18 @@
                             {"tap"  (fn []
                                       (let [rtg (. this (getRouting))]
                                         (println "gogo tap!")
-                                        (. rtg (executeGet "/overview"))))}))))
+                                        (. rtg (executeGet "/overview"))))})))
+                            )
                (qx-make
                 ::qx/NavigationPage
                 :end-point "/overview"
                 :title "Overview"
                 :showBackButton true
-                :backButtonText "Back Up")))))
+                :backButtonText "Back Up"
+                :listeners {"action"
+                            (fn []
+                              (let [rtg (. this (getRouting))]
+                                (println "gogo action!")))})))))
 
   (let [routing (. this (getRouting))]
     (doseq [page (md-get @this-app :kids)]

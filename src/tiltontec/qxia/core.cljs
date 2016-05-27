@@ -1,5 +1,5 @@
 (ns tiltontec.qxia.core
-  (:require   
+  (:require
    [tiltontec.cell.base :refer [ia-type]]
    [tiltontec.cell.core
              :refer-macros [c? c?+ c-reset-next! c?once c?n]
@@ -27,13 +27,19 @@
     ::Mobile nil ;; mobile app instance is provided by qooxdoo runtime
     (throw (js/Error. (str "qx-class-new does not know about " type)))))
 
-
 (defmulti qx-finalize ia-type)
 
 (defmethod qx-finalize :default [me]
-  (println (str "Not finalizing type " (type me)
-                (ia-type me)
-                (meta me))))
+  (println (str "Not finalizing type "
+                (ia-type me))))
+
+(defmethod qx-finalize ::Button [me]
+  (when-let [lbl (md-get me :label)]
+    (. (md-get me :qx-me)
+       (setLabel lbl)))
+  (doseq [[name handler] (md-get me :listeners)]
+    (. (md-get me :qx-me)
+       (addListener name handler))))
 
 (defmethod qx-finalize ::NavigationPage [page]
   (println :qx-final-page!!! page)
@@ -52,31 +58,29 @@
     (when-let [x (md-get page :backButtonText)]
       (. qx-page (setBackButtonText x)))
 
+
     (when-let [kids (md-get page :kids)]
-      (. qx-page (addListener 
+      (println :nav-page-kids!!! kids)
+      (. qx-page (addListener
                   "initialize"
                   (fn []
-                    (let [content (. page (getContent))]
+                    (let [content (. qx-page (getContent))]
                       (doseq [k kids]
-                        (. content (add k)))))
-                  page)))))
-
-(defmethod qx-finalize ::Button [me]
-  (when-let [lbl (md-get me :label)]
-    (. (md-get me :qx-me)
-       (setLabel lbl))))
-
+                        (let [qxk (md-get k :qx-me)]
+                          (assert qxk)
+                          (. content (add qxk))))))
+                  qx-page)))))
 
 (defn qx-make [type & initargs]
   (println (str "qx-making " type))
-  
+
   (let [me (apply md/make
                   :type type
                   :qx-me (qx-class-new type)
                   initargs)]
-    (println (str "qx-made " (ia-type me)))
+
     (when (md-get me :qx-me)
       (qx-finalize me))
-    (println (str "fina;ized " (ia-type me) :boo ))
+
     me))
 
