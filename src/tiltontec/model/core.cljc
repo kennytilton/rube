@@ -75,7 +75,7 @@
                                      (map vec)
                                      (into {}))))]
        (assert (meta me))
-       (println (str "make mops??" (nth iargs 1)))
+       ;; (println (str "make mops??" (nth iargs 1)))
        (rmap-meta-setf
         [:cz me]
         (->> iargs

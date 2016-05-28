@@ -3,6 +3,7 @@
    [tiltontec.cell.core
     :refer-macros [c? c?+ c-reset-next! c?once c?n]
     :refer [c-in c-reset! make-cell]]
+   [tiltontec.qxia.base :refer [qx-make] :as qxty]
    [tiltontec.qxia.core :refer [qx-make] :as qx]
    [tiltontec.model.base :refer [md-get]]
    [tiltontec.model.family
@@ -13,40 +14,40 @@
 
 
 (defn ^:export appinit [this pager shower]
-  (reset! 
+  (reset!
    this-app
    (qx-make
-    ::qx/Mobile
+    ::qxty/Mobile
     :kids (c?kids
                (qx-make
-                ::qx/NavigationPage
+                ::qxty/NavigationPage
                 :end-point "/"
                 :title "Bingo!"
                 :kids (c?kids
                        (qx-make
-                        ::qx/Button
-                        :label "Go!"
-                        :listeners 
+                        ::qxty/Button
+                        :label "Go-21!"
+                        :listeners
                         {"tap"  (fn []
-                                  (let [rtg (. this (getRouting))]
+                                  (let [rtg (.getRouting this)]
                                     (println "gogo tap!")
-                                    (. rtg (executeGet "/overview"))))})))
-                            
+                                    (.executeGet rtg "/overview")))})))
+
                (qx-make
-                ::qx/NavigationPage
+                ::qxty/NavigationPage
                 :end-point "/overview"
                 :title "Overview"
                 :showBackButton true
                 :backButtonText "Back Up"
                 :listeners {"action"
                             (fn []
-                              (let [rtg (. this (getRouting))]
+                              (let [rtg (.getRouting this)]
                                 (println "gogo action!")))}))))
 
-  (let [routing (. this (getRouting))]
+  (let [routing (.getRouting this)]
     (doseq [page (md-get @this-app :kids)]
       (let [qx-page (md-get page :qx-me)]
-        (. pager (addDetail #js [qx-page]))
+        (.addDetail pager #js [qx-page])
         (when-let [ept (md-get page :end-point)]
           (. routing (onGet ept shower qx-page)))))))
 
@@ -61,7 +62,7 @@
         (fn []
           (let [content (. bingo (getContent))
                 gogo (new qx.ui.mobile.form.Button "Go!")]
-            (. gogo (addListener 
+            (. gogo (addListener
                      "tap"
                      (fn []
                        (let [rtg (. this (getRouting))]
@@ -70,7 +71,7 @@
                      bingo))
             (. content (add gogo))))
         this))
-      
+
     ;;(let [;;uname (new qx.ui.mobile.form.TextField)
     (comment
       (. uname (setRequired true))
