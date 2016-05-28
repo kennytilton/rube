@@ -1,7 +1,6 @@
 cljsbuild-output-minify
 resources/public/js/
-resources/identica/build
-resources/identica/source
+resources/identica/build/
 pom.xml
 pom.xml.asc
 *jar
