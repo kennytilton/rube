@@ -11,6 +11,7 @@
 
 (def this-app (atom nil))
 
+
 (defn ^:export appinit [this pager shower]
   (reset! 
    this-app
@@ -20,11 +21,11 @@
                (qx-make
                 ::qx/NavigationPage
                 :end-point "/"
-                :title "BingoBooya!"
+                :title "BingoBooyaBack!"
                 :kids (c? (the-kids
                            (qx-make
                             ::qx/Button
-                            :label "Go!"
+                            :label "Gogo!"
                             :listeners 
                             {"tap"  (fn []
                                       (let [rtg (. this (getRouting))]

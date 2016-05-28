@@ -1,0 +1,1 @@
+qx.$$packageData['0']={"locales":{},"resources":{"identica/css/custom.css":"identica","identica/css/custom.css.map":"identica","identica/scss/custom.scss":"identica","qx/mobile/css/LICENSE":"qx","qx/mobile/css/custom.css":"qx","qx/static/blank.html":"qx"},"translations":{"C":{},"en":{}}};
