@@ -63,6 +63,7 @@ qx.Class.define("identica.Application",
       identica.Bingo;
       qx.ui.mobile.form.TextField;
       qx.ui.mobile.form.Button;
+      hello_mobile.core;
 
       var manager = new qx.ui.mobile.page.Manager(false);
 

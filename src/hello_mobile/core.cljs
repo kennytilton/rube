@@ -17,21 +17,21 @@
    this-app
    (qx-make
     ::qx/Mobile
-    :kids (c? (the-kids
+    :kids (c?kids
                (qx-make
                 ::qx/NavigationPage
                 :end-point "/"
-                :title "BingoBooyaBack!"
-                :kids (c? (the-kids
-                           (qx-make
-                            ::qx/Button
-                            :label "Gogo!"
-                            :listeners 
-                            {"tap"  (fn []
-                                      (let [rtg (. this (getRouting))]
-                                        (println "gogo tap!")
-                                        (. rtg (executeGet "/overview"))))})))
-                            )
+                :title "Bingo!"
+                :kids (c?kids
+                       (qx-make
+                        ::qx/Button
+                        :label "Go!"
+                        :listeners 
+                        {"tap"  (fn []
+                                  (let [rtg (. this (getRouting))]
+                                    (println "gogo tap!")
+                                    (. rtg (executeGet "/overview"))))})))
+                            
                (qx-make
                 ::qx/NavigationPage
                 :end-point "/overview"
@@ -41,7 +41,7 @@
                 :listeners {"action"
                             (fn []
                               (let [rtg (. this (getRouting))]
-                                (println "gogo action!")))})))))
+                                (println "gogo action!")))}))))
 
   (let [routing (. this (getRouting))]
     (doseq [page (md-get @this-app :kids)]
