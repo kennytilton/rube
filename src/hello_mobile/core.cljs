@@ -12,20 +12,19 @@
 
 (def this-app (atom nil))
 
-
 (defn ^:export appinit [this pager shower]
   (reset!
    this-app
    (qx-make
-    ::qxty/Mobile
+    ::qxty/m.Mobile
     :kids (c?kids
                (qx-make
-                ::qxty/NavigationPage
+                ::qxty/m.NavigationPage
                 :end-point "/"
                 :title "Bingo!"
                 :kids (c?kids
                        (qx-make
-                        ::qxty/Button
+                        ::qxty/m.Button
                         :label "Go-21!"
                         :listeners
                         {"tap"  (fn []
@@ -34,7 +33,7 @@
                                     (.executeGet rtg "/overview")))})))
 
                (qx-make
-                ::qxty/NavigationPage
+                ::qxty/m.NavigationPage
                 :end-point "/overview"
                 :title "Overview"
                 :showBackButton true

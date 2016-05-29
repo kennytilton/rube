@@ -12,7 +12,7 @@
 
   
 (defn qx-make [type & initargs]
-  ;;(println (str "qx-making " type))
+  (println (str "qx-making " type))
 
   (let [me (apply md/make
                   :type type
