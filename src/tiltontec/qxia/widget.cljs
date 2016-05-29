@@ -35,19 +35,57 @@
     :navigationBarHidden :navigationBarToggleDuration
     :showBackButtonOnTablet :showButton})
 
-;;; --- NavigtionPage
+
+;;; --- render maybe ----------------------------
+
+(defmulti qx-render-maybe (fn [me]
+                            (md-get me :renderer)))
+(defmethod qx-render-maybe :default [me]
+  (println :just-me!!!!!!!! (ia-type me) 
+           (:renderer @me))
+  (:qx-me @me))
+
+(defmethod qx-render-maybe ::qxty/m.Single [me]
+  (println :single!!!!!!!!! me)
+  (new js/qx.ui.mobile.form.renderer.Single (:qx-me @me)))
+
+;;; --- finalize kids ---------------------------
+
+(defmulti qx-finalize-kids ia-type)
+
+(defmethod qx-finalize-kids :default [me]
+  (when-let [kids (md-get me :kids)]
+    (println :qxfinkids!!!!!!! (ia-type me))
+    (let [qx-me (md-get me :qx-me)]
+      (doseq [kid kids]
+        (let [rmk (qx-render-maybe kid)]
+          (println :compo-adding!!!!!!!!! rmk)
+          (.add qx-me rmk))))))
+
+;;; --- finalize --------------------------------
+
+(defmethod qx-finalize ::qxty/m.Composite [me]
+  (qx-finalize-kids me))
+
+(defmethod qx-finalize ::qxty/m.Form [me]
+  (let [qx-form (md-get me :qx-me)]
+    (when-let [kids (md-get me :kids)]
+      (doseq [k kids]
+        (let [qxk  (qx-render-maybe k)
+              label (md-get k :label)]
+          (println :formadd!!!!!! qxk)
+          (.add qx-form qxk label))))))
 
 (defmethod qx-finalize ::qxty/m.NavigationPage [page]
   (let [qx-page (md-get page :qx-me)]
     (when-let [kids (md-get page :kids)]
-      (println :nav-page-kids!!!!!!! kids)
       (.addListener qx-page "initialize"
                   (fn []
                     (let [content (. qx-page (getContent))]
                       (doseq [k kids]
-                        (let [qxk (md-get k :qx-me)]
-                          (assert qxk)
-                          (. content (add qxk))))))
+                        (let [qxk  (qx-render-maybe k)]
+                          (println :navadd!!!!!! qxk)
+                          (.add content qxk)))))
                   qx-page))))
 
 (defmethod observe [:kids ::qxty/m.NavigationPage]

@@ -7,7 +7,8 @@
    [tiltontec.qxia.core :refer [qx-make] :as qx]
    [tiltontec.model.base :refer [md-get]]
    [tiltontec.model.family
-    :refer-macros [the-kids c?kids]]
+    :refer-macros [the-kids c?kids]
+    :refer [fm!]]
    ))
 
 (def this-app (atom nil))
@@ -23,14 +24,31 @@
                 :end-point "/"
                 :title "Bingo!"
                 :kids (c?kids
+                       (qx-make ::qxty/m.Form
+                                :name :login
+                                :renderer ::qxty/m.Single
+                                :kids (c?kids 
+                                       (qx-make ::qxty/m.TextField
+                                                :name :u-name
+                                                :label "Username"
+                                                :required true)
+                                       (qx-make ::qxty/m.PasswordField
+                                                :name :p-word
+                                                :label "Password"
+                                                :required true)))
                        (qx-make
                         ::qxty/m.Button
-                        :label "Go-21!"
+                        :label "Login"
                         :listeners
                         {"tap"  (fn []
-                                  (let [rtg (.getRouting this)]
-                                    (println "gogo tap!")
-                                    (.executeGet rtg "/overview")))})))
+                                  (println "gogo tap!")
+                                  (let [login (fm! :login me)
+                                        ]
+                                    (assert login)
+                                    (when-let [ok? (.validate (:qx-me @login))]
+                                      (println :says-ok ok?)
+                                      (let [rtg (.getRouting this)]
+                                        (.executeGet rtg "/overview")))))})))
 
                (qx-make
                 ::qxty/m.NavigationPage

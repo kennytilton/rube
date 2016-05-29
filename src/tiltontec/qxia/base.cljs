@@ -12,6 +12,7 @@
       (derive ::Application ::Object)
       (derive ::Mobile ::Application)
 
+      (derive ::m.Form ::Object)
       (derive ::m.Widget ::Object)
       (derive ::m.Composite ::m.Widget)
 
@@ -21,25 +22,35 @@
       (derive ::m.Atom ::m.Widget)
       (derive ::m.Image ::m.Widget)
       (derive ::m.Label ::m.Widget)
+
       (derive ::m.Button ::m.Atom)
+      (derive ::m.Input ::m.Widget)
+      (derive ::m.TextField ::m.Input)
+      (derive ::m.PasswordField ::m.TextField)
+
       ))
 
 (defn qx-class-new [type]
   ;; make sure each of these is mentioned in your Application.js
   (case type
+    ::m.Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
+
     ::m.Atom (new js/qx.ui.mobile.basic.Atom)
     ::m.Image (new js/qx.ui.mobile.basic.Image)
     ::m.Label (new js/qx.ui.mobile.basic.Label)
 
     ::m.NavigationPage (new js/qx.ui.mobile.page.NavigationPage)
     ::m.Button (new js/qx.ui.mobile.form.Button)
-    ::m.Mobile nil ;; mobile app instance is provided by qooxdoo runtime
+    ::m.TextField (new js/qx.ui.mobile.form.TextField)
+    ::m.PasswordField (new js/qx.ui.mobile.form.PasswordField)
+    ::m.Form (new js/qx.ui.mobile.form.Form)
+
     (throw (js/Error. (str "qx-class-new does not know about " type)))))
 
 (defmulti qx-finalize ia-type)
 
 (defmethod qx-finalize :default [me]
-  #_ (println (str "Not finalizing type "
+  #_ (println (str "No initialization provided for type "
                 (ia-type me))))
 
 (defmulti qx-type-properties identity)
@@ -60,12 +71,11 @@
   ;; n.b.: we do specify a property unless requested so
   ;; we do not shadow qooxdoo defaults with nulls.
   ;; ie, Qxia widget defaults are the qooxdoo defaults.
+
   (when-let [inits (for [k (qx-obj-properties me)
                          :let [val (md-get me k)]
-                         :when (do
-                                 (not (nil? val)))]
-                     (do
-                       [k val]))]
+                         :when (not (nil? val))]
+                     [k val])]
     (.set (:qx-me @me)
           (clj->js (into {} inits))))
       
