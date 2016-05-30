@@ -1,6 +1,7 @@
 cljsbuild-output-minify
-resources/public/js/
-resources/identica/build/
+resources/identica/source/script/out/
+resources/public/js/out/
+.cljs_rhino_repl/
 pom.xml
 pom.xml.asc
 *jar
