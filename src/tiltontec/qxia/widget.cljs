@@ -35,6 +35,26 @@
     :navigationBarHidden :navigationBarToggleDuration
     :showBackButtonOnTablet :showButton})
 
+(defmethod qxty/qx-type-properties ::qxty/m.Input [_]
+  #{
+    :invalidMessage
+    ;; Message which is shown in an invalid tooltip.
+    ;; 	var 		
+    :model
+    ;; Model property for storing additional information for the including object.
+    ;; 	String 		
+    :required
+    ;; Flag signaling if a widget is required.
+    ;; 	String 		
+    :requiredInvalidMessage
+    ;; Message which is shown in an invalid tooltip if the #required is set to true.
+    ;; 	Number 		
+    :valid
+    ;; Flag signaling if a widget is valid.
+    ;; 	var 		
+    })
+
+
 
 ;;; --- render maybe ----------------------------
 
@@ -49,7 +69,7 @@
   (println :single!!!!!!!!! me)
   (new js/qx.ui.mobile.form.renderer.Single (:qx-me @me)))
 
-;;; --- finalize kids ---------------------------
+;;;--- finalize kids ---------------------------
 
 (defmulti qx-finalize-kids ia-type)
 
@@ -62,7 +82,7 @@
           (println :compo-adding!!!!!!!!! rmk)
           (.add qx-me rmk))))))
 
-;;; --- finalize --------------------------------
+;;;--- finalize --------------------------------
 
 (defmethod qx-finalize ::qxty/m.Composite [me]
   (qx-finalize-kids me))
@@ -97,3 +117,4 @@
       (when-not (empty? lostks)
         (doseq [k lostks]
           (not-to-be k))))))
+

@@ -22,7 +22,7 @@
                (qx-make
                 ::qxty/m.NavigationPage
                 :end-point "/"
-                :title "Bingo!"
+                :title "Login"
                 :kids (c?kids
                        (qx-make ::qxty/m.Form
                                 :name :login
@@ -31,19 +31,20 @@
                                        (qx-make ::qxty/m.TextField
                                                 :name :u-name
                                                 :label "Username"
-                                                :required true)
+                                                :required true
+                                                :requiredInvalidMessage "Please share your user name")
                                        (qx-make ::qxty/m.PasswordField
                                                 :name :p-word
                                                 :label "Password"
-                                                :required true)))
+                                                :required true
+                                                :requiredInvalidMessage "Password is required")))
                        (qx-make
                         ::qxty/m.Button
                         :label "Login"
                         :listeners
                         {"tap"  (fn []
                                   (println "gogo tap!")
-                                  (let [login (fm! :login me)
-                                        ]
+                                  (let [login (fm! :login me)]
                                     (assert login)
                                     (when-let [ok? (.validate (:qx-me @login))]
                                       (println :says-ok ok?)
