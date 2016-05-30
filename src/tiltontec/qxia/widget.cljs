@@ -10,6 +10,7 @@
 
    ))
 
+
 (defmethod qx-type-properties ::qxty/m.Atom [_]
   #{:defaultCssClass :icon :iconPosition :label :show})
 
@@ -83,6 +84,18 @@
           (.add qx-me rmk))))))
 
 ;;;--- finalize --------------------------------
+
+(defmethod qx-finalize ::qxty/Mobile [me]
+  (let [app (:qx-me @me)
+        shower (md-get me :shower)
+        pager (md-get me :pager)]
+    (let [routing (.getRouting app)]
+      (doseq [page (md-get me :kids)]
+        (println :adding-page!!!!!!!!!!! page)
+        (let [qx-page (md-get page :qx-me)]
+          (.addDetail pager #js [qx-page])
+          (when-let [ept (md-get page :end-point)]
+            (. routing (onGet ept shower qx-page))))))))
 
 (defmethod qx-finalize ::qxty/m.Composite [me]
   (qx-finalize-kids me))

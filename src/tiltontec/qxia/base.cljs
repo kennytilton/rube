@@ -33,7 +33,7 @@
 (defn qx-class-new [type]
   ;; make sure each of these is mentioned in your Application.js
   (case type
-    ::m.Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
+    ::Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
 
     ::m.Atom (new js/qx.ui.mobile.basic.Atom)
     ::m.Image (new js/qx.ui.mobile.basic.Image)

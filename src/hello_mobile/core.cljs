@@ -17,7 +17,10 @@
   (reset!
    this-app
    (qx-make
-    ::qxty/m.Mobile
+    ::qxty/Mobile
+    :qx-me this
+    :pager pager
+    :shower shower
     :kids (c?kids
                (qx-make
                 ::qxty/m.NavigationPage
@@ -56,48 +59,10 @@
                 :end-point "/overview"
                 :title "Overview"
                 :showBackButton true
-                :backButtonText "Back Up"
+                :backButtonText "Back Up (click broken, back key OK)"
                 :listeners {"action"
                             (fn []
                               (let [rtg (.getRouting this)]
-                                (println "gogo action!")))}))))
+                                (println "gogo action!")))})))))
 
-  (let [routing (.getRouting this)]
-    (doseq [page (md-get @this-app :kids)]
-      (let [qx-page (md-get page :qx-me)]
-        (.addDetail pager #js [qx-page])
-        (when-let [ept (md-get page :end-point)]
-          (. routing (onGet ept shower qx-page)))))))
 
-#_
-(defn ^:export appinit [this pager shower]
-  (let [bingo (new js/qx.ui.mobile.page.NavigationPage)
-        over (new js/identica.page.Overview)]
-    (. bingo (setTitle "BingOMG"))
-    (. bingo
-       (addListener
-        "initialize"
-        (fn []
-          (let [content (. bingo (getContent))
-                gogo (new qx.ui.mobile.form.Button "Go!")]
-            (. gogo (addListener
-                     "tap"
-                     (fn []
-                       (let [rtg (. this (getRouting))]
-                         (println "gogo tap!")
-                         (. rtg (executeGet "/overview"))))
-                     bingo))
-            (. content (add gogo))))
-        this))
-
-    ;;(let [;;uname (new qx.ui.mobile.form.TextField)
-    (comment
-      (. uname (setRequired true))
-      (. pgbeef (add uname "Username"))
-      (. pgbeef (add gogo "Go!")))
-
-    (. pager (addDetail #js [bingo, over]))
-
-    (let [routing (. this (getRouting))]
-      (. routing (onGet "/" shower bingo))
-      (. routing (onGet "/overview" shower over)))))
