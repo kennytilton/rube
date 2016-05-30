@@ -6,7 +6,7 @@
              :refer [c-in c-reset! make-cell]]
    [tiltontec.model.base :refer [md-get]]
    [tiltontec.model.core :refer [make] :as md]
-   [tiltontec.qxia.base :refer [qx-class-new qx-finalize qx-finalize-all]]
+   [tiltontec.qxia.base :refer [qx-class-new qx-initialize qx-initialize-all]]
    [tiltontec.qxia.widget]
    ))
 
@@ -20,8 +20,8 @@
                   initargs)]
 
     (when (md-get me :qx-me)
-      (qx-finalize me)
-      (qx-finalize-all me))
+      (qx-initialize me)
+      (qx-initialize-all me))
 
     me))
 

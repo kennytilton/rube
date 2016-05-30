@@ -1,11 +1,13 @@
 (ns hello-mobile.core
   (:require
+   [tiltontec.cell.base :refer [ia-type]]
    [tiltontec.cell.core
     :refer-macros [c? c?+ c-reset-next! c?once c?n]
     :refer [c-in c-reset! make-cell]]
    [tiltontec.qxia.base :refer [qx-make] :as qxty]
    [tiltontec.qxia.core :refer [qx-make] :as qx]
    [tiltontec.model.base :refer [md-get]]
+   [tiltontec.model.core :refer [md-reset!]]
    [tiltontec.model.family
     :refer-macros [the-kids c?kids]
     :refer [fm!]]
@@ -25,12 +27,12 @@
                (qx-make
                 ::qxty/m.NavigationPage
                 :end-point "/"
-                :title "Login"
+                :title "Login!"
                 :kids (c?kids
                        (qx-make ::qxty/m.Form
                                 :name :login
                                 :renderer ::qxty/m.Single
-                                :kids (c?kids 
+                                :kids (c?kids
                                        (qx-make ::qxty/m.TextField
                                                 :name :u-name
                                                 :label "Username"
@@ -44,25 +46,32 @@
                        (qx-make
                         ::qxty/m.Button
                         :label "Login"
-                        :listeners
-                        {"tap"  (fn []
-                                  (println "gogo tap!")
-                                  (let [login (fm! :login me)]
-                                    (assert login)
-                                    (when-let [ok? (.validate (:qx-me @login))]
-                                      (println :says-ok ok?)
-                                      (let [rtg (.getRouting this)]
-                                        (.executeGet rtg "/overview")))))})))
+                        :listeners {"tap"  #(let [login (fm! :login me)]
+                                              (when true ;; (.validate (:qx-me @login))
+                                                (let [rtg (.getRouting this)]
+                                                  (.executeGet rtg "/overview"))))})))
 
                (qx-make
                 ::qxty/m.NavigationPage
                 :end-point "/overview"
                 :title "Overview"
+                :showButton true
+                :buttonText "Knock-Knock"
+                :buttonIcon "identica/mmedia/games.png"
                 :showBackButton true
-                :backButtonText "Back Up (click broken, back key OK)"
-                :listeners {"action"
-                            (fn []
-                              (let [rtg (.getRouting this)]
-                                (println "gogo action!")))})))))
-
-
+                :backButtonText "Back Up (click broken but back key OK)"
+                :listeners
+                {"action" (fn [event me]
+                            (println "gogo action?" event (ia-type me))
+                            (let [rtg (.getRouting this)]
+                              ;; (println :cz!!! (:cz @sib))
+                              (md-reset! me :greet? (not (md-get me :greet?)))))}
+                 :greet? (c-in false)
+                :kids (c?kids
+                       (when  (md-get me :greet?)
+                         (qx-make
+                          ::qxty/m.Image
+                          :class js/qx.ui.mobile.basic.ImageZZZ
+                          :rotation 15
+                          :scaleX 0.5 :scaleY 0.5
+                          :source "identica/mmedia/earth-from-moon.jpg"))))))))
