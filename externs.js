@@ -25,4 +25,5 @@ TextField.setRequired = function () {};
 
 Button.addListener = function () {};
 
+MyTerop = {};
 MyTerop.make = function () {};

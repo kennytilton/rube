@@ -77,11 +77,11 @@
 
     ::m.NavigationPage (new js/qx.ui.mobile.page.NavigationPage)
     ::m.Button  ;;(new js/qx.ui.mobile.form.Button)
-    (do (println :heregoes!!!!!!!!!!!!!!)
-        (let [clz (qxia-type-to-qx-class type)
-              btn (apply MyTerop/make clz ["OMG!!", "identica/mmedia/games.png"])]
-          (println :da-btn!!!!!!!!! btn)
-          btn))
+
+    (apply MyTerop/make
+           (qxia-type-to-qx-class type)
+           ["It Really Woiks!", "identica/mmedia/games.png"])
+
     ::m.TextField (new js/qx.ui.mobile.form.TextField)
     ::m.PasswordField (new js/qx.ui.mobile.form.PasswordField)
 
