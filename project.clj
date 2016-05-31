@@ -5,6 +5,9 @@
                       :url "http://www.eclipse.org/legal/epl-v10.html"}
             :dependencies [[org.clojure/clojure "1.7.0"]
                            [org.clojure/clojurescript "1.7.48"]]
+            :profiles {:dev {:dependencies [[com.cemerick/piggieback "0.2.1"]
+                                [org.clojure/tools.nrepl "0.2.10"]]
+                       :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}}
             :plugins [[lein-cljsbuild "1.1.3"]]
             :test-paths ["test"]
             :cljsbuild {:builds {;; go back to 5/26 for minify

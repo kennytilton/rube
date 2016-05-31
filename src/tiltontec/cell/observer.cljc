@@ -5,8 +5,7 @@
    [tiltontec.cell.base
     :refer [c-ref? md-ref? unbound
             +pulse+ c-slot c-value
-            c-model]]))
-
+            c-model ia-types] :as cty]))
 
 (defn type-cljc [x]
   #?(:clj (type x)
@@ -15,7 +14,8 @@
                (type x))))
 
 (defmulti observe (fn [slot-name me new-val old-val c]
-                    [slot-name (type-cljc me)]))
+                    [slot-name (type-cljc me)])
+  :hierarchy #'cty/ia-types)
 
 (defmethod observe :default [slot me new-val old-val c]
   #_(println :obs-fall-thru  slot (type-cljc me)))

@@ -29,25 +29,27 @@
                 :end-point "/"
                 :title "Login!"
                 :kids (c?kids
-                       (qx-make ::qxty/m.Form
-                                :name :login
-                                :renderer ::qxty/m.Single
-                                :kids (c?kids
-                                       (qx-make ::qxty/m.TextField
-                                                :name :u-name
-                                                :label "Username"
-                                                :required true
-                                                :requiredInvalidMessage "Please share your user name")
-                                       (qx-make ::qxty/m.PasswordField
-                                                :name :p-word
-                                                :label "Password"
-                                                :required true
-                                                :requiredInvalidMessage "Password is required")))
+                       (qx-make
+                        ::qxty/m.Single
+                        :kids (c?kids
+                               (qx-make ::qxty/m.Form
+                                        :name :login
+                                        :kids (c?kids
+                                               (qx-make ::qxty/m.TextField
+                                                        :name :u-name
+                                                        :label "Username"
+                                                        :required true
+                                                        :requiredInvalidMessage "Please share your user name")
+                                               (qx-make ::qxty/m.PasswordField
+                                                        :name :p-word
+                                                        :label "Password"
+                                                        :required true
+                                                        :requiredInvalidMessage "Password is required")))))
                        (qx-make
                         ::qxty/m.Button
                         :label "Login"
                         :listeners {"tap"  #(let [login (fm! :login me)]
-                                              (when true ;; (.validate (:qx-me @login))
+                                              (when (.validate (:qx-me @login))
                                                 (let [rtg (.getRouting this)]
                                                   (.executeGet rtg "/overview"))))})))
 
@@ -62,16 +64,28 @@
                 :backButtonText "Back Up (click broken but back key OK)"
                 :listeners
                 {"action" (fn [event me]
-                            (println "gogo action?" event (ia-type me))
                             (let [rtg (.getRouting this)]
-                              ;; (println :cz!!! (:cz @sib))
                               (md-reset! me :greet? (not (md-get me :greet?)))))}
                  :greet? (c-in false)
                 :kids (c?kids
-                       (when  (md-get me :greet?)
+                       (when (md-get me :greet?)
                          (qx-make
                           ::qxty/m.Image
-                          :class js/qx.ui.mobile.basic.ImageZZZ
                           :rotation 15
                           :scaleX 0.5 :scaleY 0.5
-                          :source "identica/mmedia/earth-from-moon.jpg"))))))))
+                          :source "identica/mmedia/earth-from-moon.jpg")
+                         #_
+                         (qx-make
+                          ::qxty/m.Composite
+                          :layout (new js/qx.ui.mobile.layout.HBox)
+                          :alignY "center"
+                          :kids (c?kids
+                                 
+                                 (qx-make
+                                  ::qxty/m.Label
+                                  :label "<h1>Hello, world.</>")
+                                 (qx-make
+                                  ::qxty/m.Image
+                                  :rotation 15
+                                  :scaleX 0.5 :scaleY 0.5
+                                  :source "identica/mmedia/earth-from-moon.jpg"))))))))))

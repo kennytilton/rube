@@ -9,14 +9,14 @@ goog.require('tiltontec.qxia.base');
 goog.require('tiltontec.qxia.widget');
 tiltontec.qxia.core.qx_make = (function tiltontec$qxia$core$qx_make(){
 var args__5600__auto__ = [];
-var len__5593__auto___14879 = arguments.length;
-var i__5594__auto___14880 = (0);
+var len__5593__auto___31086 = arguments.length;
+var i__5594__auto___31087 = (0);
 while(true){
-if((i__5594__auto___14880 < len__5593__auto___14879)){
-args__5600__auto__.push((arguments[i__5594__auto___14880]));
+if((i__5594__auto___31087 < len__5593__auto___31086)){
+args__5600__auto__.push((arguments[i__5594__auto___31087]));
 
-var G__14881 = (i__5594__auto___14880 + (1));
-i__5594__auto___14880 = G__14881;
+var G__31088 = (i__5594__auto___31087 + (1));
+i__5594__auto___31087 = G__31088;
 continue;
 } else {
 }
@@ -30,8 +30,15 @@ return tiltontec.qxia.core.qx_make.cljs$core$IFn$_invoke$arity$variadic((argumen
 tiltontec.qxia.core.qx_make.cljs$core$IFn$_invoke$arity$variadic = (function (type,initargs){
 cljs.core.println.call(null,[cljs.core.str("qx-making "),cljs.core.str(type)].join(''));
 
-var me = cljs.core.apply.call(null,tiltontec.model.core.make,new cljs.core.Keyword(null,"type","type",1174270348),type,new cljs.core.Keyword(null,"qx-me","qx-me",-388627059),tiltontec.qxia.base.qx_class_new.call(null,type),initargs);
-if(cljs.core.truth_(tiltontec.model.base.md_get.call(null,me,new cljs.core.Keyword(null,"qx-me","qx-me",-388627059)))){
+var qx = ((cljs.core.isa_QMARK_.call(null,tiltontec.cell.base.ia_types,type,new cljs.core.Keyword("tiltontec.qxia.core","m.Single","tiltontec.qxia.core/m.Single",1330761384)))?null:tiltontec.qxia.base.qx_class_new.call(null,type));
+cljs.core.println.call(null,new cljs.core.Keyword(null,"got-qx!!!!!!!","got-qx!!!!!!!",-511655461),qx);
+
+var me = cljs.core.apply.call(null,tiltontec.model.core.make,new cljs.core.Keyword(null,"type","type",1174270348),type,new cljs.core.Keyword(null,"qx-me","qx-me",-388627059),qx,initargs);
+cljs.core.println.call(null,new cljs.core.Keyword(null,"post-mdmake","post-mdmake",1124996587),cljs.core.deref.call(null,me),new cljs.core.Keyword(null,"qx-me","qx-me",-388627059).cljs$core$IFn$_invoke$arity$1(me));
+
+if(cljs.core.truth_(new cljs.core.Keyword(null,"qx-me","qx-me",-388627059).cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,me)))){
+cljs.core.println.call(null,[cljs.core.str("qx-mak-initting "),cljs.core.str(type)].join(''));
+
 tiltontec.qxia.base.qx_initialize.call(null,me);
 
 tiltontec.qxia.base.qx_initialize_all.call(null,me);
@@ -43,8 +50,8 @@ return me;
 
 tiltontec.qxia.core.qx_make.cljs$lang$maxFixedArity = (1);
 
-tiltontec.qxia.core.qx_make.cljs$lang$applyTo = (function (seq14877){
-var G__14878 = cljs.core.first.call(null,seq14877);
-var seq14877__$1 = cljs.core.next.call(null,seq14877);
-return tiltontec.qxia.core.qx_make.cljs$core$IFn$_invoke$arity$variadic(G__14878,seq14877__$1);
+tiltontec.qxia.core.qx_make.cljs$lang$applyTo = (function (seq31084){
+var G__31085 = cljs.core.first.call(null,seq31084);
+var seq31084__$1 = cljs.core.next.call(null,seq31084);
+return tiltontec.qxia.core.qx_make.cljs$core$IFn$_invoke$arity$variadic(G__31085,seq31084__$1);
 });

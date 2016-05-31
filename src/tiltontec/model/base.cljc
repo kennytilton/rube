@@ -25,9 +25,8 @@
              :refer-macros [with-integrity]]
       :clj [tiltontec.cell.integrity :refer [with-integrity]])
    #?(:clj [tiltontec.cell.observer
-            :refer [defobserver fn-obs observe]]
+            :refer [observe]]
       :cljs [tiltontec.cell.observer
-             :refer-macros [defobserver fn-obs]
              :refer [observe]])
 
    #?(:cljs [tiltontec.cell.core

@@ -11,7 +11,7 @@
       :cljs [tiltontec.cell.base
              :refer-macros [without-c-dependency]
              :refer [cells-init c-optimized-away? c-formula? c-value c-optimize
-                     c-unbound? c-input? ia-type? ia-types
+                     c-unbound? c-input? ia-type? ia-types ia-type
                      c-model mdead? c-valid? c-useds c-ref? md-ref?
                      c-state +pulse+ c-pulse-observed
                      *call-stack* *defer-changes* unbound
@@ -25,9 +25,8 @@
              :refer-macros [with-integrity]]
       :clj [tiltontec.cell.integrity :refer [with-integrity]])
    #?(:clj [tiltontec.cell.observer
-            :refer [defobserver fn-obs observe]]
+            :refer [ observe]]
       :cljs [tiltontec.cell.observer
-             :refer-macros [defobserver fn-obs]
              :refer [observe]])
 
 
@@ -51,31 +50,32 @@
       (err str "change to slot %s not mediated by cell" slot)
       (rmap-setf [slot me] new-value))))
 
-
 (defn make [& iargs]
   (cond
     (odd? (count iargs)) (apply make :type iargs)
     :else
     (#?(:clj dosync :cljs do)
-     (let [me (#?(:clj ref :cljs atom) (merge {:par *par*}
-                          (->> iargs
-                               (partition 2)
-                               (filter (fn [[slot v]]
-                                         (not (= :type slot))))
-                               (map (fn [[k v]]
-                                      (vector k (if (c-ref? v)
-                                                  unbound
-                                                  v))))
-                               (into {})))
-                   :meta (merge {:state :nascent}
-                                (->> iargs
-                                     (partition 2)
-                                     (filter (fn [[slot v]]
-                                               (= :type slot)))
-                                     (map vec)
-                                     (into {}))))]
+     (println (str :md-making (nth iargs 1)))
+     (let [me (#?(:clj ref :cljs atom)
+               (merge {:par *par*}
+                      (->> iargs
+                           (partition 2)
+                           (filter (fn [[slot v]]
+                                     (not (= :type slot))))
+                           (map (fn [[k v]]
+                                  (vector k (if (c-ref? v)
+                                              unbound
+                                              v))))
+                           (into {})))
+               :meta (merge {:state :nascent}
+                            (->> iargs
+                                 (partition 2)
+                                 (filter (fn [[slot v]]
+                                           (= :type slot)))
+                                 (map vec)
+                                 (into {}))))]
        (assert (meta me))
-       ;; (println (str "make mops??" (nth iargs 1)))
+       (println (str "made me!!!!!!!" (:type (meta me))))
        (rmap-meta-setf
         [:cz me]
         (->> iargs
@@ -85,6 +85,7 @@
              (map vec)
              (into {})))
        (with-integrity (:awaken me)
+         (println :awakening (ia-type me))
          (md-awaken me))
        me))))
 

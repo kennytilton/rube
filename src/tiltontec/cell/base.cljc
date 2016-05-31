@@ -101,7 +101,7 @@ rule to get once behavior or just when fm-traversing to find someone"
 
 ;; ------------------------------------------------------
 
-(defonce ia-types
+(def ia-types
   (-> (make-hierarchy)
       (derive ::model ::object)
       (derive ::cell ::object)
@@ -195,7 +195,8 @@ rule to get once behavior or just when fm-traversing to find someone"
 (defmulti mdead? (fn [me]
                    (assert (or (nil? me)
                                (md-ref? me)))
-                   [(type (when me @me))]))
+                   [(type (when me @me))])
+  :hierarchy #'ia-types)
 
 (defmethod mdead? :default [me]
   false)

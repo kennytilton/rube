@@ -11,7 +11,7 @@
          :cljs [tiltontec.cell.base
                 :refer-macros [without-c-dependency]
                 :refer [c-optimized-away? c-formula? c-value c-optimize
-                        c-unbound? c-input?
+                        c-unbound? c-input? ia-types
                         c-model mdead? c-valid? c-useds c-ref? md-ref?
                         c-state +pulse+ c-pulse-observed
                         *call-stack* *defer-changes*
@@ -177,7 +177,8 @@
 
 (defmulti c-awaken (fn [c]
                      #?(:clj (type c)
-                        :cljs (:type (meta c)))))
+                        :cljs (:type (meta c))))
+  :hierarchy #'cty/ia-types)
 
 (defmethod c-awaken :default [c]
   ;;(trx :awk-fallthru-entry (type c)(seq? c)(coll? c)(vector? c))
@@ -355,7 +356,8 @@ then clear our record of them."
 
 (defmulti not-to-be (fn [me]
                       (assert (md-ref? me))
-                      [(type (when me @me))]))
+                      [(type (when me @me))])
+  :hierarchy #'cty/ia-types)
 
 (defmethod not-to-be :default [me]
   (doseq [c (vals (:cz (meta me)))]
@@ -372,7 +374,9 @@ then clear our record of them."
   with it a different test."
 
   (fn [me slot]
-    [(when me (type @me)) slot]))
+    [(when me (type @me)) slot])
+  :hierarchy #'cty/ia-types)
+
      
 (defmethod unchanged-test :default [self slotname]
   =)

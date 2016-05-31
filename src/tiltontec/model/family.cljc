@@ -14,7 +14,7 @@
              :refer [cells-init c-optimized-away? c-formula? c-value c-optimize
                      c-unbound? c-input? ia-type? ia-types
                      c-model mdead? c-valid? c-useds c-ref? md-ref?
-                     c-state +pulse+ c-pulse-observed
+                     c-state +pulse+ c-pulse-observed ia-types
                      *call-stack* *defer-changes* unbound
                      c-rule c-me c-value-state c-callers caller-ensure
                      unlink-from-callers *causation*
@@ -26,9 +26,8 @@
              :refer-macros [with-integrity]]
       :clj [tiltontec.cell.integrity :refer [with-integrity]])
    #?(:clj [tiltontec.cell.observer
-            :refer [defobserver fn-obs observe]]
+            :refer [ observe]]
       :cljs [tiltontec.cell.observer
-             :refer-macros [defobserver fn-obs]
              :refer [observe]])
 
    #?(:cljs [tiltontec.cell.core
@@ -119,7 +118,6 @@
 (def mm-obj #?(:clj Object :cljs js/Object))
 
 (defmethod observe [:kids ::family]
-;;(defobserver :kids  [::family]
   [_ _ newk oldk _]
   (when-not (= oldk unbound)
     (let [lostks (difference (set oldk)(set newk))]

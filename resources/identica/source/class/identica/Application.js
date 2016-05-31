@@ -42,13 +42,7 @@ qx.Class.define("identica.Application",
         qx.log.appender.Console;
       }
 
-      /*
-      -------------------------------------------------------------------------
-        Below is your actual application code...
-        Remove or edit the following code to create your application.
-      -------------------------------------------------------------------------
-      */
-      /*
+      /* -- begin non-boilerplate ---------------------------
 
       We start by simply mentioning the QX classes we want to "new" on the fly
       so generate.py will include them. Otherwise you will see "<class> unknown"
