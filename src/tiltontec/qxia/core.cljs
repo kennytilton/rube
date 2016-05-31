@@ -11,20 +11,16 @@
    ))
 
 (defn qx-make [type & initargs]
-  (println (str "qx-making " type))
-  (let [qx  (when-not (isa? ia-types type ::m.Single)
-              (qx-class-new type))]
-    (println :got-qx!!!!!!! qx)
+  ;(println (str "qx-making " type))
+  (let [qx (qx-class-new type)] 
+    ;; note that the Single renderer gets back nil 
+    ;; then constructs in qx-initialize
     (let [me (apply md/make
                     :type type
                     :qx-me qx
                     initargs)]
-      (println :post-mdmake @me
-               (:qx-me me))
-      (when (:qx-me @me)
-        (println (str "qx-mak-initting " type))
-        (qx-initialize me)
-        (qx-initialize-all me))
+      (qx-initialize me)
+      (qx-initialize-all me)
 
       me)))
 

@@ -40,10 +40,11 @@
   (case type
     ::Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
 
-    ::m.Single (fn [form]
-                 (new js/qx.ui.mobile.form.renderer.Single))
+    ::m.Single nil ;; Single constructor must be passed the wrapped Form
+    ;; ...and we will not have that until qx-initialize.
 
     ::m.Form (new js/qx.ui.mobile.form.Form)
+    ::m.Composite (new js/qx.ui.mobile.container.Composite)
     ::ml.HBox (new js/qx.ui.mobile.layout.HBox)
 
     ::m.Atom (new js/qx.ui.mobile.basic.Atom)
@@ -62,8 +63,10 @@
   (case type
     ::Mobile qx.application.Mobile
     ::m.Single js/qx.ui.mobile.form.renderer.Single
-    ::m.HBox js/qx.ui.mobile.layout.HBox
-    ::m.VBox js/qx.ui.mobile.layout.VBox
+    ::m.Composite js/qx.ui.mobile.container.Composite
+
+    ::ml.HBox js/qx.ui.mobile.layout.HBox
+    ::ml.VBox js/qx.ui.mobile.layout.VBox
 
     ::m.Atom js/qx.ui.mobile.basic.Atom
     ::m.Image js/qx.ui.mobile.basic.Image
@@ -82,7 +85,7 @@
   :hierarchy #'cty/ia-types)
 
 (defmethod qx-initialize :default [me]
-  (println (str "No initialization provided for type "  (ia-type me))))
+  #_(println (str "No initialization provided for type "  (ia-type me))))
 
 (defn qx-obj-properties [me]
   (map keyword (.getProperties qx.Class
@@ -99,12 +102,12 @@
 ;;                      properties))
 ;;       :default properties)))
 
-(defn qx-initialize-type [me]
-  (println :qx-init-type (ia-type me))
-  (doseq [type (reverse
-                (list* (ia-type me)
-                       (ancestors ia-types (ia-type me))))]
-    (qx-initialize type me)))
+;; (defn qx-initialize-type [me]
+;;   (println :qx-init-type (ia-type me))
+;;   (doseq [type (reverse
+;;                 (list* (ia-type me)
+;;                        (ancestors ia-types (ia-type me))))]
+;;     (qx-initialize type me)))
 
 (defn qxme [me] (md-get me :qx-me))
 

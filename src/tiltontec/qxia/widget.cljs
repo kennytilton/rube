@@ -46,6 +46,9 @@
             (. routing (onGet ept shower qx-page))))))))
 
 (defmethod qx-initialize ::qxty/m.Composite [me]
+  (when-let [lyo (:layout @me)]
+    (println :init-setting-layo!!!!! lyo (ia-type me))
+    (.setLayout (qxme me) lyo))
   (qx-initialize-kids me))
 
 (defmethod qx-initialize ::qxty/m.Form [me]
@@ -79,6 +82,16 @@
                           (.add content qxk)))))
                   qx-page))))
 
+
+(defmethod qx-initialize ::qxty/m.TextField [me]
+  (.setValue (qxme me) (:value @me)))
+
+;;; --- observer handles changes to kids -----------
+;;; 
+;;; this bit pretends to be efficient but we do not yet have 
+;;; a parent sometimes returning the "same" kids, so really
+;;; it is dropping all and adding all
+;;;
 (defmethod observe [:kids ::qxty/m.Composite]
   [_ me newk oldk _]
   (when-not (= oldk unbound)

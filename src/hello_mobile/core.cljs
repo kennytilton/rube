@@ -30,6 +30,16 @@
                 :title "Login!"
                 :kids (c?kids
                        (qx-make
+                          ::qxty/m.Composite
+                          :layout (new js/qx.ui.mobile.layout.VBox)
+                          :kids (c?kids
+                                 (qx-make
+                                  ::qxty/m.Label
+                                  :value "Hello,")
+                                 (qx-make
+                                  ::qxty/m.Label
+                                  :value "world.")))
+                       (qx-make
                         ::qxty/m.Single
                         :kids (c?kids
                                (qx-make ::qxty/m.Form
@@ -38,11 +48,15 @@
                                                (qx-make ::qxty/m.TextField
                                                         :name :u-name
                                                         :label "Username"
+                                                        :value "KennY"
+                                                        :placeholder "Username or e-mail"
                                                         :required true
                                                         :requiredInvalidMessage "Please share your user name")
                                                (qx-make ::qxty/m.PasswordField
                                                         :name :p-word
                                                         :label "Password"
+                                                        :value "Zoommmmm"
+                                                        :placeholder "Your password"
                                                         :required true
                                                         :requiredInvalidMessage "Password is required")))))
                        (qx-make
@@ -69,23 +83,31 @@
                  :greet? (c-in false)
                 :kids (c?kids
                        (when (md-get me :greet?)
-                         (qx-make
+                         #_(qx-make
                           ::qxty/m.Image
                           :rotation 15
                           :scaleX 0.5 :scaleY 0.5
                           :source "identica/mmedia/earth-from-moon.jpg")
-                         #_
+                         #_(qx-make
+                                  ::qxty/m.Label
+                                  :value "Hello,")
                          (qx-make
                           ::qxty/m.Composite
                           :layout (new js/qx.ui.mobile.layout.HBox)
-                          :alignY "center"
                           :kids (c?kids
+                                 (qx-make
+                                  ::qxty/m.Composite
+                                  :layout (new js/qx.ui.mobile.layout.VBox)
+                                  :kids (c?kids
+                                         (qx-make
+                                          ::qxty/m.Label
+                                          :value "Hello,")
+                                         (qx-make
+                                          ::qxty/m.Label
+                                          :value "world.")))
                                  
                                  (qx-make
-                                  ::qxty/m.Label
-                                  :label "<h1>Hello, world.</>")
-                                 (qx-make
                                   ::qxty/m.Image
-                                  :rotation 15
+                                  :rotation -5
                                   :scaleX 0.5 :scaleY 0.5
                                   :source "identica/mmedia/earth-from-moon.jpg"))))))))))

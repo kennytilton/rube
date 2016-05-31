@@ -55,7 +55,7 @@
     (odd? (count iargs)) (apply make :type iargs)
     :else
     (#?(:clj dosync :cljs do)
-     (println (str :md-making (nth iargs 1)))
+     ;;(println (str :md-making (nth iargs 1)))
      (let [me (#?(:clj ref :cljs atom)
                (merge {:par *par*}
                       (->> iargs
@@ -75,7 +75,7 @@
                                  (map vec)
                                  (into {}))))]
        (assert (meta me))
-       (println (str "made me!!!!!!!" (:type (meta me))))
+       ;;(println (str "made me!!!!!!!" (:type (meta me))))
        (rmap-meta-setf
         [:cz me]
         (->> iargs
@@ -85,7 +85,7 @@
              (map vec)
              (into {})))
        (with-integrity (:awaken me)
-         (println :awakening (ia-type me))
+         ;;(println :awakening (ia-type me))
          (md-awaken me))
        me))))
 
