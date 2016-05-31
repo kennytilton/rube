@@ -62,7 +62,7 @@
                                                         :requiredInvalidMessage "Password is required")))))
                        (qx-make
                         ::qxty/m.Button
-                        ;;:label "Login"
+                        :label "Login"
                         :listeners {"tap"  #(let [login (fm! :login me)]
                                               (when (.validate (:qx-me @login))
                                                 (let [rtg (.getRouting this)]
