@@ -123,10 +123,10 @@
     (.set (qxme me)
           (clj->js (into {} inits))))
       
-  (when-let [css (:css @me)]
-    (println :bingo-css css (ia-type me))
+  (when-let [c (:css-class @me)]
+    (println :bingo-css c (ia-type me))
    
-    (.addCssClass (qxme me) css))
+    (.addCssClass (qxme me) c))
 
   (doseq [[name handler] (md-get me :listeners)]
     (let [qxme (qxme me)]

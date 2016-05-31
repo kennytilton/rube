@@ -35,7 +35,7 @@
                           :kids (c?kids
                                  (qx-make
                                   ::qxty/m.Label
-                                  :css "cool"
+                                  :css-class "cool"
                                   :value "Hello,")
                                  (qx-make
                                   ::qxty/m.Label
