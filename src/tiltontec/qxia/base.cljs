@@ -35,28 +35,6 @@
             (derive  ::m.TextField ::m.Input)
             (derive  ::m.PasswordField ::m.TextField)))
 
-(defn qx-class-new [type]
-  ;; make sure each of these is mentioned in your Application.js
-  (case type
-    ::Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
-
-    ::m.Single nil ;; Single constructor must be passed the wrapped Form
-    ;; ...and we will not have that until qx-initialize.
-
-    ::m.Form (new js/qx.ui.mobile.form.Form)
-    ::m.Composite (new js/qx.ui.mobile.container.Composite)
-    ::ml.HBox (new js/qx.ui.mobile.layout.HBox)
-
-    ::m.Atom (new js/qx.ui.mobile.basic.Atom)
-    ::m.Image (new js/qx.ui.mobile.basic.Image)
-    ::m.Label (new js/qx.ui.mobile.basic.Label)
-
-    ::m.NavigationPage (new js/qx.ui.mobile.page.NavigationPage)
-    ::m.Button (new js/qx.ui.mobile.form.Button)
-    ::m.TextField (new js/qx.ui.mobile.form.TextField)
-    ::m.PasswordField (new js/qx.ui.mobile.form.PasswordField)
-
-    (throw (js/Error. (str "qx-class-new does not know about " type)))))
 
 (defn qxia-type-to-qx-class [type]
   ;; make sure each of these is mentioned in your Application.js
@@ -80,6 +58,36 @@
     ::m.PasswordField js/qx.ui.mobile.form.PasswordField
 
     (throw (js/Error. (str "qxia-type-to-qx-class does not know about " type)))))
+
+(defn qx-class-new [type]
+  ;; make sure each of these is mentioned in your Application.js
+  (case type
+    ::Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
+
+    ::m.Single nil ;; Single constructor must be passed the wrapped Form
+    ;; ...and we will not have that until qx-initialize.
+
+    ::m.Form (new js/qx.ui.mobile.form.Form)
+    ::m.Composite (new js/qx.ui.mobile.container.Composite)
+    ::ml.HBox (new js/qx.ui.mobile.layout.HBox)
+
+    ::m.Atom (new js/qx.ui.mobile.basic.Atom)
+    ::m.Image (new js/qx.ui.mobile.basic.Image)
+    ::m.Label (new js/qx.ui.mobile.basic.Label)
+
+    ::m.NavigationPage (new js/qx.ui.mobile.page.NavigationPage)
+    ::m.Button  ;;(new js/qx.ui.mobile.form.Button)
+    (do (println :heregoes!!!!!!!!!!!!!!)
+        (let [clz (qxia-type-to-qx-class type)
+              btn (apply MyTerop/make clz ["OMG!!", "identica/mmedia/games.png"])]
+          (println :da-btn!!!!!!!!! btn)
+          btn))
+    ::m.TextField (new js/qx.ui.mobile.form.TextField)
+    ::m.PasswordField (new js/qx.ui.mobile.form.PasswordField)
+
+    (throw (js/Error. (str "qx-class-new does not know about " type)))))
+
+
 
 (defmulti qx-initialize ia-type
   :hierarchy #'cty/ia-types)

@@ -24,3 +24,5 @@ NavigationPage.getContent = function() {};
 TextField.setRequired = function () {};
 
 Button.addListener = function () {};
+
+MyTerop.make = function () {};

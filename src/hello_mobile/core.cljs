@@ -62,7 +62,7 @@
                                                         :requiredInvalidMessage "Password is required")))))
                        (qx-make
                         ::qxty/m.Button
-                        :label "Login"
+                        ;;:label "Login"
                         :listeners {"tap"  #(let [login (fm! :login me)]
                                               (when (.validate (:qx-me @login))
                                                 (let [rtg (.getRouting this)]
@@ -84,14 +84,6 @@
                  :greet? (c-in false)
                 :kids (c?kids
                        (when (md-get me :greet?)
-                         #_(qx-make
-                          ::qxty/m.Image
-                          :rotation 15
-                          :scaleX 0.5 :scaleY 0.5
-                          :source "identica/mmedia/earth-from-moon.jpg")
-                         #_(qx-make
-                                  ::qxty/m.Label
-                                  :value "Hello,")
                          (qx-make
                           ::qxty/m.Composite
                           :layout (new js/qx.ui.mobile.layout.HBox)
@@ -99,6 +91,7 @@
                                  (qx-make
                                   ::qxty/m.Composite
                                   :layout (new js/qx.ui.mobile.layout.VBox)
+                                  :css-class "cool"
                                   :kids (c?kids
                                          (qx-make
                                           ::qxty/m.Label
@@ -109,6 +102,7 @@
                                  
                                  (qx-make
                                   ::qxty/m.Image
-                                  :rotation -5
-                                  :scaleX 0.5 :scaleY 0.5
+                                  ;;:rotation -5
+                                  :css-class "warning"
+                                  ;;:scaleX 0.5 :scaleY 0.5
                                   :source "identica/mmedia/earth-from-moon.jpg"))))))))))

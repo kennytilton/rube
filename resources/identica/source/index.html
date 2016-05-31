@@ -12,6 +12,12 @@
   <link href="css/style.css" rel="stylesheet" type="text/css">
   <script type="text/javascript" src="script/qxia.js"></script>
   <script type="text/javascript" src="script/identica.js"></script>
+  <script type="text/javascript">
+    var MyTerop = {};
+    MyTerop.make = function(cls) {
+        return new (Function.prototype.bind.apply(cls, arguments));
+    };
+  </script>
 </head>
 <body>
 </body>

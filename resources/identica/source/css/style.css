@@ -1,3 +1,8 @@
+.warning {
+  border: 10px solid #f00;
+  -webkit-transform : scale(0.5, 0.5);
+  transform         : scale(0.5, 0.5);
+}
 .cool {
   background-color: Cyan;
   font-family: Gill Sans, Verdana;
