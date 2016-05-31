@@ -9,14 +9,14 @@ goog.require('tiltontec.qxia.base');
 goog.require('tiltontec.qxia.widget');
 tiltontec.qxia.core.qx_make = (function tiltontec$qxia$core$qx_make(){
 var args__5600__auto__ = [];
-var len__5593__auto___23826 = arguments.length;
-var i__5594__auto___23827 = (0);
+var len__5593__auto___27666 = arguments.length;
+var i__5594__auto___27667 = (0);
 while(true){
-if((i__5594__auto___23827 < len__5593__auto___23826)){
-args__5600__auto__.push((arguments[i__5594__auto___23827]));
+if((i__5594__auto___27667 < len__5593__auto___27666)){
+args__5600__auto__.push((arguments[i__5594__auto___27667]));
 
-var G__23828 = (i__5594__auto___23827 + (1));
-i__5594__auto___23827 = G__23828;
+var G__27668 = (i__5594__auto___27667 + (1));
+i__5594__auto___27667 = G__27668;
 continue;
 } else {
 }
@@ -28,7 +28,8 @@ return tiltontec.qxia.core.qx_make.cljs$core$IFn$_invoke$arity$variadic((argumen
 });
 
 tiltontec.qxia.core.qx_make.cljs$core$IFn$_invoke$arity$variadic = (function (type,initargs){
-var qx = tiltontec.qxia.base.qx_class_new.call(null,type);
+var qx_map = cljs.core.apply.call(null,cljs.core.hash_map,initargs);
+var qx = tiltontec.qxia.base.qx_class_new.call(null,type,qx_map);
 var me = cljs.core.apply.call(null,tiltontec.model.core.make,new cljs.core.Keyword(null,"type","type",1174270348),type,new cljs.core.Keyword(null,"qx-me","qx-me",-388627059),qx,initargs);
 tiltontec.qxia.base.qx_initialize.call(null,me);
 
@@ -39,8 +40,8 @@ return me;
 
 tiltontec.qxia.core.qx_make.cljs$lang$maxFixedArity = (1);
 
-tiltontec.qxia.core.qx_make.cljs$lang$applyTo = (function (seq23824){
-var G__23825 = cljs.core.first.call(null,seq23824);
-var seq23824__$1 = cljs.core.next.call(null,seq23824);
-return tiltontec.qxia.core.qx_make.cljs$core$IFn$_invoke$arity$variadic(G__23825,seq23824__$1);
+tiltontec.qxia.core.qx_make.cljs$lang$applyTo = (function (seq27664){
+var G__27665 = cljs.core.first.call(null,seq27664);
+var seq27664__$1 = cljs.core.next.call(null,seq27664);
+return tiltontec.qxia.core.qx_make.cljs$core$IFn$_invoke$arity$variadic(G__27665,seq27664__$1);
 });

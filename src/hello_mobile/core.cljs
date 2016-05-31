@@ -61,8 +61,10 @@
                                                         :required true
                                                         :requiredInvalidMessage "Password is required")))))
                        (qx-make
-                        ::qxty/m.Button
-                        :label "Login"
+                        ::qxty/Object
+                        :class js/qx.ui.mobile.form.Button
+                        :qx-new-args ["Loginzilla!!!"
+                                      "identica/mmedia/games.png"]
                         :listeners {"tap"  #(let [login (fm! :login me)]
                                               (when (.validate (:qx-me @login))
                                                 (let [rtg (.getRouting this)]

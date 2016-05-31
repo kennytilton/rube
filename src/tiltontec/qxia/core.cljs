@@ -12,7 +12,8 @@
 
 (defn qx-make [type & initargs]
   ;(println (str "qx-making " type))
-  (let [qx (qx-class-new type)] 
+  (let [qx-map (apply hash-map initargs)
+        qx (qx-class-new type qx-map)] 
     ;; note that the Single renderer gets back nil 
     ;; then constructs in qx-initialize
     (let [me (apply md/make
@@ -21,7 +22,6 @@
                     initargs)]
       (qx-initialize me)
       (qx-initialize-all me)
-
       me)))
 
 

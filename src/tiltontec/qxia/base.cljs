@@ -57,16 +57,17 @@
 
     (throw (js/Error. (str "qxia-type-to-qx-class does not know about " type)))))
 
-(defn qx-class-new [type]
+(defn qx-class-new [type iargs]
   ;; make sure each of these is mentioned in your Application.js
   (case type
     ::Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
     ::m.Single nil ;; Single constructor must be passed the wrapped Form
     ;; ...and we will not have that until qx-initialize.
-
-    (if-let [qx-class (qxia-type-to-qx-class type)]
-      (apply MyTerop/make qx-class []) ;; for mow
-      (throw (js/Error. (str "qx-class-new does not know about " type))))))
+    (do (println :one type (or nil 42) iargs)
+        (if-let [qx-class (or (:class iargs)
+                              (qxia-type-to-qx-class type))]
+          (apply MyTerop/make qx-class (:qx-new-args iargs))
+          (throw (js/Error. (str "qx-class-new does not know about " type)))))))
 
 (defmulti qx-initialize ia-type
   :hierarchy #'cty/ia-types)
@@ -75,6 +76,7 @@
   #_(println (str "No initialization provided for type "  (ia-type me))))
 
 (defn qx-obj-properties [me]
+  (println :two)
   (map keyword (.getProperties qx.Class
                                (or (:class @me)
                                    (qxia-type-to-qx-class (ia-type me))))))
@@ -112,7 +114,6 @@
       
   (when-let [c (:css-class @me)]
     (println :bingo-css c (ia-type me))
-   
     (.addCssClass (qxme me) c))
 
   (doseq [[name handler] (md-get me :listeners)]
