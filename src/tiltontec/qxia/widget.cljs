@@ -24,6 +24,7 @@
         shower (md-get me :shower)
         pager (md-get me :pager)]
     (let [routing (.getRouting app)]
+      (println :rtgok app routing)
       (doseq [page (md-get me :kids)]
         (let [qx-page (qxme page)]
           (.addDetail pager qx-page)
@@ -32,7 +33,6 @@
 
 (defmethod qx-initialize ::qxty/m.Composite [me]
   (when-let [lyo (:layout @me)]
-    (println :init-setting-layo!!!!! lyo (ia-type me))
     (.setLayout (qxme me) lyo))
 
   (doseq [kid (md-get me :kids)]
@@ -55,7 +55,6 @@
       ;; forms differ from the usual add/remove children scheme and
       ;; must be provided to the constructor of a renderer
       ;; but the form child will not have its qx-me until now
-      (println :swapsingle!!!!!!!!!!! qx-form)
       (swap! me assoc :qx-me (new js/qx.ui.mobile.form.renderer.Single qx-form)))))
 
 (defmethod qx-initialize ::qxty/m.NavigationPage [page]

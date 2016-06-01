@@ -9,7 +9,9 @@
 (enable-console-print!)
 
 (defn app-routing []
-  (.getRouting (js/qx.core.Init.getApplication)))
+  (let [app  (js/qx.core.Init.getApplication)]
+    (println :app!!! app)
+    (.getRouting app)))
 
 
 (defn qxia-type-to-qx-class [type]
@@ -54,8 +56,6 @@
   #_(println (str "No initialization provided for type "  (ia-type me))))
 
 (defn qx-obj-properties [me]
-  (println :me @me)
-  (println :typefo (ia-type me) (:class @me))
   (map keyword (.getProperties qx.Class
                                (or (:class @me)
                                    (qxia-type-to-qx-class (ia-type me))))))

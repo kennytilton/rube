@@ -14,7 +14,7 @@
    [tiltontec.qxia.core
     :refer [qx-make label image button routing-get]]
    [tiltontec.qxia.macros
-    :refer-macros [hbox vbox]]
+    :refer-macros [hbox vbox navigation-page]]
    ))
 
 (def this-app (atom nil))
@@ -69,46 +69,32 @@
                         :requiredInvalidMessage "Password is required"))))))
 
 (defn make-login []
-  (qx-make ::qxty/m.NavigationPage
-    :end-point "/"
-    :title "Login!"
-    :kids (c?kids
-            (make-css-test)
-            (make-login-form)
-            (button "Loginzilla!!!"
-              :listeners {"tap"  #(let [login (fm! :login me)]
-                                    (when (.validate (:qx-me @login))
-                                      (routing-get "/overview")))}))))
+  (navigation-page ["Login!" "/"][]
+    (make-css-test)
+    (make-login-form)
+    (button "Loginzilla!!!"
+      :listeners {"tap"  #(let [login (fm! :login me)]
+                            (when (.validate (:qx-me @login))
+                              (routing-get "/overview")))})))
 
 (defn make-overview []
-  (qx-make ::qxty/m.NavigationPage
-    :end-point "/overview"
-    :title "Overview"
-    :showButton true
-    :buttonText "Knock-Knock"
-    :buttonIcon "identica/mmedia/games.png"
-    :showBackButton true
-    :backButtonText "Back Up (click broken but back key OK)"
-    :listeners
-    {"action" (fn [event me]
-                (md-reset! me :greet? (not (md-get me :greet?))))}
-    :greet? (c-in false)
-    :kids (c?kids
-            (when (md-get me :greet?)
-              (qx-make
-                ::qxty/m.Composite
-                :layout (new js/qx.ui.mobile.layout.HBox)
-                :kids (c?kids
-                        (qx-make
-                          ::qxty/m.Composite
-                          :layout (new js/qx.ui.mobile.layout.VBox)
-                          :css-class "cool"
-                          :kids (c?kids
-                                  (label "Hello")
-                                  (label "World")))
-                    
-                        (image "identica/mmedia/earth-from-moon.jpg"
-                          ;;:rotation -5
-                          ;;:scaleX 0.5 :scaleY 0.5
-                          ;; warning: specifiying the above suppresses css
-                          :css-class "warning")))))))
+  (navigation-page ["Overview" "/overview"]
+    [:showButton true
+     :buttonText "Knock-Knock"
+     :buttonIcon "identica/mmedia/games.png"
+     :showBackButton true
+     :backButtonText "Back Up (click broken but back key OK)"
+     :listeners
+     {"action" (fn [event me]
+                 (md-reset! me :greet? (not (md-get me :greet?))))}
+     :greet? (c-in false)]
+    (when (md-get me :greet?)
+      (hbox []
+        (vbox [:css-class "cool"]
+          (label "Hello")
+          (label "World"))
+        (image "identica/mmedia/earth-from-moon.jpg"
+          ;;:rotation -5
+          ;;:scaleX 0.5 :scaleY 0.5
+          ;; warning: specifiying the above suppresses css
+          :css-class "warning")))))
