@@ -6,11 +6,15 @@
              :refer [c-in c-reset! make-cell]]
    [tiltontec.model.base :refer [md-get]]
    [tiltontec.model.core :refer [make] :as md]
-   [tiltontec.qxia.base
-    :refer [qx-class-new qx-initialize qx-initialize-all]
-    :as qxty]
+   [tiltontec.qxia.types :as qxty]
+    [tiltontec.qxia.base
+    :refer [qx-class-new qx-initialize qx-initialize-all
+            app-routing]]
    [tiltontec.qxia.widget]
    ))
+
+(defn routing-get [end-point]
+  (.executeGet (app-routing)))
 
 (defn qx-make [type & initargs]
   ;(println (str "qx-making " type))
@@ -39,10 +43,8 @@
          iargs))
 
 (defn button [label-icon & iargs]
-  (apply qx-make
-         ::qxty/m.Button
-         :qx-new-args (if (coll? label-icon)
-                        label-icon [label-icon])
-         iargs))
-
+  (apply qx-make ::qxty/m.Button
+    :qx-new-args (if (coll? label-icon)
+                   label-icon [label-icon])
+    iargs))
 

@@ -3,70 +3,43 @@
    [clojure.set :refer [union]]
    [tiltontec.cell.base :refer [ia-type ia-types ] :as cty]
    [tiltontec.model.base :refer [md-get]]
+   [tiltontec.qxia.types :as qxty]
    ))
 
 (enable-console-print!)
 
-(defn RTG []
+(defn app-routing []
   (.getRouting (js/qx.core.Init.getApplication)))
 
-
-(set! cty/ia-types
-        (-> cty/ia-types
-            (derive ::Application ::Object)
-            (derive ::Mobile ::Application)
-
-            (derive ::ml.Abstract ::Object)
-            (derive ::ml.AbstractBox ::ml.Abstract)
-            (derive ::ml.HBox ::ml.AbstractBox)
-            (derive ::ml.VBox ::ml.AbstractBox)
-
-            (derive ::m.Form ::Object)
-            (derive ::m.Single ::Object)
-            (derive ::m.Widget ::Object)
-            (derive ::m.Composite ::m.Widget)
-    
-            (derive ::m.Page ::m.Composite)
-            (derive ::m.Scroll ::m.Composite)
-            (derive ::m.NavigationPage ::m.Page)
-
-            (derive ::m.Atom ::m.Widget)
-            (derive  ::m.Image ::m.Widget)
-            (derive  ::m.Label ::m.Widget)
-
-            (derive  ::m.Button ::m.Atom)
-            (derive  ::m.Input ::m.Widget)
-            (derive  ::m.TextField ::m.Input)
-            (derive  ::m.PasswordField ::m.TextField)))
 
 (defn qxia-type-to-qx-class [type]
   ;; make sure each of these is mentioned in your Application.js
   (case type
-    ::Mobile qx.application.Mobile
-    ::m.Single js/qx.ui.mobile.form.renderer.Single
-    ::m.Composite js/qx.ui.mobile.container.Composite
+    ::qxty/Mobile qx.application.Mobile
+    ::qxty/m.Single js/qx.ui.mobile.form.renderer.Single
+    ::qxty/m.Composite js/qx.ui.mobile.container.Composite
 
-    ::ml.HBox js/qx.ui.mobile.layout.HBox
-    ::ml.VBox js/qx.ui.mobile.layout.VBox
+    ::qxty/ml.HBox js/qx.ui.mobile.layout.HBox
+    ::qxty/ml.VBox js/qx.ui.mobile.layout.VBox
 
-    ::m.Atom js/qx.ui.mobile.basic.Atom
-    ::m.Image js/qx.ui.mobile.basic.Image
-    ::m.Label js/qx.ui.mobile.basic.Label
+    ::qxty/m.Atom js/qx.ui.mobile.basic.Atom
+    ::qxty/m.Image js/qx.ui.mobile.basic.Image
+    ::qxty/m.Label js/qx.ui.mobile.basic.Label
 
-    ::m.NavigationPage js/qx.ui.mobile.page.NavigationPage
-    ::m.Form js/qx.ui.mobile.form.Form
+    ::qxty/m.NavigationPage js/qx.ui.mobile.page.NavigationPage
+    ::qxty/m.Form js/qx.ui.mobile.form.Form
 
-    ::m.Button js/qx.ui.mobile.form.Button
-    ::m.TextField js/qx.ui.mobile.form.TextField
-    ::m.PasswordField js/qx.ui.mobile.form.PasswordField
+    ::qxty/m.Button js/qx.ui.mobile.form.Button
+    ::qxty/m.TextField js/qx.ui.mobile.form.TextField
+    ::qxty/m.PasswordField js/qx.ui.mobile.form.PasswordField
 
     (throw (js/Error. (str "qxia-type-to-qx-class does not know about " type)))))
 
 (defn qx-class-new [type iargs]
   ;; make sure each of these is mentioned in your Application.js
   (case type
-    ::Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
-    ::m.Single nil ;; Single constructor must be passed the wrapped Form
+    ::qxty/Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
+    ::qxty/m.Single nil ;; Single constructor must be passed the wrapped Form
     ;; ...and we will not have that until qx-initialize.
     (do
         (if-let [qx-class (or (:class iargs)

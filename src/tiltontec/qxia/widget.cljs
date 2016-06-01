@@ -9,10 +9,11 @@
              :refer-macros [defobserver fn-obs]
              :refer [observe type-cljc]]
    [tiltontec.model.base :refer [md-get]]
+   [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.base
     :refer [qxme qx-obj-properties 
             qx-class-new qx-initialize
-            qxme qx-add-kid] :as qxty]
+            qxme qx-add-kid]]
    ))
 
 
