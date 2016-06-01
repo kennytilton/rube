@@ -59,6 +59,9 @@ qx.Class.define("identica.Application",
       qx.ui.mobile.form.PasswordField;
       qx.ui.mobile.form.Form;
       qx.ui.mobile.form.renderer.Single;
+      qx.ui.mobile.container.Carousel;
+      qx.ui.mobile.container.Drawer;
+      qx.ui.mobile.container.Collapsible;
 
       hello_mobile.core.appinit
         (this, new qx.ui.mobile.page.Manager(false), this._show);

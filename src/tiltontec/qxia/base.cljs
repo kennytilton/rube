@@ -43,11 +43,20 @@
     ::qxty/Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
     ::qxty/m.Single nil ;; Single constructor must be passed the wrapped Form
     ;; ...and we will not have that until qx-initialize.
-    (do
-        (if-let [qx-class (or (:class iargs)
-                              (qxia-type-to-qx-class type))]
-          (apply MyTerop/make qx-class (:qx-new-args iargs))
-          (throw (js/Error. (str "qx-class-new does not know about " type)))))))
+    
+    (if-let [qx-class (or (when (contains? iargs :class)
+                            (let [qx-class (:class iargs)]
+                              (when-not qx-class
+                                (println (str "ERROR! qx-class-new> key class specified but nil "
+                                           "Do we need a new qx class mention in Application."))
+                                (throw js/Error. (str "qx-class-new> key class specified but nil "
+                                                   "Do we need a new qx class mention in Application.")))
+                              qx-class))
+                        (qxia-type-to-qx-class type))]
+        (do
+          (println :finalclass qx-class)
+          (apply MyTerop/make qx-class (:qx-new-args iargs)))
+        (throw (js/Error. (str "qx-class-new does not know about " type))))))
 
 (defmulti qx-initialize ia-type
   :hierarchy #'cty/ia-types)

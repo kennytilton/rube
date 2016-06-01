@@ -12,9 +12,10 @@
    
    [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.core
-    :refer [qx-make label image button routing-get]]
+    :refer [qx-make label image button routing-get
+            text-field]]
    [tiltontec.qxia.macros
-    :refer-macros [hbox vbox navigation-page]]
+    :refer-macros [hbox vbox navigation-page form]]
    ))
 
 (def this-app (atom nil))
@@ -24,14 +25,14 @@
 (defn ^:export appinit [this pager shower]
   (reset!
    this-app
-   (qx-make
-    ::qxty/Mobile
-    :qx-me this
-    :pager pager
-    :shower shower
-    :kids (c?kids
-           (make-login)
-           (make-overview)))))
+   (qx-make ::qxty/Mobile
+     :qx-me this
+     :pager pager
+     :shower shower
+     :kids (c?kids
+             (make-login)
+             (make-overview)
+             ))))
 
 
 (defn make-css-test []
@@ -48,34 +49,36 @@
         :css-class ["cool" "coolfont"]))))
 
 (defn make-login-form []
-  (qx-make  ::qxty/m.Single
-    :kids (c?kids
-            (qx-make ::qxty/m.Form
-              :name :login
-              :kids (c?kids
-                      (qx-make ::qxty/m.TextField
-                        :name :u-name
-                        :label "Username"
-                        :value "KennY"
-                        :placeholder "Username or e-mail"
-                        :required true
-                        :requiredInvalidMessage "Please share your user name")
-                      (qx-make ::qxty/m.PasswordField
-                        :name :p-word
-                        :label "Password"
-                        :value "Zoommmmm"
-                        :placeholder "Your password"
-                        :required true
-                        :requiredInvalidMessage "Password is required"))))))
+  (form [][:name :login]
+    (text-field "Username"
+      :name :u-name
+      :value "KennY"
+      :placeholder "Username or e-mail"
+      :required true
+      :requiredInvalidMessage "Please share your user name")
+    (qx-make ::qxty/m.PasswordField
+      :name :p-word
+      :label "Password"
+      :value "Zoommmmm"
+      :placeholder "Your password"
+      :required true
+      :requiredInvalidMessage "Password is required")))
 
 (defn make-login []
   (navigation-page ["Login!" "/"][]
     (make-css-test)
     (make-login-form)
-    (button "Loginzilla!!!"
+    (button "Login"
       :listeners {"tap"  #(let [login (fm! :login me)]
                             (when (.validate (:qx-me @login))
-                              (routing-get "/overview")))})))
+                              (routing-get "/overview")))})
+    (qx-make ::qxty/m.Composite
+      :class js/qx.ui.mobile.container.Carousel
+      :kids (c?kids
+              (hbox [] (label "one"))
+              (hbox [] (label "two"))
+              (hbox [] (label "three"))
+              ))))
 
 (defn make-overview []
   (navigation-page ["Overview" "/overview"]
@@ -86,8 +89,9 @@
      :backButtonText "Back Up (click broken but back key OK)"
      :listeners
      {"action" (fn [event me]
-                 (md-reset! me :greet? (not (md-get me :greet?))))}
-     :greet? (c-in false)]
+                  (md-reset! me :greet? (not (md-get me :greet?))))}
+     :greet? (c-in false)
+     ]
     (when (md-get me :greet?)
       (hbox []
         (vbox [:css-class "cool"]

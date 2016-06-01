@@ -48,3 +48,6 @@
                    label-icon [label-icon])
     iargs))
 
+(defn text-field [label & iargs]
+  (qx-make ::qxty/m.TextField
+    :label label))
