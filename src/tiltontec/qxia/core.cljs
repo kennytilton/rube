@@ -14,7 +14,7 @@
    ))
 
 (defn routing-get [end-point]
-  (.executeGet (app-routing)))
+  (.executeGet (app-routing) end-point))
 
 (defn qx-make [type & initargs]
   ;(println (str "qx-making " type))
