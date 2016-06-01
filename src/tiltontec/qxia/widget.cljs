@@ -12,25 +12,9 @@
    [tiltontec.qxia.base
     :refer [qxme qx-obj-properties 
             qx-class-new qx-initialize
-            qxme] :as qxty]
-
+            qxme qx-add-kid] :as qxty]
    ))
 
-
-
-;;;--- finalize kids ---------------------------
-
-(defmulti qx-initialize-kids ia-type
-  :hierarchy #'cty/ia-types)
-
-
-(defmethod qx-initialize-kids :default [me]
-  (when-let [kids (md-get me :kids)]
-    (println :fall-thru-qxfinkids!!!!!!! (ia-type me))
-    (let [qx-me (md-get me :qx-me)]
-      (doseq [kid kids]
-        (let [rmk (qxme kid)]
-          (.add qx-me rmk))))))
 
 ;;;--- initialize --------------------------------
 
@@ -41,7 +25,7 @@
     (let [routing (.getRouting app)]
       (doseq [page (md-get me :kids)]
         (let [qx-page (qxme page)]
-          (.addDetail pager qx-page) ;;; hhh #js [qx-page])
+          (.addDetail pager qx-page)
           (when-let [ept (md-get page :end-point)]
             (. routing (onGet ept shower qx-page))))))))
 
@@ -49,7 +33,9 @@
   (when-let [lyo (:layout @me)]
     (println :init-setting-layo!!!!! lyo (ia-type me))
     (.setLayout (qxme me) lyo))
-  (qx-initialize-kids me))
+
+  (doseq [kid (md-get me :kids)]
+    (qx-add-kid me kid)))
 
 (defmethod qx-initialize ::qxty/m.Form [me]
   (let [qx-form (qxme me)]
@@ -107,7 +93,6 @@
     (let [new-ks (difference (set newk) (set oldk))]
       (when-not (empty? new-ks)
         (doseq [k new-ks]
-          (when-not (ia-type? k ::m.Form)
-            (let [qxk  (qxme k)]
-              (.add (qxme me) qxk))))))))
+          (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
+            (qx-add-kid me k)))))))
 

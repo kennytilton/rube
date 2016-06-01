@@ -32,19 +32,22 @@
 (defn make-css-test []
   (qx-make
    ::qxty/m.Composite
-   :layout (new js/qx.ui.mobile.layout.VBox)
+   :layout (new js/qx.ui.mobile.layout.HBox)
    :kids (c?kids
           (qx-make
            ::qxty/m.Label
+           :flex 0
            :css-class "cool"
-           :value "Hello,")
+           :value "Hello cool,")
           (qx-make
            ::qxty/m.Label
-           :css-class '(cool coolfont)
-           :value "Hello,")
+           :flex 1
+           :css-class '("hot" "coolfont")
+           :value "Hello cool,")
           
           (qx-make
            ::qxty/m.Label
+           :flex 3
            :css-class ["cool" "coolfont"]
            :value "world."))))
 

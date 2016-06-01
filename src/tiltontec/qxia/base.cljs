@@ -85,23 +85,6 @@
                                (or (:class @me)
                                    (qxia-type-to-qx-class (ia-type me))))))
 
-;; js/qx.ui.mobile.basic.Atom ))
-;; (loop [[type & more] (vec (list* (ia-type me)
-;;                                    (ancestors ia-types (ia-type me))))
-;;          properties {}]
-;;     (cond
-;;       type (recur more
-;;               (union (qx-type-properties type)
-;;                      properties))
-;;       :default properties)))
-
-;; (defn qx-initialize-type [me]
-;;   (println :qx-init-type (ia-type me))
-;;   (doseq [type (reverse
-;;                 (list* (ia-type me)
-;;                        (ancestors ia-types (ia-type me))))]
-;;     (qx-initialize type me)))
-
 (defn qxme [me] (md-get me :qx-me))
 
 (defn qx-initialize-all [me]
@@ -129,12 +112,7 @@
                       (handler event me))))))
 
 
-#_(defn qx-obj-properties [me]
-  (loop [[type & more] (vec (list* (ia-type me)
-                                   (ancestors ia-types (ia-type me))))
-         properties {}]
-    (cond
-      type (recur more
-              (union (qx-type-properties type)
-                     properties))
-      :default properties)))
+(defn qx-add-kid [me kid]
+  (if-let [flex (:flex @kid)]
+    (.add (qxme me) (qxme kid) #js {:flex flex})
+    (.add (qxme me) (qxme kid))))
