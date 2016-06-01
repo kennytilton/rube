@@ -81,6 +81,8 @@
   #_(println (str "No initialization provided for type "  (ia-type me))))
 
 (defn qx-obj-properties [me]
+  (println :me @me)
+  (println :typefo (ia-type me) (:class @me))
   (map keyword (.getProperties qx.Class
                                (or (:class @me)
                                    (qxia-type-to-qx-class (ia-type me))))))
@@ -101,7 +103,6 @@
   (when-let [c (:css-class @me)]
     (if (coll? c)
       (let [cs (vec c)]
-        (println :mycs cs)
         (.addCssClasses (qxme me) (clj->js cs)))
       (.addCssClass (qxme me) c)))
 

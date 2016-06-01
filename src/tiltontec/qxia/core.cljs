@@ -6,7 +6,9 @@
              :refer [c-in c-reset! make-cell]]
    [tiltontec.model.base :refer [md-get]]
    [tiltontec.model.core :refer [make] :as md]
-   [tiltontec.qxia.base :refer [qx-class-new qx-initialize qx-initialize-all]]
+   [tiltontec.qxia.base
+    :refer [qx-class-new qx-initialize qx-initialize-all]
+    :as qxty]
    [tiltontec.qxia.widget]
    ))
 
@@ -23,5 +25,24 @@
       (qx-initialize me)
       (qx-initialize-all me)
       me)))
+
+(defn label [value & iargs]
+  (apply qx-make
+         ::qxty/m.Label
+         :value value
+         iargs))
+
+(defn image [source & iargs]
+  (apply qx-make
+         ::qxty/m.Image
+         :source source
+         iargs))
+
+(defn button [label-icon & iargs]
+  (apply qx-make
+         ::qxty/m.Button
+         :qx-new-args (if (coll? label-icon)
+                        label-icon [label-icon])
+         iargs))
 
 

@@ -4,13 +4,13 @@
    [tiltontec.cell.core
     :refer-macros [c? c?+ c-reset-next! c?once c?n]
     :refer [c-in c-reset! make-cell]]
-   [tiltontec.qxia.base :refer [qx-make RTG] :as qxty]
-   [tiltontec.qxia.core :refer [qx-make] :as qx]
    [tiltontec.model.base :refer [md-get]]
    [tiltontec.model.core :refer [md-reset!]]
    [tiltontec.model.family
     :refer-macros [the-kids c?kids]
     :refer [fm!]]
+   [tiltontec.qxia.base :refer [qx-make RTG] :as qxty]
+   [tiltontec.qxia.core :refer [qx-make label image button] :as qx]
    ))
 
 (def this-app (atom nil))
@@ -34,11 +34,9 @@
    ::qxty/m.Composite
    :layout (new js/qx.ui.mobile.layout.HBox)
    :kids (c?kids
-          (qx-make
-           ::qxty/m.Label
+          (label "Hello cool2"
            :flex 0
-           :css-class "cool"
-           :value "Hello cool,")
+           :css-class "cool")
           (qx-make
            ::qxty/m.Label
            :flex 1
@@ -81,11 +79,7 @@
    :kids (c?kids
           (make-css-test)
           (make-login-form)
-          (qx-make
-           ::qxty/Object
-           :class js/qx.ui.mobile.form.Button
-           :qx-new-args ["Loginzilla!!!"
-                         "identica/mmedia/games.png"]
+          (button "Loginzilla!!!"
            :listeners {"tap"  #(let [login (fm! :login me)]
                                  (when (.validate (:qx-me @login))
                                    (.executeGet (RTG) "/overview")))}))))
@@ -115,16 +109,11 @@
                      :layout (new js/qx.ui.mobile.layout.VBox)
                      :css-class "cool"
                      :kids (c?kids
-                            (qx-make
-                             ::qxty/m.Label
-                             :value "Hello,")
-                            (qx-make
-                             ::qxty/m.Label
-                             :value "world.")))
+                            (label "Hello")
+                            (label "World")))
                     
-                    (qx-make
-                     ::qxty/m.Image
-                     ;;:rotation -5
-                     :css-class "warning"
-                     ;;:scaleX 0.5 :scaleY 0.5
-                     :source "identica/mmedia/earth-from-moon.jpg")))))))
+                    (image "identica/mmedia/earth-from-moon.jpg"
+                           ;;:rotation -5
+                           ;;:scaleX 0.5 :scaleY 0.5
+                           ;; warning: specifiying the above suppresses css
+                           :css-class "warning")))))))
