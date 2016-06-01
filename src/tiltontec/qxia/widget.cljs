@@ -41,7 +41,7 @@
     (let [routing (.getRouting app)]
       (doseq [page (md-get me :kids)]
         (let [qx-page (qxme page)]
-          (.addDetail pager #js [qx-page])
+          (.addDetail pager qx-page) ;;; hhh #js [qx-page])
           (when-let [ept (md-get page :end-point)]
             (. routing (onGet ept shower qx-page))))))))
 

@@ -7,6 +7,10 @@
 
 (enable-console-print!)
 
+(defn RTG []
+  (.getRouting (js/qx.core.Init.getApplication)))
+
+
 (set! cty/ia-types
         (-> cty/ia-types
             (derive ::Application ::Object)
@@ -23,6 +27,7 @@
             (derive ::m.Composite ::m.Widget)
     
             (derive ::m.Page ::m.Composite)
+            (derive ::m.Scroll ::m.Composite)
             (derive ::m.NavigationPage ::m.Page)
 
             (derive ::m.Atom ::m.Widget)
@@ -63,7 +68,7 @@
     ::Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
     ::m.Single nil ;; Single constructor must be passed the wrapped Form
     ;; ...and we will not have that until qx-initialize.
-    (do (println :one type (or nil 42) iargs)
+    (do
         (if-let [qx-class (or (:class iargs)
                               (qxia-type-to-qx-class type))]
           (apply MyTerop/make qx-class (:qx-new-args iargs))
@@ -76,7 +81,6 @@
   #_(println (str "No initialization provided for type "  (ia-type me))))
 
 (defn qx-obj-properties [me]
-  (println :two)
   (map keyword (.getProperties qx.Class
                                (or (:class @me)
                                    (qxia-type-to-qx-class (ia-type me))))))
@@ -104,7 +108,6 @@
   ;; n.b.: we do specify a property unless requested so
   ;; we do not shadow qooxdoo defaults with nulls.
   ;; ie, Qxia widget defaults are the qooxdoo defaults.
-
   (when-let [inits (for [k (qx-obj-properties me)
                          :let [val (md-get me k)]
                          :when (not (nil? val))]
@@ -113,8 +116,11 @@
           (clj->js (into {} inits))))
       
   (when-let [c (:css-class @me)]
-    (println :bingo-css c (ia-type me))
-    (.addCssClass (qxme me) c))
+    (if (coll? c)
+      (let [cs (vec c)]
+        (println :mycs cs)
+        (.addCssClasses (qxme me) (clj->js cs)))
+      (.addCssClass (qxme me) c)))
 
   (doseq [[name handler] (md-get me :listeners)]
     (let [qxme (qxme me)]
