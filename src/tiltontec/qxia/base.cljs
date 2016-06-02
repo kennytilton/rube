@@ -20,7 +20,7 @@
     ::qxty/m.Single js/qx.ui.mobile.form.renderer.Single
     ::qxty/m.Composite js/qx.ui.mobile.container.Composite
     ::qxty/m.Carousel js/qx.ui.mobile.container.Carousel
-
+    ::qxty/m.Picker js/qx.ui.mobile.control.Picker
     ::qxty/ml.HBox js/qx.ui.mobile.layout.HBox
     ::qxty/ml.VBox js/qx.ui.mobile.layout.VBox
 
@@ -97,6 +97,7 @@
 
 
 (defn qx-add-kid [me kid]
+  (println :add-kid (ia-type me)(ia-type kid))
   (if-let [flex (:flex @kid)]
     (.add (qxme me) (qxme kid) #js {:flex flex})
     (.add (qxme me) (qxme kid))))

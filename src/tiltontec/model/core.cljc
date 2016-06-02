@@ -36,7 +36,7 @@
       :clj [tiltontec.cell.core :refer :all])
 
    [tiltontec.cell.evaluate :refer [c-get c-awaken]]
-   [tiltontec.model.base
+   [tiltontec.model.base;;
     :refer [md-get md-cell md-install-cell md-awaken]]
    [tiltontec.model.family :refer [*par*]]
    ))

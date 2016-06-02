@@ -17,7 +17,7 @@
   (.executeGet (app-routing) end-point))
 
 (defn qx-make [type & initargs]
-  ;(println (str "qx-making " type))
+  (println (str "qx-making " type initargs))
   (let [qx-map (apply hash-map initargs)
         qx (qx-class-new type qx-map)] 
     ;; note that the Single renderer gets back nil 

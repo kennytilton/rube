@@ -1,6 +1,6 @@
 (ns hello-mobile.core
   (:require
-   [tiltontec.cell.base :refer [ia-type]]
+   [tiltontec.cell.base :refer [ia-type unbound]]
    [tiltontec.cell.core
     :refer-macros [c? c?+ c-reset-next! c?once c?n]
     :refer [c-in c-reset! make-cell]]
@@ -64,6 +64,28 @@
       :required true
       :requiredInvalidMessage "Password is required")))
 
+(defn make-picker-test []
+  (qx-make ::qxty/m.Picker
+    :height 100
+    :width 200
+    :visibleItems 3
+    :value (c-in nil)
+    :listeners {"changeSelection"
+                (fn [evt me]
+                  (let [data (.getData evt)]
+                    (println "picked!!!! " (js->clj data))
+                    (md-reset! me :value (js->clj data))))}
+
+    :slot-data (list 
+                 [{:title "Windows Phone"
+                   :subtitle "R.I.P."
+                   :image "identica/mmedia/games.png"}
+                  {:title "iOS" :subtitle "Version 7.1"}
+                  {:title "Android"}]
+                 [{:title "Tablet"}
+                  {:title "Smartphone"}
+                  {:title "Phablet"}])))
+
 (defn make-login []
   (navigation-page ["Login!" "/"][]
     (make-css-test)
@@ -72,9 +94,16 @@
       :listeners {"tap"  #(let [login (fm! :login me)]
                             (when (.validate (:qx-me @login))
                               (routing-get "/overview")))})
+    (hbox []
+      (label "picker!")
+      (let [p (make-picker-test)]
+        (println :picker p)
+        p)
+      (label "Post!"))
+
     (carousel [:name :carousel
                :css-class "cool"]
-      (hbox [] (label "one??????"))
+      (hbox [] (label "one?"))
       (hbox [] (label "two"))
       (hbox [] (label "three")))
     #_(drawer "bottom" [:name :drawer :css-class "hot"]

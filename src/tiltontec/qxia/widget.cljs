@@ -96,3 +96,18 @@
           (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
             (qx-add-kid me k)))))))
 
+;;; --- picker ----------
+
+
+(defmethod observe [:slot-data ::qxty/m.Picker]
+  [_ me new old c]
+  (println :obs-sd (ia-type me) new old)
+  (let [p (qxme me)]
+    (when (not= old unbound)
+      (doseq [n (range (count old))]
+        (.removeSlot p n)))
+    (doseq [sd  new]
+      (println :pickslot!! sd)
+      (let [da (new js/qx.data.Array
+                 (clj->js sd))]
+        (.addSlot p da)))))
