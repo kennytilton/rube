@@ -30,3 +30,10 @@
             (derive  ::m.Input ::m.Widget)
             (derive  ::m.TextField ::m.Input)
             (derive  ::m.PasswordField ::m.TextField))))
+
+;;     :class js/qx.ui.mobile.container.Carousel
+#?(:cljs
+   (doseq [ctype [::m.Carousel]]
+     (set! cty/ia-types
+       (derive cty/ia-types
+         ctype ::m.Composite))))

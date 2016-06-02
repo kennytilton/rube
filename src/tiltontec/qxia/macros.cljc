@@ -35,8 +35,8 @@
 
 (defmacro carousel  [[& top-args] & kids]
   `(tiltontec.qxia.core/qx-make
-    :tiltontec.qxia.types/m.Composite
-    :class js/qx.ui.mobile.container.Carousel
+    :tiltontec.qxia.types/m.Carousel
+    ;; :class js/qx.ui.mobile.container.Carousel
     ~@top-args
     :kids (tiltontec.model.family/c?kids ~@kids)))
 

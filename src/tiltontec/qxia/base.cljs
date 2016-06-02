@@ -13,13 +13,13 @@
     (println :app!!! app)
     (.getRouting app)))
 
-
 (defn qxia-type-to-qx-class [type]
   ;; make sure each of these is mentioned in your Application.js
   (case type
     ::qxty/Mobile qx.application.Mobile
     ::qxty/m.Single js/qx.ui.mobile.form.renderer.Single
     ::qxty/m.Composite js/qx.ui.mobile.container.Composite
+    ::qxty/m.Carousel js/qx.ui.mobile.container.Carousel
 
     ::qxty/ml.HBox js/qx.ui.mobile.layout.HBox
     ::qxty/ml.VBox js/qx.ui.mobile.layout.VBox
