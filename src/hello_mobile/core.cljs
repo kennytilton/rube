@@ -15,7 +15,8 @@
     :refer [qx-make label image button routing-get
             text-field]]
    [tiltontec.qxia.macros
-    :refer-macros [hbox vbox navigation-page form]]
+    :refer-macros [hbox vbox navigation-page form carousel
+                   drawer collapsible]]
    ))
 
 (def this-app (atom nil))
@@ -72,13 +73,17 @@
       :listeners {"tap"  #(let [login (fm! :login me)]
                             (when (.validate (:qx-me @login))
                               (routing-get "/overview")))})
-    (qx-make ::qxty/m.Composite
-      :class js/qx.ui.mobile.container.Carousel
-      :kids (c?kids
-              (hbox [] (label "one"))
-              (hbox [] (label "two"))
-              (hbox [] (label "three"))
-              ))))
+    (carousel [:name :carousel
+               :css-class "cool"]
+      (hbox [] (label "one??????"))
+      (hbox [] (label "two"))
+      (hbox [] (label "three")))
+    #_(drawer "bottom" [:name :drawer :css-class "hot"]
+      (hbox [] (label "socks"))
+      (hbox [] (label "shirts")))
+    (collapsible "Click for a surprise" []
+      (label "Surprise."))
+    ))
 
 (defn make-overview []
   (navigation-page ["Overview" "/overview"]

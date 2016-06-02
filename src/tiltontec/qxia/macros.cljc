@@ -32,3 +32,28 @@
               :tiltontec.qxia.types/m.Form
               ~@form-args
               :kids (tiltontec.model.family/c?kids ~@kids)))))
+
+(defmacro carousel  [[& top-args] & kids]
+  `(tiltontec.qxia.core/qx-make
+    :tiltontec.qxia.types/m.Composite
+    :class js/qx.ui.mobile.container.Carousel
+    ~@top-args
+    :kids (tiltontec.model.family/c?kids ~@kids)))
+
+(defmacro drawer  [orientation [& top-args] & kids]
+  `(tiltontec.qxia.core/qx-make
+    :tiltontec.qxia.types/m.Composite
+    :class js/qx.ui.mobile.container.Drawer
+    :qx-new-args [tiltontec.model.family/*par*]
+    :orientation ~orientation
+    ~@top-args
+    :kids (tiltontec.model.family/c?kids ~@kids)))
+
+(defmacro collapsible  [title [& top-args] & kids]
+  `(tiltontec.qxia.core/qx-make
+    :tiltontec.qxia.types/m.Composite
+    :class js/qx.ui.mobile.container.Collapsible
+    :qx-new-args [~title]
+    ~@top-args
+    :kids (tiltontec.model.family/c?kids ~@kids)))
+
