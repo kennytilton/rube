@@ -54,7 +54,7 @@
                               qx-class))
                         (qxia-type-to-qx-class type))]
         (do
-          (println (:name iargs) :finalclass qx-class
+          #_(println (:name iargs) :finalclass qx-class
             (:qx-new-args iargs))
           (apply MyTerop/make qx-class (:qx-new-args iargs)))
         (throw (js/Error. (str "qx-class-new does not know about " type))))))

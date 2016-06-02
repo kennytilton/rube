@@ -2,34 +2,34 @@
   (:require
    [tiltontec.cell.base :refer [ia-types] :as cty]))
 
-#?(:cljs
-   (set! cty/ia-types
-        (-> cty/ia-types
-            (derive ::Application ::Object)
-            (derive ::Mobile ::Application)
+(def qx-type-tree
+  [::Object ::m.Form ::m.Single ::m.DialogManager
+    [::Application ::Mobile]
+    [::ml.Abstract
+     [::ml.AbstractBox ::ml.HBox ::ml.VBox]]
+    [::mWidget
+     [::m.Atom ::m.Image ::m.Label ::m.Button]
+     [::m.Input
+      [::m.TextField ::m.PasswordField]]
+     [::m.Composite
+      ::m.Carousel ::m.Drawer ::m.Collapsible ::m.Picker
+      [::m.Page ::m.NavigationPage]
+      ]
+     ]])
 
-            (derive ::ml.Abstract ::Object)
-            (derive ::ml.AbstractBox ::ml.Abstract)
-            (derive ::ml.HBox ::ml.AbstractBox)
-            (derive ::ml.VBox ::ml.AbstractBox)
+(defn ensure-vec [x]
+  (if (coll? x) (vec x) [x]))
 
-            (derive ::m.Form ::Object)
-            (derive ::m.Single ::Object)
-            (derive ::m.Widget ::Object)
-            (derive ::m.Composite ::m.Widget)
-    
-            (derive ::m.Page ::m.Composite)
-            (derive ::m.Scroll ::m.Composite)
-            (derive ::m.NavigationPage ::m.Page)
+(defn derive-tree [super tree]
+  (let [[class & subs] (ensure-vec tree)]
+    (when super
+       ;; (println :deriving class :from super)
+       (set! cty/ia-types
+         (derive cty/ia-types class super)))
+     (doseq [sub subs]
+       (derive-tree class sub))))
 
-            (derive ::m.Atom ::m.Widget)
-            (derive  ::m.Image ::m.Widget)
-            (derive  ::m.Label ::m.Widget)
-
-            (derive  ::m.Button ::m.Atom)
-            (derive  ::m.Input ::m.Widget)
-            (derive  ::m.TextField ::m.Input)
-            (derive  ::m.PasswordField ::m.TextField))))
+#?(:cljs (derive-tree nil qx-type-tree))
 
 ;;     :class js/qx.ui.mobile.container.Carousel
 #?(:cljs
