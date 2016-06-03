@@ -28,7 +28,7 @@
     ::qxty/m.Image js/qx.ui.mobile.basic.Image
     ::qxty/m.Label js/qx.ui.mobile.basic.Label
 
-    ::qxty/m.NavigationPage js/qx.ui.mobile.page.NavigationPage
+    ::qxty/m.NavigationPage js/identica.NaviBack
     ::qxty/m.Form js/qx.ui.mobile.form.Form
 
     ::qxty/m.Button js/qx.ui.mobile.form.Button

@@ -135,7 +135,6 @@
     (is (fget :konzo u :inside? true))
     ))
     
-
 (deftest fm-3x
   (let [u (md/make
            :u63 (c? (+ (mdv! :aa :aa42)
@@ -160,6 +159,24 @@
     (c-reset! (md-cell u :kon) true)
     (is (:kon @u))
     (is (md-cell u :kon))
-    (is (= 3 (count (:kids @u))))
+    (is (= 4 (count (:kids @u))))
     (is (fget :konzo u :inside? true))
     ))
+
+    
+(deftest fm-picker
+  (let [u (md/make
+            :kids (c? (the-kids
+                        (md/make :name :picker
+                          :value (c-in 42)
+                          :kids (c?
+                                  (md/make
+                                    :name :aax)
+                                  (md/make
+                                    :name :bbx)))
+                        (md/make :name :dd
+                         :kzo (c? (let [p (fget :picker me)]
+                                    (println :bingo p)
+                                    (md-get p :value)))))))]
+    (is (= 42 (mdv! :picker :value u)))
+    (is (= 43 (mdv! :dd :kzo u)))))

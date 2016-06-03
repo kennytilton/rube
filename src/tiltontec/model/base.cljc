@@ -11,7 +11,7 @@
       :cljs [tiltontec.cell.base
              :refer-macros [without-c-dependency]
              :refer [cells-init c-optimized-away? c-formula? c-value c-optimize
-                     c-unbound? c-input? ia-type? ia-types
+                     c-unbound? c-input? ia-type? ia-types ia-type
                      c-model mdead? c-valid? c-useds c-ref? md-ref?
                      c-state +pulse+ c-pulse-observed c-assert
                      *call-stack* *defer-changes* unbound
@@ -35,6 +35,9 @@
       :clj [tiltontec.cell.core :refer :all])
 
    [tiltontec.cell.evaluate :refer [c-get c-awaken]]
+   #?(:clj [tiltontec.model.macros :refer :all]
+      :cljs [tiltontec.model.macros
+             :refer-macros [pme]])
    ))
 
 (def-rmap-slots md-
@@ -69,7 +72,8 @@
   "(1) do initial evaluation of all ruled slots
    (2) call observers of all slots"
   [me]
-
+  (println :md-awaken (ia-type me))
+  (pme :awaken (md-state me))
   (c-assert (= :nascent (md-state me)))
   (rmap-meta-setf [:state me] :awakening)
   (doall

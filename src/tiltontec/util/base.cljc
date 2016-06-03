@@ -16,7 +16,8 @@
 (def last-trc (atom 0)) ;; s/b universal time
 
 (defn call-trc$ [s bits]
-  (str s ": " ($/join ", " bits)))
+  (str s ": " #?(:cljs (str bits)
+                 :clj ($/join ", " bits))))
 
 (defn call-trc [s & os]
   ;; (break) ;; uncomment to escape loop
@@ -30,18 +31,21 @@
                 (str label))
              ~@vals))
 
+
+(defn call-wtrx [fn lo hi trxargs]
+  (binding [*trxdepth* (inc *trxdepth*)]
+    (cond
+      (<= lo *trxdepth* hi)
+      (apply call-trc trxargs)
+      (> *trxdepth* hi)
+      (throw (#?(:cljs js/Error. :clj Exception.)
+               (str "wtrx exceeded max depth " hi ":"
+                 (apply call-trc$ (first trxargs)
+                   (rest trxargs))))))
+    (fn)))
+
 (defmacro wtrx [[lo hi & trxargs] & body]
-  `(binding [*trxdepth* (inc *trxdepth*)]
-     (cond
-       (<= ~lo *trxdepth* ~hi)
-       (trx ~@trxargs)
-       (> *trxdepth* ~hi)
-       (throw (#?(:cljs js/Error. :clj Exception.)
-               (str
-                "wtrx exceeded max depth " ~hi ":"
-                (call-trc$ '~(first trxargs)
-                           (list ~@(rest trxargs)))))))
-     ~@body))
+  `(call-wtrx (fn [] ~@body) ~lo ~hi (list ~@trxargs)))
 
 (defmacro prog1 [& body]
   `(let [result# ~(first body)]

@@ -54,7 +54,7 @@
               (= seek poss))))
 
 (defn fget [what where & options]
-  ;;(trx :fget-entry what where)
+  (trx :fget-entry what where)
   (when (and where what)
     (let [options (merge {:me? false
                           , :inside? false
@@ -95,12 +95,6 @@
 
 (defn fm! [what where]
   (fget what where :me? false :inside? true :must? true :up? true))
-
-#_ ;; nope
-(defmacro mdv! [what slot & me]
-  (if (empty? me)
-    `(md-get (fm! ~what ~'me) ~slot)
-    `(md-get (fm! ~what ~(first me)) ~slot)))
 
 (defmacro mdv! [what slot & [me]]
   (let [me (or me 'me)]

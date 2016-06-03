@@ -53,7 +53,8 @@ qx.Class.define("identica.Application",
 
       */
 
-      qx.ui.mobile.page.NavigationPage;
+      // qx.ui.mobile.page.NavigationPage;
+      identica.NaviBack; // above back button does not work
       qx.ui.mobile.form.TextField;
       qx.ui.mobile.form.Button;
       qx.ui.mobile.form.PasswordField;

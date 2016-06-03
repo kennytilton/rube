@@ -1,6 +1,6 @@
 (ns tiltontec.cell.integrity
   (:require #?(:cljs [tiltontec.util.base
-                      :refer-macros [trx prog1]]
+                      :refer-macros [wtrx trx prog1]]
                :clj  [tiltontec.util.base
                       :refer :all])
             [tiltontec.util.core 
@@ -144,7 +144,7 @@
     (assert (cl-find opcode +ufb-opcodes+)
             (str "Invalid opcode for with-integrity: %s. Allowed values: %s"
                     opcode +ufb-opcodes+)))
-  (do ;; wtrx (0 1000 "cwi-begin" opcode *within-integrity*)
+  (wtrx (0 100 "cwi-begin" opcode *within-integrity*)
     (un-stopped
      (#?(:cljs do :clj dosync)
       (cond
@@ -158,6 +158,7 @@
            ;; in the place, but if the SETF is deferred we return
            ;; something that will help someone who tries to use
            ;; the setf'ed value figure out what is going on:
+           (println :cwi-defers opcode defer-info)
            (ufb-add opcode [defer-info action]))
 
           ;; thus by not supplying an opcode one can get something

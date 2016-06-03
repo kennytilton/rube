@@ -85,7 +85,7 @@
              (map vec)
              (into {})))
        (with-integrity (:awaken me)
-         ;;(println :awakening (ia-type me))
+         (println :awakening (ia-type me))
          (md-awaken me))
        me))))
 

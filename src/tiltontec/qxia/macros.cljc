@@ -5,7 +5,10 @@
      :tiltontec.qxia.types/m.Composite
      :layout (new js/qx.ui.mobile.layout.HBox)
     ~@hbox-args
-    :kids (tiltontec.model.family/c?kids ~@kids)))
+    :kids (tiltontec.model.family/c?kids
+            (do (println :kids-make
+                  (tiltontec.cell.base/ia-type ~'me)) nil)
+            ~@kids)))
 
 
 (defmacro vbox [[& hbox-args] & kids]
@@ -56,4 +59,10 @@
     :qx-new-args [~title]
     ~@top-args
     :kids (tiltontec.model.family/c?kids ~@kids)))
+
+(defmacro label [value & iargs]
+  `(tiltontec.qxia.core/qx-make
+    :tiltontec.qxia.types/m.Label
+    :value ~value
+    ~@iargs))
 

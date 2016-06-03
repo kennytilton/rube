@@ -17,11 +17,12 @@
   (.executeGet (app-routing) end-point))
 
 (defn qx-make [type & initargs]
-  (println (str "qx-making " type initargs))
+  (println (str "qx-making " type))
   (let [qx-map (apply hash-map initargs)
         qx (qx-class-new type qx-map)] 
     ;; note that the Single renderer gets back nil 
     ;; then constructs in qx-initialize
+    (println :bingo-qx qx)
     (let [me (apply md/make
                     :type type
                     :qx-me qx
@@ -29,12 +30,6 @@
       (qx-initialize me)
       (qx-initialize-all me)
       me)))
-
-(defn label [value & iargs]
-  (apply qx-make
-         ::qxty/m.Label
-         :value value
-         iargs))
 
 (defn image [source & iargs]
   (apply qx-make

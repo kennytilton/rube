@@ -48,15 +48,15 @@
 
 (deftest k-notq2be
   (let [f (md/make ::fm/family
-                   :ee (c-in 2)
-                   :kids (c? (the-kids
-                              (when (odd? (md-get me :ee))
-                                (md/make
-                                 :name :yep
-                                 :value (c? (do 
-                                              (let [par (:par @me)]
-                                                (let [ee (md-get par :ee)]
-                                                  (* 14 ee))))))))))]
+            :ee (c-in 2)
+            :kids (c? (the-kids
+                        (when (odd? (md-get me :ee))
+                          (md/make
+                            :name :yep
+                            :value (c? (do 
+                                         (let [par (:par @me)]
+                                           (let [ee (md-get par :ee)]
+                                             (* 14 ee))))))))))]
     (is (ia-type? f ::fm/family))
     (is (empty? (md-get f :kids)))
     
@@ -64,13 +64,14 @@
       (md-reset! f :ee 3)
       (is (not (empty? (md-get f :kids))))
       (is (= 42 (mdv! :yep :value f)))
-    
+      
       (let [dmw (first (md-get f :kids))]
         (assert (md-ref? dmw))
         (md-reset! f :ee 0)
         (is (empty? (md-get f :kids)))
         (is (nil? @dmw))
         (is (= :dead (:state (meta dmw))))))))
+
 
 #?(:cljs (do
            (cljs.test/run-tests)

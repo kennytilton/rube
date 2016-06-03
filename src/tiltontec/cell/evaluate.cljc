@@ -2,14 +2,14 @@
   (:require
       [clojure.set :refer [difference]]
       #?(:cljs [tiltontec.util.base
-                      :refer-macros [trx prog1]]
+                      :refer-macros [wtrx trx prog1]]
                :clj  [tiltontec.util.base
                       :refer :all])
       [tiltontec.util.core
        :refer [any-ref? rmap-setf err rmap-meta-setf set-ify]]
       #?(:clj [tiltontec.cell.base :refer :all :as cty]
          :cljs [tiltontec.cell.base
-                :refer-macros [without-c-dependency]
+                :refer-macros [without-c-dependency pcell]
                 :refer [c-optimized-away? c-formula? c-value c-optimize
                         c-unbound? c-input? ia-types
                         c-model mdead? c-valid? c-useds c-ref? md-ref?
@@ -64,53 +64,54 @@
   [c debug-id ensurer]
 
   (cond
-   ; --------------------------------------------------
-   *not-to-be*                          ; we got kicked off during not-to-be processing
+                                        ; --------------------------------------------------
+    *not-to-be*                          ; we got kicked off during not-to-be processing
                                         ; just return what we have if valid, else nil
-   (cond
-    (c-unbound? c)
-    (err "evic> unbound slot %s of model %s"
-         (c-slot c)(c-model c))
-    
-    (c-valid? c) ;; probably accomplishes nothing
-     (c-value c))
+    (cond
+      (c-unbound? c)
+      (err "evic> unbound slot %s of model %s"
+        (c-slot c)(c-model c))
+      
+      (c-valid? c) ;; probably accomplishes nothing
+      (c-value c))
 
-  ;; --- easy way out: our pulse is current ---------------
-  (c-current? c)
-  (c-value c)
+    ;; --- easy way out: our pulse is current ---------------
+    (c-current? c)
+    (c-value c)
 
-  ;; --- also easy with an optimize edge case lost to history -------
-  (and (c-input? c)
-       (c-valid? c) ;; a c?n (ruled-then-input) cell will not be valid at first
-       (not (and (c-formula? c)
-                 (= (c-optimize c) :when-value-t)
-                 (nil? (c-value c)))))
-  (c-value c)
+    ;; --- also easy with an optimize edge case lost to history -------
+    (and (c-input? c)
+      (c-valid? c) ;; a c?n (ruled-then-input) cell will not be valid at first
+      (not (and (c-formula? c)
+             (= (c-optimize c) :when-value-t)
+             (nil? (c-value c)))))
+    (c-value c)
 
-  ;; --- above we had valid values so did not care. now... -------
-  (when-let [md (c-model c)]
-    (mdead? (c-model c)))
-  (err #?(:clj format :cljs str) "evic> model %s of cell %s is dead" (c-model c) c)
+    ;; --- above we had valid values so did not care. now... -------
+    (when-let [md (c-model c)]
+      (mdead? (c-model c)))
+    (err #?(:clj format :cljs str) "evic> model %s of cell %s is dead" (c-model c) c)
 
-  ;; --- no more early exits  -------------------
-  (or (not (c-valid? c))
+    ;; --- no more early exits  -------------------
+    (or (not (c-valid? c))
       (loop [[used & urest] (seq (c-useds c))]
         (when used
+          (pcell :cnset-evicing used)
           (ensure-value-is-current used :nested c)
           ;; now see if it actually changed
           (or (> (c-pulse-last-changed used)(c-pulse c))
-              (recur urest)))))
-  (do ;; we seem to need update, but...
-    ;; (trx nil :seem-to-need)
-    (when-not (c-current? c)
-            (trx nil :not-current-so-calc)
-            ;; happens if dependent changed and its observer read/updated me
-            (calculate-and-set c :evic ensurer))
-    (c-value c))
+            (recur urest)))))
+    (do ;; we seem to need update, but...
+      ;; (trx nil :seem-to-need)
+      (when-not (c-current? c)
+        (trx :not-current-so-calc (c-slot c)(c-state c))
+        ;; happens if dependent changed and its observer read/updated me
+        (calculate-and-set c :evic ensurer))
+      (c-value c))
 
-  ;; we were behind the pulse but not affected by the changes that moved the pulse
-  ;; record that we are current to avoid future checking:
-  :else (do ;(trx nil :just-pulse)
+    ;; we were behind the pulse but not affected by the changes that moved the pulse
+    ;; record that we are current to avoid future checking:
+    :else (do ;(trx nil :just-pulse)
             (c-pulse-update c :valid-uninfluenced)
             (c-value c))))
                          
@@ -126,6 +127,7 @@
                 (with-integrity ()
                   (let [prior-value (c-value c)]
                     (prog1
+
                      (ensure-value-is-current c :c-read nil)
                      ;; this is new here, intended to awaken standalone cells JIT
                      ;; /do/ might be better inside evic, or test here
@@ -147,16 +149,17 @@
 (defn calculate-and-set
   "Calculate, link, record, and propagate."
   [c dbgid dbgdata]
-  (let [raw-value (calculate-and-link c)]
-    ;;(trx :c-set (c-slot c) raw-value)
-    (when-not (c-optimized-away? c)
-      (assert (map? @c) "calc-n-set")
+  (wtrx [0 20 :cnset-entry (c-slot c)]
+    (let [raw-value (calculate-and-link c)]
+      (trx :cn-set-raw!!!! (c-slot c) raw-value)
+      (when-not (c-optimized-away? c)
+        (assert (map? @c) "calc-n-set")
 
-      ;; this check for optimized-away? arose because a rule using without-c-dependency
-      ;; can be re-entered unnoticed since that clears *call-stack*. If re-entered, a subsequent
-      ;; re-exit will be of an optimized away cell, which will have been assumed
-      ;; as part of the opti-away processing.
-      (c-value-assume c raw-value nil))))
+        ;; this check for optimized-away? arose because a rule using without-c-dependency
+        ;; can be re-entered unnoticed since that clears *call-stack*. If re-entered, a subsequent
+        ;; re-exit will be of an optimized away cell, which will have been assumed
+        ;; as part of the opti-away processing.
+        (c-value-assume c raw-value nil)))))
 
 (declare unlink-from-used)
 
@@ -206,7 +209,7 @@
 (defmethod c-awaken ::cty/c-formula [c]
   (#?(:clj dosync :cljs do)
    ;; hhack -- bundle this up into reusable with evic
-   ;; (trx :c-formula-awk (c-slot c)(c-current? c))
+   (trx :c-formula-awk (c-slot c)(c-current? c))
    (binding [*depender* nil]
      (when-not (c-current? c)
        (calculate-and-set c :fn-c-awaken nil)))))
@@ -237,7 +240,7 @@
   [c new-value propagation-code]
 
   (assert (c-ref? c))
-  (do ;; wtrx (0 1000 :cv-ass (:slot @c) new-value)
+  (wtrx (0 100 :cv-ass (:slot @c) new-value)
         (prog1 new-value ;; sans doubt
                (without-c-dependency
                 (let [prior-value (c-value c)
@@ -249,7 +252,7 @@
                   ;;
                   (rmap-setf [:value c] new-value)
                   (rmap-setf [:state c] :awake)
-                  #_(trx :new-vlue-installed (c-slot c) 
+                  (trx :new-vlue-installed (c-slot c) 
                        new-value
                        (:value c))
                   ;; 

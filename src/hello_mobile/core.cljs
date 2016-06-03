@@ -1,29 +1,31 @@
 (ns hello-mobile.core
   (:require
-   [tiltontec.cell.base :refer [ia-type unbound]]
+   [tiltontec.cell.base :refer [ia-type unbound cells-reset]]
    [tiltontec.cell.core
     :refer-macros [c? c?+ c-reset-next! c?once c?n]
     :refer [c-in c-reset! make-cell]]
    [tiltontec.model.base :refer [md-get]]
    [tiltontec.model.core :refer [md-reset!]]
    [tiltontec.model.family
-    :refer-macros [the-kids c?kids]
-    :refer [fm!]]
+    :refer-macros [the-kids c?kids mdv!]
+    :refer [fm! fget]]
    
    [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.core
-    :refer [qx-make label image button routing-get
+    :refer [qx-make image button routing-get
             text-field]]
    [tiltontec.qxia.macros
     :refer-macros [hbox vbox navigation-page form carousel
-                   drawer collapsible]]
+                   label drawer collapsible]]
    ))
+
 
 (def this-app (atom nil))
 
 (declare make-login make-overview)
 
 (defn ^:export appinit [this pager shower]
+  ;; (cells-reset)
   (reset!
    this-app
    (qx-make ::qxty/Mobile
@@ -65,30 +67,41 @@
       :requiredInvalidMessage "Password is required")))
 
 (defn make-picker-test []
-  (qx-make ::qxty/m.Picker
-    :height 100
-    :width 200
-    :visibleItems 3
-    :value (c-in nil)
-    :listeners {"changeSelection"
-                (fn [evt me]
-                  (let [data (.getData evt)]
-                    (println "picked!!!! " (js->clj data))
-                    (md-reset! me :value (js->clj data))))}
-
-    :slot-data (list 
-                 [{:title "Windows Phone"
-                   :subtitle "R.I.P."
-                   :image "identica/mmedia/games.png"}
-                  {:title "iOS" :subtitle "Version 7.1"}
-                  {:title "Android"}]
-                 [{:title "Tablet"}
+  (vbox []
+    (qx-make ::qxty/m.Picker
+      :name :my-pick
+      :height 100
+      :width 200
+      :visibleItems 3
+      :value (c-in nil)
+      :listeners {"changeSelection"
+                  (fn [evt me]
+                    (let [data (.getData evt)]
+                      (println "picked!!!! " (js->clj data))
+                      (md-reset! me :value (js->clj data))))}
+      
+      :slot-data (list 
+                   [{:title "Windows Phone"
+                     :subtitle "R.I.P."
+                     :image "identica/mmedia/games.png"}
+                    {:title "iOS" :subtitle "Version 7.1"}
+                    {:title "Android"}]
+                   [{:title "Tablet"}
                   {:title "Smartphone"}
-                  {:title "Phablet"}])))
+                    {:title "Phablet"}]))
+    (label "to be continued"
+      #_ (c? (let [myp (fget :my-pick me  {:me? false
+                          , :inside? false
+                          , :up? true
+                          , :wocd? true ;; without-c-dependency
+                          })]
+                 "xxx" #_
+                 (str (md-get myp :value)))))))
 
 (defn make-login []
   (navigation-page ["Login!" "/"][]
-    (make-css-test)
+    (make-picker-test)
+
     (make-login-form)
     (button "Login"
       :listeners {"tap"  #(let [login (fm! :login me)]
@@ -100,15 +113,16 @@
         (println :picker p)
         p)
       (label "Post!"))
-
+    
     (carousel [:name :carousel
                :css-class "cool"]
       (hbox [] (label "one?"))
       (hbox [] (label "two"))
       (hbox [] (label "three")))
     #_(drawer "bottom" [:name :drawer :css-class "hot"]
-      (hbox [] (label "socks"))
-      (hbox [] (label "shirts")))
+        (hbox [] (label "socks"))
+        (hbox [] (label "shirts")))
+    
     (collapsible "Click for a surprise" []
       (label "Surprise."))
     ))
