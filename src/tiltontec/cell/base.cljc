@@ -147,6 +147,12 @@ rule to get once behavior or just when fm-traversing to find someone"
 (defn c-model [rc]
   (:me @rc))
 
+(defn c-md-name [c]
+  (if-let [md (c-model c)]
+    (or (:name @md)
+      "anon")
+    "no-md"))
+
 (defn c-slot-name [rc]
   (:slot @rc))
 

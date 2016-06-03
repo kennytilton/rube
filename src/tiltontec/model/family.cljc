@@ -36,7 +36,7 @@
       :clj [tiltontec.cell.core :refer :all])
 
    [tiltontec.cell.evaluate :refer [c-get c-awaken not-to-be]]
-   [tiltontec.model.base :refer [md-cell md-get]]
+   [tiltontec.model.base :refer [md-cell md-get md-getx]]
    ))
 
 (derive cty/ia-types ::family ::cty/model)
@@ -98,7 +98,7 @@
 
 (defmacro mdv! [what slot & [me]]
   (let [me (or me 'me)]
-    `(md-get (fm! ~what ~me) ~slot)))
+    `(md-getx :mdv! (fm! ~what ~me) ~slot)))
 
 ;; (macroexpand-1 '(mdv! :aa :aa3))
 

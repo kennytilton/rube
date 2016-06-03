@@ -8,7 +8,7 @@
    [tiltontec.cell.observer
              :refer-macros [defobserver fn-obs]
              :refer [observe type-cljc]]
-   [tiltontec.model.base :refer [md-get]]
+   [tiltontec.model.base :refer [md-get md-getx]]
    [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.base
     :refer [qxme qx-obj-properties 
@@ -19,37 +19,47 @@
 
 ;;;--- initialize --------------------------------
 
-(defmethod qx-initialize ::qxty/Mobile [me]
+(defmethod observe [:kids ::qxty/Mobile]
+  [_ me new old c]
   (let [app (:qx-me @me)
-        shower (md-get me :shower)
-        pager (md-get me :pager)]
+        shower (:shower @me)
+        pager (:pager @me)]
     (let [routing (.getRouting app)]
-      (println :rtgok app routing)
-      (doseq [page (md-get me :kids)]
+      (when (not= old unbound)
+        (doseq [page old]
+          (when-let [ept (:end-point @page)]
+            (. routing (remove ept)))
+          (.removeDetail pager (qxme page))))
+      (doseq [page new]
         (let [qx-page (qxme page)]
           (.addDetail pager qx-page)
-          (when-let [ept (md-get page :end-point)]
+          (when-let [ept (:end-point @page)]
             (. routing (onGet ept shower qx-page))))))))
 
 (defmethod qx-initialize ::qxty/m.Composite [me]
   (when-let [lyo (:layout @me)]
-    (.setLayout (qxme me) lyo))
+    (.setLayout (qxme me) lyo)))
 
-  (doseq [kid (md-get me :kids)]
-    (qx-add-kid me kid)))
-
-(defmethod qx-initialize ::qxty/m.Form [me]
+(defmethod observe [:kids ::qxty/m.Form]
+  [_ me new old _]
   (let [qx-form (qxme me)]
-    (when-let [kids (md-get me :kids)]
+    (when (not= old unbound)
+      (doseq [k old]
+        (let [qxk  (qxme k)
+              label (md-get k :label)]
+          (.remove qx-form qxk))))
+
+    (when-let [kids new]
       (doseq [k kids]
         (let [qxk  (qxme k)
               label (md-get k :label)]
           (.add qx-form qxk label))))))
 
-(defmethod qx-initialize ::qxty/m.Single [me]
-  (let [kids (md-get me :kids)]
-    (assert (= 1 (count kids)))
-    (let [form (first kids)
+(defmethod observe [:kids ::qxty/m.Single]
+  [_ me new old _]
+  (when (= old unbound)
+    (assert (= 1 (count new)))
+    (let [form (first new)
           qx-form (qxme form)]
       (assert qx-form)
       ;; forms differ from the usual add/remove children scheme and
@@ -59,15 +69,18 @@
 
 (defmethod qx-initialize ::qxty/m.NavigationPage [page]
   (let [qx-page (qxme page)]
-    (when-let [kids (md-get page :kids)]
-      (.addListener qx-page "initialize"
-                  (fn []
-                    (let [content (. qx-page (getContent))]
-                      (doseq [k kids]
-                        (let [qxk  (qxme k)]
-                          (.add content qxk)))))
-                  qx-page))))
+    (.addListener qx-page "initialize"
+      (fn []
+        (when-let [kids (md-getx :ini-nav page :kids)]
+          (let [content (. qx-page (getContent))]
+            (doseq [k kids]
+              (let [qxk  (qxme k)]
+                (.add content qxk)))))
+        qx-page))))
 
+(defmethod observe [:kids ::qxty/m.NavigationPage]
+  [_ me newk oldk _]
+  (println :navi-page-kids-obs-blocks-compo!!!!!))
 
 (defmethod qx-initialize ::qxty/m.TextField [me]
   (.setValue (qxme me) (:value @me)))
@@ -88,13 +101,13 @@
             (when-not [ia-type? kid ::m.Form]
               (.drop (qxme me) qxk))
             (.destroy qxk))
-          (not-to-be kid))))
+          (not-to-be kid)))))
 
-    (let [new-ks (difference (set newk) (set oldk))]
-      (when-not (empty? new-ks)
-        (doseq [k new-ks]
-          (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
-            (qx-add-kid me k)))))))
+  (let [new-ks (difference (set newk) (set oldk))]
+    (when-not (empty? new-ks)
+      (doseq [k new-ks]
+        (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
+          (qx-add-kid me k))))))
 
 ;;; --- picker ----------
 

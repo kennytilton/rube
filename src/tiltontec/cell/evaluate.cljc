@@ -11,13 +11,13 @@
          :cljs [tiltontec.cell.base
                 :refer-macros [without-c-dependency pcell]
                 :refer [c-optimized-away? c-formula? c-value c-optimize
-                        c-unbound? c-input? ia-types
+                        c-unbound? c-input? ia-types ia-type
                         c-model mdead? c-valid? c-useds c-ref? md-ref?
                         c-state +pulse+ c-pulse-observed
                         *call-stack* *defer-changes*
                         c-rule c-me c-value-state c-callers caller-ensure
                         unlink-from-callers *causation*
-                        c-slot-name c-synaptic? caller-drop
+                        c-slot-name c-synaptic? caller-drop c-md-name
                         c-pulse c-pulse-last-changed c-ephemeral? c-slot
                         *depender* *not-to-be* 
                         *c-prop-depth* md-slot-owning? c-lazy] :as cty])
@@ -121,11 +121,17 @@
   notices if a standalone  cell has never been observed."
 
   [c]
-  
+  (println :cget-entry (c-slot c) (ia-type (c-model c)) 
+    (if *depender* (c-slot *depender*) :nodepender))
   (cond
     (c-ref? c) (prog1
                 (with-integrity ()
                   (let [prior-value (c-value c)]
+                    (println :cget-to-evic (c-slot c) (ia-type (c-model c)) 
+                      (when *depender*
+                        (str "asker="
+                          (c-slot *depender*)
+                          (c-md-name *depender*))))
                     (prog1
 
                      (ensure-value-is-current c :c-read nil)
@@ -136,7 +142,7 @@
                                 (= (c-state c) :nascent)
                                 (> @+pulse+ (c-pulse-observed c)))
                        (rmap-setf [:state c] :awake)
-                       (c-observe c prior-value :c-get)
+                       (c-observe c prior-value :cget)
                        (ephemeral-reset c)))))
                 (when *depender*
                   (record-dependency c)))
@@ -313,7 +319,7 @@ then clear our record of them."
 (defn optimize-away?!
   "Optimizes away cells who turn out not to depend on anyone, 
   saving a lot of work at runtime. A caller/user will not bother
-  establishing a link, and when we get to models c-get! will 
+  establishing a link, and when we get to models cget will 
   find a non-cell in a slot and Just Use It."
 
   [c prior-value]

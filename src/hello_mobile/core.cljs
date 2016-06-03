@@ -1,40 +1,50 @@
 (ns hello-mobile.core
   (:require
-   [tiltontec.cell.base :refer [ia-type unbound cells-reset]]
+   [tiltontec.cell.base
+    :refer [ia-type ia-types unbound cells-reset]
+    :as cty]
    [tiltontec.cell.core
     :refer-macros [c? c?+ c-reset-next! c?once c?n]
     :refer [c-in c-reset! make-cell]]
    [tiltontec.model.base :refer [md-get]]
-   [tiltontec.model.core :refer [md-reset!]]
+   [tiltontec.model.core :refer [make md-reset!] :as md]
    [tiltontec.model.family
     :refer-macros [the-kids c?kids mdv!]
     :refer [fm! fget]]
    
-   [tiltontec.qxia.types :as qxty]
+   [tiltontec.qxia.types :refer [derive-tree] 
+    :as qxty]
    [tiltontec.qxia.core
-    :refer [qx-make image button routing-get
+    :refer [ image button routing-get
             text-field]]
    [tiltontec.qxia.macros
     :refer-macros [hbox vbox navigation-page form carousel
                    label drawer collapsible]]
    ))
 
-
 (def this-app (atom nil))
 
-(declare make-login make-overview)
+(declare make-picker-test make-login make-overview)
+
+(defn make-family-test []
+  (println :hello-make-family!!!!!!!!!!!!)
+  (navigation-page ["Login!" "/"][]
+    ;;(make-picker-test)
+    (label "Hello world")))
 
 (defn ^:export appinit [this pager shower]
-  ;; (cells-reset)
+  ;;(derive-tree nil qx-type-tree)
+  (assert (isa? cty/ia-types ::qxty/Mobile ::qxty/qx.Object))
   (reset!
    this-app
-   (qx-make ::qxty/Mobile
+   (md/make ::qxty/Mobile
      :qx-me this
      :pager pager
      :shower shower
      :kids (c?kids
-             (make-login)
-             (make-overview)
+             (make-family-test)
+             ;; (make-login)
+             ;; (make-overview)
              ))))
 
 (defn make-css-test []
@@ -58,7 +68,7 @@
       :placeholder "Username or e-mail"
       :required true
       :requiredInvalidMessage "Please share your user name")
-    (qx-make ::qxty/m.PasswordField
+    (md/make ::qxty/m.PasswordField
       :name :p-word
       :label "Password"
       :value "Zoommmmm"
@@ -67,8 +77,15 @@
       :requiredInvalidMessage "Password is required")))
 
 (defn make-picker-test []
-  (vbox []
-    (qx-make ::qxty/m.Picker
+  (vbox [:name :picker-vbox]
+     (label (c? (let [myp (fget :my-pick me  {:me? false
+                          , :inside? false
+                          , :up? true
+                          , :wocd? true ;; without-c-dependency
+                          })]
+                 "xxx" #_
+                 (str (md-get myp :value)))))
+    (md/make ::qxty/m.Picker
       :name :my-pick
       :height 100
       :width 200
@@ -89,8 +106,7 @@
                    [{:title "Tablet"}
                   {:title "Smartphone"}
                     {:title "Phablet"}]))
-    (label "to be continued"
-      #_ (c? (let [myp (fget :my-pick me  {:me? false
+    #_(label (c? (let [myp (fget :my-pick me  {:me? false
                           , :inside? false
                           , :up? true
                           , :wocd? true ;; without-c-dependency

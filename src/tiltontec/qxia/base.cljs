@@ -1,9 +1,19 @@
 (ns tiltontec.qxia.base
   (:require
    [clojure.set :refer [union]]
-   [tiltontec.cell.base :refer [ia-type ia-types ] :as cty]
-   [tiltontec.model.base :refer [md-get]]
+   [tiltontec.util.base :refer [prog1]]
+   [tiltontec.util.core :refer [fifo-data fifo-clear]]
+   [tiltontec.cell.base
+    :refer [unbound ia-type ia-types 
+            +client-q-handler+] :as cty]
+   [tiltontec.cell.integrity
+    :refer-macros [with-integrity] :as md]
+   [tiltontec.cell.observer :refer [observe]]
+   [tiltontec.model.base :refer [md-awaken-before
+                                 md-get md-getx]
+    :as mdb]
    [tiltontec.qxia.types :as qxty]
+   
    ))
 
 (enable-console-print!)
@@ -12,6 +22,7 @@
   (let [app  (js/qx.core.Init.getApplication)]
     (println :app!!! app)
     (.getRouting app)))
+
 
 (defn qxia-type-to-qx-class [type]
   ;; make sure each of these is mentioned in your Application.js
@@ -59,6 +70,39 @@
           (apply MyTerop/make qx-class (:qx-new-args iargs)))
         (throw (js/Error. (str "qx-class-new does not know about " type))))))
 
+
+(defmethod mdb/md-awaken-before ::qxty/qx.Object [me]
+  (println :awk-before!!! (ia-type me))
+  (when (qxia-type-to-qx-class (ia-type me))
+    (with-integrity [:client [:0-make-qx me]]
+      (println :qxia-obj-gets-its:obj!!! (ia-type me))
+      (swap! me assoc :qx-me
+        (qx-class-new (ia-type me)
+          (:qx-new-args @me))))))
+
+;;; --- client queue handling -------------------
+
+
+(def +qxl-client-task-priority+
+  [:0-make-qx :1-layout :2-post-make-qx :3-post-assembly])
+
+(defn qxia-q-handler [user-q]
+  (println :qxia-handler!!!!!!!!!!!!!!!!!!!!!!!)
+  (doseq [[[qx-defer-code me] task] (fifo-data user-q)]
+    (when-not (some #{qx-defer-code} +qxl-client-task-priority+)
+      (throw js/Error. (str "unknown qxl client task opcode "
+                         qx-defer-code))))
+
+  (doseq [[defer-info task]
+          (prog1
+            (sort-by (fifo-data user-q) ffirst)
+            (fifo-clear user-q))]
+    (task :client-q defer-info)))
+
+(reset! +client-q-handler+ qxia-q-handler)
+
+;;; ---- qx initialize ----------------------------
+
 (defmulti qx-initialize ia-type
   :hierarchy #'cty/ia-types)
 
@@ -70,14 +114,14 @@
                                (or (:class @me)
                                    (qxia-type-to-qx-class (ia-type me))))))
 
-(defn qxme [me] (md-get me :qx-me))
+(defn qxme [me] (:qx-me @me))
 
 (defn qx-initialize-all [me]
   ;; n.b.: we do specify a property unless requested so
   ;; we do not shadow qooxdoo defaults with nulls.
   ;; ie, Qxia widget defaults are the qooxdoo defaults.
   (when-let [inits (for [k (qx-obj-properties me)
-                         :let [val (md-get me k)]
+                         :let [val (md-getx :init-all me k)]
                          :when (not (nil? val))]
                      [k val])]
     (.set (qxme me)
@@ -87,10 +131,15 @@
     (if (coll? c)
       (let [cs (vec c)]
         (.addCssClasses (qxme me) (clj->js cs)))
-      (.addCssClass (qxme me) c)))
+      (.addCssClass (qxme me) c))))
 
-  (doseq [[name handler] (md-get me :listeners)]
+(defmethod observe [:listeners ::qx.Object]
+  [_ me new old _]
+  (when (not= old unbound)
+    (println :time-to-hack-remove-listeners))
+  (doseq [[name handler] new]
     (let [qxme (qxme me)]
+      (println :bingo-listener! name (ia-type me))
       (.addListener qxme name
                     (fn [event]
                       (handler event me))))))
