@@ -5,6 +5,8 @@
     :refer [ia-type ia-type? ia-types unbound]
     :as cty]
    [tiltontec.cell.evaluate :refer [not-to-be]]
+   [tiltontec.cell.integrity 
+    :refer-macros [with-integrity]]
    [tiltontec.cell.observer
              :refer-macros [defobserver fn-obs]
              :refer [observe type-cljc]]
@@ -21,20 +23,21 @@
 
 (defmethod observe [:kids ::qxty/Mobile]
   [_ me new old c]
-  (let [app (:qx-me @me)
-        shower (:shower @me)
-        pager (:pager @me)]
-    (let [routing (.getRouting app)]
-      (when (not= old unbound)
-        (doseq [page old]
-          (when-let [ept (:end-point @page)]
-            (. routing (remove ept)))
-          (.removeDetail pager (qxme page))))
-      (doseq [page new]
-        (let [qx-page (qxme page)]
-          (.addDetail pager qx-page)
-          (when-let [ept (:end-point @page)]
-            (. routing (onGet ept shower qx-page))))))))
+  (with-integrity [:client [:2-post-make-qx me]]
+    (let [app (:qx-me @me)
+          shower (:shower @me)
+          pager (:pager @me)]
+      (let [routing (.getRouting app)]
+        (when (not= old unbound)
+          (doseq [page old]
+            (when-let [ept (:end-point @page)]
+              (. routing (remove ept)))
+            (.removeDetail pager (qxme page))))
+        (doseq [page new]
+          (let [qx-page (qxme page)]
+            (.addDetail pager qx-page)
+            (when-let [ept (:end-point @page)]
+              (. routing (onGet ept shower qx-page)))))))))
 
 (defmethod qx-initialize ::qxty/m.Composite [me]
   (when-let [lyo (:layout @me)]
@@ -42,18 +45,19 @@
 
 (defmethod observe [:kids ::qxty/m.Form]
   [_ me new old _]
-  (let [qx-form (qxme me)]
-    (when (not= old unbound)
-      (doseq [k old]
-        (let [qxk  (qxme k)
-              label (md-get k :label)]
-          (.remove qx-form qxk))))
+  (with-integrity [:client [:2-post-make-qx me]]
+    (let [qx-form (qxme me)]
+      (when (not= old unbound)
+        (doseq [k old]
+          (let [qxk  (qxme k)
+                label (md-get k :label)]
+            (.remove qx-form qxk))))
 
-    (when-let [kids new]
-      (doseq [k kids]
-        (let [qxk  (qxme k)
-              label (md-get k :label)]
-          (.add qx-form qxk label))))))
+      (when-let [kids new]
+        (doseq [k kids]
+          (let [qxk  (qxme k)
+                label (md-get k :label)]
+            (.add qx-form qxk label)))))))
 
 (defmethod observe [:kids ::qxty/m.Single]
   [_ me new old _]
@@ -83,7 +87,8 @@
   (println :navi-page-kids-obs-blocks-compo!!!!!))
 
 (defmethod qx-initialize ::qxty/m.TextField [me]
-  (.setValue (qxme me) (:value @me)))
+  (with-integrity [:client [:2-post-make-qx me]]
+    (.setValue (qxme me) (md-get me :value))))
 
 ;;; --- observer handles changes to kids -----------
 ;;; 
@@ -93,34 +98,36 @@
 ;;;
 (defmethod observe [:kids ::qxty/m.Composite]
   [_ me newk oldk _]
-  (when-not (= oldk unbound)
-    (let [lostks (difference (set oldk)(set newk))]
-      (when-not (empty? lostks)
-        (doseq [kid lostks]
-          (let [qxk (qxme kid)]
-            (when-not [ia-type? kid ::m.Form]
-              (.drop (qxme me) qxk))
-            (.destroy qxk))
-          (not-to-be kid)))))
+  (with-integrity [:client [:2-post-make-qx me]]
+    (when-not (= oldk unbound)
+      (let [lostks (difference (set oldk)(set newk))]
+        (when-not (empty? lostks)
+          (doseq [kid lostks]
+            (let [qxk (qxme kid)]
+              (when-not [ia-type? kid ::m.Form]
+                (.drop (qxme me) qxk))
+              (.destroy qxk))
+            (not-to-be kid)))))
 
-  (let [new-ks (difference (set newk) (set oldk))]
-    (when-not (empty? new-ks)
-      (doseq [k new-ks]
-        (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
-          (qx-add-kid me k))))))
+    (let [new-ks (difference (set newk) (set oldk))]
+      (when-not (empty? new-ks)
+        (doseq [k new-ks]
+          (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
+            (qx-add-kid me k)))))))
 
 ;;; --- picker ----------
 
 
 (defmethod observe [:slot-data ::qxty/m.Picker]
   [_ me new old c]
-  (println :obs-sd (ia-type me) new old)
-  (let [p (qxme me)]
-    (when (not= old unbound)
-      (doseq [n (range (count old))]
-        (.removeSlot p n)))
-    (doseq [sd  new]
-      (println :pickslot!! sd)
-      (let [da (new js/qx.data.Array
-                 (clj->js sd))]
-        (.addSlot p da)))))
+  (with-integrity [:client [:2-post-make-qx me]]
+    (println :obs-sd (ia-type me) new old)
+    (let [p (qxme me)]
+      (when (not= old unbound)
+        (doseq [n (range (count old))]
+          (.removeSlot p n)))
+      (doseq [sd  new]
+        (println :pickslot!! sd)
+        (let [da (new js/qx.data.Array
+                   (clj->js sd))]
+          (.addSlot p da))))))

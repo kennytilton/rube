@@ -22,9 +22,9 @@
   (if (coll? x) (vec x) [x]))
 
 (defn derive-tree [super tree]
+  (println :deriving tree)
   (let [[class & subs] (ensure-vec tree)]
     (when super
-      (println :deriving class :from super)
       (set! cty/ia-types
         (derive cty/ia-types class super)))
     (doseq [sub subs]

@@ -33,7 +33,7 @@
     (label "Hello world")))
 
 (defn ^:export appinit [this pager shower]
-  ;;(derive-tree nil qx-type-tree)
+ ;;(derive-tree nil qx-type-tree)
   (assert (isa? cty/ia-types ::qxty/Mobile ::qxty/qx.Object))
   (reset!
    this-app

@@ -90,6 +90,7 @@
 (defn finish-business []
   (un-stopped
    (loop [tag :tell-dependents]
+     (println :looping!!! tag)
      (case tag
        :tell-dependents
        (do (ufb-do :tell-dependents)
@@ -101,15 +102,18 @@
               :handle-clients)))
 
         :handle-clients
-        (when-let [clientq (ufb-queue :client)]
+        (do (println :handle-clients!!!)
+            (when-let [clientq (ufb-queue :client)]
+          (println :clq!!!!!!!!!!!)
           (if-let [cqh @+client-q-handler+]
-            (cqh clientq)
+            (do (println :clqh!!!!!!!!!)
+                (cqh clientq))
             (ufb-do clientq :client))
           
           (recur
            (if (fifo-peek (ufb-queue :client))
              :handle-clients
-             :ephemeral-reset)))
+             :ephemeral-reset))))
 
         :ephemeral-reset
         (do (ufb-do :ephemeral-reset)
@@ -177,6 +181,7 @@
                   (data-pulse-next :cwi))
                 (prog1
                  (action opcode defer-info)
+                 (println :finbiz!!!!!!!)
                  (finish-business)
                  (ufb-assert-q-empty :tell-dependents)
                  (ufb-assert-q-empty :change))))))))

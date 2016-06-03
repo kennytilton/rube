@@ -74,6 +74,7 @@
 (defmethod mdb/md-awaken-before ::qxty/qx.Object [me]
   (println :awk-before!!! (ia-type me))
   (when (qxia-type-to-qx-class (ia-type me))
+    (println :yes-qing!!!!!!!!!!!!!)
     (with-integrity [:client [:0-make-qx me]]
       (println :qxia-obj-gets-its:obj!!! (ia-type me))
       (swap! me assoc :qx-me
@@ -87,20 +88,29 @@
   [:0-make-qx :1-layout :2-post-make-qx :3-post-assembly])
 
 (defn qxia-q-handler [user-q]
-  (println :qxia-handler!!!!!!!!!!!!!!!!!!!!!!!)
+  (println :qxia-handler!!!!!! 
+    (type (fifo-data user-q)))
+  (println :data  (fifo-data user-q))
   (doseq [[[qx-defer-code me] task] (fifo-data user-q)]
     (when-not (some #{qx-defer-code} +qxl-client-task-priority+)
       (throw js/Error. (str "unknown qxl client task opcode "
                          qx-defer-code))))
 
-  (doseq [[defer-info task]
-          (prog1
-            (sort-by (fifo-data user-q) ffirst)
-            (fifo-clear user-q))]
-    (task :client-q defer-info)))
+  (let [sorted (let [data (fifo-data user-q)]
+                 (println :firstd (first data))
+                 (println :ffirst (ffirst (first data)))
+                 (sort-by ffirst data))]
+    (println :sorted!!!!!!!!!!)
+    (println :sorted!!!!!!!!!! (count sorted))
+    (fifo-clear user-q)
+    (println :cleared)
+    (doseq [[defer-info task] sorted]
+      (println :ddeffo!!! defer-info)
+      (task :client-q defer-info))))
 
 (reset! +client-q-handler+ qxia-q-handler)
 
+(println :voila!!!!!!!! @+client-q-handler+)
 ;;; ---- qx initialize ----------------------------
 
 (defmulti qx-initialize ia-type
