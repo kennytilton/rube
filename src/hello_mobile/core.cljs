@@ -3,6 +3,7 @@
    [tiltontec.cell.base
     :refer [ia-type ia-types unbound cells-reset]
     :as cty]
+   [tiltontec.cell.observer :refer [observe]]
    [tiltontec.cell.core
     :refer-macros [c? c?+ c-reset-next! c?once c?n]
     :refer [c-in c-reset! make-cell]]
@@ -11,9 +12,10 @@
    [tiltontec.model.family
     :refer-macros [the-kids c?kids mdv!]
     :refer [fm! fget]]
-   
-   [tiltontec.qxia.types :refer [derive-tree] 
+
+   [tiltontec.qxia.types :refer [derive-tree]
     :as qxty]
+   [tiltontec.qxia.base :refer [qxme]]
    [tiltontec.qxia.core
     :refer [ image button routing-get
             text-field]]
@@ -29,12 +31,9 @@
 (defn make-family-test []
   (println :hello-make-family!!!!!!!!!!!!)
   (navigation-page ["Login!" "/"][]
-    ;;(make-picker-test)
-    (label "Hello world")))
+    (make-picker-test)))
 
 (defn ^:export appinit [this pager shower]
- ;;(derive-tree nil qx-type-tree)
-  (assert (isa? cty/ia-types ::qxty/Mobile ::qxty/qx.Object))
   (reset!
    this-app
    (md/make ::qxty/Mobile
@@ -76,28 +75,34 @@
       :required true
       :requiredInvalidMessage "Password is required")))
 
+(defmethod observe [:value ::qxty/m.Label]
+  [_ me new old _]
+  (when (not= old unbound)
+    (.setValue (qxme me) new)))
+
 (defn make-picker-test []
+  (println :building-picker!!!!!!!!!!!!!!!!!!!!)
   (vbox [:name :picker-vbox]
      (label (c? (let [myp (fget :my-pick me  {:me? false
                           , :inside? false
                           , :up? true
                           , :wocd? true ;; without-c-dependency
                           })]
-                 "xxx" #_
-                 (str (md-get myp :value)))))
+                 (println :lbl-computing!!!!!!! (ia-type myp))
+                 (str "Start" (md-get myp :value) "End"))))
     (md/make ::qxty/m.Picker
       :name :my-pick
       :height 100
       :width 200
       :visibleItems 3
-      :value (c-in nil)
+      :value (c-in "booya")
       :listeners {"changeSelection"
                   (fn [evt me]
                     (let [data (.getData evt)]
                       (println "picked!!!! " (js->clj data))
                       (md-reset! me :value (js->clj data))))}
-      
-      :slot-data (list 
+
+      :slot-data (list
                    [{:title "Windows Phone"
                      :subtitle "R.I.P."
                      :image "identica/mmedia/games.png"}
@@ -129,7 +134,7 @@
         (println :picker p)
         p)
       (label "Post!"))
-    
+
     (carousel [:name :carousel
                :css-class "cool"]
       (hbox [] (label "one?"))
@@ -138,7 +143,7 @@
     #_(drawer "bottom" [:name :drawer :css-class "hot"]
         (hbox [] (label "socks"))
         (hbox [] (label "shirts")))
-    
+
     (collapsible "Click for a surprise" []
       (label "Surprise."))
     ))

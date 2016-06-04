@@ -5,7 +5,7 @@
     :refer [ia-type ia-type? ia-types unbound]
     :as cty]
    [tiltontec.cell.evaluate :refer [not-to-be]]
-   [tiltontec.cell.integrity 
+   [tiltontec.cell.integrity
     :refer-macros [with-integrity]]
    [tiltontec.cell.observer
              :refer-macros [defobserver fn-obs]
@@ -13,7 +13,7 @@
    [tiltontec.model.base :refer [md-get md-getx]]
    [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.base
-    :refer [qxme qx-obj-properties 
+    :refer [qxme qx-obj-properties
             qx-class-new qx-initialize
             qxme qx-add-kid]]
    ))
@@ -27,6 +27,8 @@
     (let [app (:qx-me @me)
           shower (:shower @me)
           pager (:pager @me)]
+      ;;(println :obs-me (ia-type me))
+      (assert app "obs mob kids")
       (let [routing (.getRouting app)]
         (when (not= old unbound)
           (doseq [page old]
@@ -91,8 +93,8 @@
     (.setValue (qxme me) (md-get me :value))))
 
 ;;; --- observer handles changes to kids -----------
-;;; 
-;;; this bit pretends to be efficient but we do not yet have 
+;;;
+;;; this bit pretends to be efficient but we do not yet have
 ;;; a parent sometimes returning the "same" kids, so really
 ;;; it is dropping all and adding all
 ;;;
@@ -109,7 +111,9 @@
               (.destroy qxk))
             (not-to-be kid)))))
 
-    (let [new-ks (difference (set newk) (set oldk))]
+    (let [new-ks (if (= oldk unbound)
+                     newk
+                     (difference (set newk) (set oldk)))]
       (when-not (empty? new-ks)
         (doseq [k new-ks]
           (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe

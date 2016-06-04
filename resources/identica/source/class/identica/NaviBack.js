@@ -28,8 +28,6 @@ qx.Class.define("identica.NaviBack",
     _initialize : function()
     {
       this.base(arguments);
-
-      this.getContent().add(new qx.ui.mobile.basic.Label("Your first app."));
     },
 
 

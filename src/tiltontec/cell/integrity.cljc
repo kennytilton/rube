@@ -3,7 +3,7 @@
                       :refer-macros [wtrx trx prog1]]
                :clj  [tiltontec.util.base
                       :refer :all])
-            [tiltontec.util.core 
+            [tiltontec.util.core
              :refer [err fifo-add fifo-peek fifo-pop cl-find]]
             #?(:cljs [tiltontec.cell.base
                       :refer-macros [un-stopped]
@@ -90,7 +90,6 @@
 (defn finish-business []
   (un-stopped
    (loop [tag :tell-dependents]
-     (println :looping!!! tag)
      (case tag
        :tell-dependents
        (do (ufb-do :tell-dependents)
@@ -102,14 +101,14 @@
               :handle-clients)))
 
         :handle-clients
-        (do (println :handle-clients!!!)
+        (do ;;(println :handle-clients!!!)
             (when-let [clientq (ufb-queue :client)]
-          (println :clq!!!!!!!!!!!)
+          ;;(println :clq!!!!!!!!!!!)
           (if-let [cqh @+client-q-handler+]
-            (do (println :clqh!!!!!!!!!)
+            (do ;;(println :clqh!!!!!!!!!)
                 (cqh clientq))
             (ufb-do clientq :client))
-          
+
           (recur
            (if (fifo-peek (ufb-queue :client))
              :handle-clients
@@ -118,7 +117,7 @@
         :ephemeral-reset
         (do (ufb-do :ephemeral-reset)
             (recur :deferred-state-change))
-              
+
         :deferred-state-change
         (when-let [[defer-info task-fn] (fifo-pop (ufb-queue :change))]
           (data-pulse-next :def-state-chg)
@@ -148,12 +147,12 @@
     (assert (cl-find opcode +ufb-opcodes+)
             (str "Invalid opcode for with-integrity: %s. Allowed values: %s"
                     opcode +ufb-opcodes+)))
-  (wtrx (0 100 "cwi-begin" opcode *within-integrity*)
+  (do ;; wtrx (0 100 "cwi-begin" opcode *within-integrity*)
     (un-stopped
      (#?(:cljs do :clj dosync)
       (cond
         (c-stopped) (println :cwi-sees-stop!!!!!!!!!!!)
-        
+
         *within-integrity*
         (if opcode
           (prog1
@@ -162,13 +161,13 @@
            ;; in the place, but if the SETF is deferred we return
            ;; something that will help someone who tries to use
            ;; the setf'ed value figure out what is going on:
-           (println :cwi-defers opcode defer-info)
+           ;;(println :cwi-defers opcode defer-info)
            (ufb-add opcode [defer-info action]))
 
           ;; thus by not supplying an opcode one can get something
           ;; executed immediately, potentially breaking data integrity
           ;; but signifying by having coded the with-integrity macro
-          ;; that one is aware of this. 
+          ;; that one is aware of this.
           ;;
           ;; If you have read this comment.
           ;;
@@ -181,7 +180,7 @@
                   (data-pulse-next :cwi))
                 (prog1
                  (action opcode defer-info)
-                 (println :finbiz!!!!!!!)
+;;(println :finbiz!!!!!!!)
                  (finish-business)
                  (ufb-assert-q-empty :tell-dependents)
                  (ufb-assert-q-empty :change))))))))

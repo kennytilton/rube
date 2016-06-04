@@ -19,7 +19,7 @@
                      unlink-from-callers *causation* c-md-name
                      c-slot-name c-synaptic? caller-drop
                      c-pulse c-pulse-last-changed c-ephemeral? c-slot c-slots
-                     *depender* *not-to-be* 
+                     *depender* *not-to-be*
                      *c-prop-depth* md-slot-owning? c-lazy] :as cty])
    #?(:cljs [tiltontec.cell.integrity
              :refer-macros [with-integrity]]
@@ -72,14 +72,14 @@
   :hierarchy #'cty/ia-types)
 
 (defmethod md-awaken-before :default [me]
-  (println :awaken-before-default!!!!!!!!!!!!
+  #_(println :awaken-before-default!!!!!!!!!!!!
     (ia-type me)))
 
 (defn md-awaken
   "(1) do initial evaluation of all ruled slots
    (2) call observers of all slots"
   [me]
-  (println :md-awaken!!!!!!!! (ia-type me))
+  ;;(println :md-awaken!!!!!!!! (ia-type me))
   (md-awaken-before me)
   (pme :awaken (md-state me))
   (c-assert (= :nascent (md-state me)))
@@ -88,7 +88,7 @@
    (for [slot (keys @me)]
      (let [c (slot (md-cz me))]
        (cond
-         c (do (trx :md-awaken-awks-cell slot (c-slot c)(c-md-name c))
+         c (do ;;(trx :md-awaken-awks-cell slot (c-slot c)(c-md-name c))
                (c-awaken c))
          :else (do ;(trx :noslot slot (slot @me) me)
                    (observe slot me (slot @me) unbound nil))))))
@@ -97,6 +97,8 @@
   me)
 
 (defn md-getx [tag me slot]
+  (md-get me slot)
+  #_
   (wtrx [0 100 (str "md-getx " tag slot (ia-type me))]
     (if-let [c  (md-cell me slot)]
       (c-get c)

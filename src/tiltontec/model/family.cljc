@@ -20,7 +20,7 @@
                      unlink-from-callers *causation*
                      c-slot-name c-synaptic? caller-drop
                      c-pulse c-pulse-last-changed c-ephemeral? c-slot c-slots
-                     *depender* *not-to-be* 
+                     *depender* *not-to-be*
                      *c-prop-depth* md-slot-owning? c-lazy] :as cty])
    #?(:cljs [tiltontec.cell.integrity
              :refer-macros [with-integrity]]
@@ -54,7 +54,7 @@
               (= seek poss))))
 
 (defn fget [what where & options]
-  (trx :fget-entry what where)
+  ;(trx :fget-entry what where)
   (when (and where what)
     (let [options (merge {:me? false
                           , :inside? false
@@ -72,7 +72,7 @@
                    (do
                      ;;(trx :fget-inside (:skip options)(doall (map md-name kids)))
                      (if-let [netkids (remove #{(:skip options)} kids)]
-                       (do 
+                       (do
                          ;;(trx netkids!!! netkids)
                          (some #(fget what %
                                       :me? true

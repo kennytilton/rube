@@ -121,13 +121,13 @@
   notices if a standalone  cell has never been observed."
 
   [c]
-  (println :cget-entry (c-slot c) (ia-type (c-model c)) 
+  #_(println :cget-entry (c-slot c) (ia-type (c-model c)) 
     (if *depender* (c-slot *depender*) :nodepender))
   (cond
     (c-ref? c) (prog1
                 (with-integrity ()
                   (let [prior-value (c-value c)]
-                    (println :cget-to-evic (c-slot c) (ia-type (c-model c)) 
+                    #_(println :cget-to-evic (c-slot c) (ia-type (c-model c)) 
                       (when *depender*
                         (str "asker="
                           (c-slot *depender*)
@@ -155,9 +155,9 @@
 (defn calculate-and-set
   "Calculate, link, record, and propagate."
   [c dbgid dbgdata]
-  (wtrx [0 20 :cnset-entry (c-slot c)]
+  (do ;; (wtrx [0 20 :cnset-entry (c-slot c)]
     (let [raw-value (calculate-and-link c)]
-      (trx :cn-set-raw!!!! (c-slot c) raw-value)
+      ;;(trx :cn-set-raw!!!! (c-slot c) raw-value)
       (when-not (c-optimized-away? c)
         (assert (map? @c) "calc-n-set")
 
@@ -215,7 +215,7 @@
 (defmethod c-awaken ::cty/c-formula [c]
   (#?(:clj dosync :cljs do)
    ;; hhack -- bundle this up into reusable with evic
-   (trx :c-formula-awk (c-slot c)(c-current? c))
+   ;; (trx :c-formula-awk (c-slot c)(c-current? c))
    (binding [*depender* nil]
      (when-not (c-current? c)
        (calculate-and-set c :fn-c-awaken nil)))))
@@ -246,7 +246,7 @@
   [c new-value propagation-code]
 
   (assert (c-ref? c))
-  (wtrx (0 100 :cv-ass (:slot @c) new-value)
+  (do ;; (wtrx (0 100 :cv-ass (:slot @c) new-value)
         (prog1 new-value ;; sans doubt
                (without-c-dependency
                 (let [prior-value (c-value c)
@@ -258,7 +258,7 @@
                   ;;
                   (rmap-setf [:value c] new-value)
                   (rmap-setf [:state c] :awake)
-                  (trx :new-vlue-installed (c-slot c) 
+                  #_(trx :new-vlue-installed (c-slot c) 
                        new-value
                        (:value c))
                   ;; 

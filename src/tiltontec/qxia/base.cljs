@@ -4,7 +4,7 @@
    [tiltontec.util.base :refer [prog1]]
    [tiltontec.util.core :refer [fifo-data fifo-clear]]
    [tiltontec.cell.base
-    :refer [unbound ia-type ia-types 
+    :refer [unbound ia-type ia-types
             +client-q-handler+] :as cty]
    [tiltontec.cell.integrity
     :refer-macros [with-integrity] :as md]
@@ -13,14 +13,15 @@
                                  md-get md-getx]
     :as mdb]
    [tiltontec.qxia.types :as qxty]
-   
+
    ))
 
 (enable-console-print!)
 
 (defn app-routing []
   (let [app  (js/qx.core.Init.getApplication)]
-    (println :app!!! app)
+    (println :app!!!!!!!!!!! app)
+    (assert app "app touyign")
     (.getRouting app)))
 
 
@@ -54,7 +55,7 @@
     ::qxty/Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
     ::qxty/m.Single nil ;; Single constructor must be passed the wrapped Form
     ;; ...and we will not have that until qx-initialize.
-    
+
     (if-let [qx-class (or (when (contains? iargs :class)
                             (let [qx-class (:class iargs)]
                               (when-not qx-class
@@ -72,14 +73,16 @@
 
 
 (defmethod mdb/md-awaken-before ::qxty/qx.Object [me]
-  (println :awk-before!!! (ia-type me))
-  (when (qxia-type-to-qx-class (ia-type me))
-    (println :yes-qing!!!!!!!!!!!!!)
+  (when (and  ;; not Mobile
+          (qxia-type-to-qx-class (ia-type me)))
     (with-integrity [:client [:0-make-qx me]]
-      (println :qxia-obj-gets-its:obj!!! (ia-type me))
-      (swap! me assoc :qx-me
-        (qx-class-new (ia-type me)
-          (:qx-new-args @me))))))
+      (when (nil? (qxme me))
+        ;;(println :qxia-obj-gets-its:obj!!! (ia-type me))
+        (swap! me assoc :qx-me
+          (qx-class-new (ia-type me)
+            (:qx-new-args @me))))
+      (qx-initialize me)
+      (qx-initialize-all me))))
 
 ;;; --- client queue handling -------------------
 
@@ -88,29 +91,23 @@
   [:0-make-qx :1-layout :2-post-make-qx :3-post-assembly])
 
 (defn qxia-q-handler [user-q]
-  (println :qxia-handler!!!!!! 
-    (type (fifo-data user-q)))
-  (println :data  (fifo-data user-q))
   (doseq [[[qx-defer-code me] task] (fifo-data user-q)]
     (when-not (some #{qx-defer-code} +qxl-client-task-priority+)
       (throw js/Error. (str "unknown qxl client task opcode "
                          qx-defer-code))))
 
   (let [sorted (let [data (fifo-data user-q)]
-                 (println :firstd (first data))
-                 (println :ffirst (ffirst (first data)))
+                 ;;(println :firstd (first data))
+                 ;;(println :ffirst (ffirst (first data)))
                  (sort-by ffirst data))]
-    (println :sorted!!!!!!!!!!)
-    (println :sorted!!!!!!!!!! (count sorted))
+    ;;(println :sorted!!!!!!!!!! (count sorted))
     (fifo-clear user-q)
-    (println :cleared)
     (doseq [[defer-info task] sorted]
-      (println :ddeffo!!! defer-info)
+      ;;(println :ddeffo!!! (first defer-info))
       (task :client-q defer-info))))
 
 (reset! +client-q-handler+ qxia-q-handler)
 
-(println :voila!!!!!!!! @+client-q-handler+)
 ;;; ---- qx initialize ----------------------------
 
 (defmulti qx-initialize ia-type
@@ -136,18 +133,14 @@
                      [k val])]
     (.set (qxme me)
           (clj->js (into {} inits))))
-      
+
   (when-let [c (:css-class @me)]
     (if (coll? c)
       (let [cs (vec c)]
         (.addCssClasses (qxme me) (clj->js cs)))
-      (.addCssClass (qxme me) c))))
+      (.addCssClass (qxme me) c)))
 
-(defmethod observe [:listeners ::qx.Object]
-  [_ me new old _]
-  (when (not= old unbound)
-    (println :time-to-hack-remove-listeners))
-  (doseq [[name handler] new]
+  (doseq [[name handler] (md-get me :listeners)]
     (let [qxme (qxme me)]
       (println :bingo-listener! name (ia-type me))
       (.addListener qxme name
@@ -156,7 +149,7 @@
 
 
 (defn qx-add-kid [me kid]
-  (println :add-kid (ia-type me)(ia-type kid))
+  ;(println :add-kid (ia-type me)(ia-type kid))
   (if-let [flex (:flex @kid)]
     (.add (qxme me) (qxme kid) #js {:flex flex})
     (.add (qxme me) (qxme kid))))
