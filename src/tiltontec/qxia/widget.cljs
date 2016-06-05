@@ -18,6 +18,7 @@
             qxme qx-add-kid]]
    ))
 
+(declare kids-refresh)
 
 ;;;--- initialize --------------------------------
 
@@ -78,6 +79,8 @@
     (.addListener qx-page "initialize"
       (fn []
         (when-let [kids (md-getx :ini-nav page :kids)]
+          (println :start-page (ia-type qx-page)
+            qx-page)
           (let [content (. qx-page (getContent))]
             (doseq [k kids]
               (let [qxk  (qxme k)]
@@ -85,8 +88,20 @@
         qx-page))))
 
 (defmethod observe [:kids ::qxty/m.NavigationPage]
-  [_ me newk oldk _]
-  (println :navi-page-kids-obs-blocks-compo!!!!!))
+  [_ page newk oldk _]
+  (when (not= oldk unbound)
+    (with-integrity [:client [:2-post-make-qx page]]
+      (let [qx-page (qxme page)]
+        (println :page!!!!!!!!!? (ia-type page)
+          qx-page)
+        (let [content (. qx-page (getContent))]
+          (println :content!!!!! content)
+          (.removeAll content)
+          (println :newk!!!!)
+          (doseq [k newk]
+            (let [qxk  (qxme k)]
+              (println 
+                (.add content qxk)))))))))
 
 (defmethod qx-initialize ::qxty/m.TextField [me]
   (with-integrity [:client [:2-post-make-qx me]]
@@ -94,30 +109,35 @@
 
 ;;; --- observer handles changes to kids -----------
 ;;;
+
+(defmethod observe [:kids ::qxty/m.Composite]
+  [_ me newk oldk _]
+  (with-integrity [:client [:2-post-make-qx me]]
+    (kids-refresh me newk oldk)))
+
 ;;; this bit pretends to be efficient but we do not yet have
 ;;; a parent sometimes returning the "same" kids, so really
 ;;; it is dropping all and adding all
 ;;;
-(defmethod observe [:kids ::qxty/m.Composite]
-  [_ me newk oldk _]
-  (with-integrity [:client [:2-post-make-qx me]]
-    (when-not (= oldk unbound)
-      (let [lostks (difference (set oldk)(set newk))]
-        (when-not (empty? lostks)
-          (doseq [kid lostks]
-            (let [qxk (qxme kid)]
-              (when-not [ia-type? kid ::m.Form]
-                (.drop (qxme me) qxk))
-              (.destroy qxk))
-            (not-to-be kid)))))
 
-    (let [new-ks (if (= oldk unbound)
-                     newk
-                     (difference (set newk) (set oldk)))]
-      (when-not (empty? new-ks)
-        (doseq [k new-ks]
-          (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
-            (qx-add-kid me k)))))))
+(defn kids-refresh [me newk oldk]
+  (when-not (= oldk unbound)
+    (let [lostks (difference (set oldk)(set newk))]
+      (when-not (empty? lostks)
+        (doseq [kid lostks]
+          (let [qxk (qxme kid)]
+            (when-not [ia-type? kid ::m.Form]
+              (.drop (qxme me) qxk))
+            (.destroy qxk))
+          (not-to-be kid)))))
+
+  (let [new-ks (if (= oldk unbound)
+                 newk
+                 (difference (set newk) (set oldk)))]
+    (when-not (empty? new-ks)
+      (doseq [k new-ks]
+        (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
+          (qx-add-kid me k))))))
 
 ;;; --- picker ----------
 

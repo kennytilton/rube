@@ -100,9 +100,13 @@
       :value (c-in "booya")
       :listeners {"changeSelection"
                   (fn [evt me]
-                    (let [data (.getData evt)]
-                      (println "picked!!!! " (js->clj data))
-                      (md-reset! me :value (js->clj data))))}
+                    (let [data (.getData evt)
+                          jd (js->clj data)]
+                      (println "picked!!!! jd" jd
+                        (type jd) (ffirst jd)
+                        (jd "item"))
+                      (md-reset! me :value
+                        (get (get jd "item") "title"))))}
 
       :slot-data (list
                    [{:title "Windows Phone"
@@ -129,11 +133,8 @@
       :listeners {"tap"  #(let [login (fm! :login me)]
                             (when (.validate (:qx-me @login))
                               (routing-get "/overview")))})
-    (hbox []
-      (label "picker!")
-      (make-picker-test)
-      (label "Post!"))
 
+    (make-picker-test)
 
     (carousel [:name :carousel
                :css-class "cool"]
@@ -154,13 +155,14 @@
      :buttonText "Knock-Knock"
      :buttonIcon "identica/mmedia/games.png"
      :showBackButton true
-     :backButtonText "Back Up (click broken but back key OK)"
+     :backButtonText "Back"
      :listeners
      {"action" (fn [event me]
                   (md-reset! me :greet? (not (md-get me :greet?))))}
      :greet? (c-in false)
      ]
     (label "start")
+    (do (println :kids!!!!! (md-get me :greet?)) nil)
     (when (md-get me :greet?)
       (hbox []
         (vbox [:css-class "cool"]
