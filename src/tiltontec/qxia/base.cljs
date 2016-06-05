@@ -16,6 +16,11 @@
 
    ))
 
+
+(declare qx-initialize qx-initialize-all)
+
+(defn qxme [me] (:qx-me @me))
+
 (enable-console-print!)
 
 (defn app-routing []
@@ -56,8 +61,10 @@
     ::qxty/m.Single nil ;; Single constructor must be passed the wrapped Form
     ;; ...and we will not have that until qx-initialize.
 
-    (if-let [qx-class (or (when (contains? iargs :class)
-                            (let [qx-class (:class iargs)]
+    (if-let [qx-class (or (when (contains? iargs :qx-class)
+                            (println :class-arg!!!!! type)
+                            (let [qx-class (:qx-class iargs)]
+                              
                               (when-not qx-class
                                 (println (str "ERROR! qx-class-new> key class specified but nil "
                                            "Do we need a new qx class mention in Application."))
@@ -66,8 +73,8 @@
                               qx-class))
                         (qxia-type-to-qx-class type))]
         (do
-          #_(println (:name iargs) :finalclass qx-class
-            (:qx-new-args iargs))
+          (println type (:name iargs) :finalclass qx-class
+            (:qx-new-args iargs) iargs)
           (apply MyTerop/make qx-class (:qx-new-args iargs)))
         (throw (js/Error. (str "qx-class-new does not know about " type))))))
 
@@ -75,12 +82,12 @@
 (defmethod mdb/md-awaken-before ::qxty/qx.Object [me]
   (when (and  ;; not Mobile
           (qxia-type-to-qx-class (ia-type me)))
+    ;(println :qxia-obj-queue-its:obj!!! (ia-type me))
     (with-integrity [:client [:0-make-qx me]]
       (when (nil? (qxme me))
-        ;;(println :qxia-obj-gets-its:obj!!! (ia-type me))
+        ;(println :qxia-obj-gets-its:obj!!! (ia-type me))
         (swap! me assoc :qx-me
-          (qx-class-new (ia-type me)
-            (:qx-new-args @me))))
+          (qx-class-new (ia-type me) @me)))
       (qx-initialize me)
       (qx-initialize-all me))))
 
@@ -91,7 +98,8 @@
   [:0-make-qx :1-layout :2-post-make-qx :3-post-assembly])
 
 (defn qxia-q-handler [user-q]
-  (doseq [[[qx-defer-code me] task] (fifo-data user-q)]
+  (doseq [[[qx-defer-code me] task] (reverse 
+                                      (fifo-data user-q))]
     (when-not (some #{qx-defer-code} +qxl-client-task-priority+)
       (throw js/Error. (str "unknown qxl client task opcode "
                          qx-defer-code))))
@@ -100,10 +108,10 @@
                  ;;(println :firstd (first data))
                  ;;(println :ffirst (ffirst (first data)))
                  (sort-by ffirst data))]
-    ;;(println :sorted!!!!!!!!!! (count sorted))
+    ;(println :sorted!!!!!!!!!! (count sorted))
     (fifo-clear user-q)
     (doseq [[defer-info task] sorted]
-      ;;(println :ddeffo!!! (first defer-info))
+      ;(println :ddeffo!!! (first defer-info))
       (task :client-q defer-info))))
 
 (reset! +client-q-handler+ qxia-q-handler)
@@ -121,9 +129,9 @@
                                (or (:class @me)
                                    (qxia-type-to-qx-class (ia-type me))))))
 
-(defn qxme [me] (:qx-me @me))
-
-(defn qx-initialize-all [me]
+(defmulti  qx-initialize-all ia-type)
+(defmethod qx-initialize-all ::qxty/m.Single [me])
+(defmethod qx-initialize-all :default [me]
   ;; n.b.: we do specify a property unless requested so
   ;; we do not shadow qooxdoo defaults with nulls.
   ;; ie, Qxia widget defaults are the qooxdoo defaults.
@@ -131,8 +139,12 @@
                          :let [val (md-getx :init-all me k)]
                          :when (not (nil? val))]
                      [k val])]
-    (.set (qxme me)
-          (clj->js (into {} inits))))
+    (let [qx (qxme me)]
+      (assert qx (str "no qxme " (ia-type me)))
+      ;(println :qx!? qx)
+      (.set qx (clj->js (into {} inits)))))
+
+  (assert (qxme me) (str "no qx initall " (ia-type me)))
 
   (when-let [c (:css-class @me)]
     (if (coll? c)

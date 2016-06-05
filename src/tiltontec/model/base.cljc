@@ -96,6 +96,11 @@
   (rmap-meta-setf [:state me] :awake)
   me)
 
+(defn md-get [me slot]
+  (if-let [c  (md-cell me slot)]
+    (c-get c)
+    (slot @me)))
+
 (defn md-getx [tag me slot]
   (md-get me slot)
   #_
@@ -105,9 +110,6 @@
       (slot @me))))
 
 
-(defn md-get [me slot]
-  (if-let [c  (md-cell me slot)]
-    (c-get c)
-    (slot @me)))
+
 
 

@@ -61,17 +61,17 @@
                 label (md-get k :label)]
             (.add qx-form qxk label)))))))
 
-(defmethod observe [:kids ::qxty/m.Single]
-  [_ me new old _]
-  (when (= old unbound)
-    (assert (= 1 (count new)))
-    (let [form (first new)
-          qx-form (qxme form)]
-      (assert qx-form)
-      ;; forms differ from the usual add/remove children scheme and
-      ;; must be provided to the constructor of a renderer
-      ;; but the form child will not have its qx-me until now
-      (swap! me assoc :qx-me (new js/qx.ui.mobile.form.renderer.Single qx-form)))))
+(defmethod qx-initialize ::qxty/m.Single [me]
+  (with-integrity [:client [:2-post-make-qx me]]
+    (let [kids (:kids @me)]
+      (assert (= 1 (count kids)))
+      (let [form (first kids)
+            qx-form (qxme form)]
+        (assert qx-form)
+        ;; forms differ from the usual add/remove children scheme and
+        ;; must be provided to the constructor of a renderer
+        ;; but the form child will not have its qx-me until now
+        (swap! me assoc :qx-me (new js/qx.ui.mobile.form.renderer.Single qx-form))))))
 
 (defmethod qx-initialize ::qxty/m.NavigationPage [page]
   (let [qx-page (qxme page)]

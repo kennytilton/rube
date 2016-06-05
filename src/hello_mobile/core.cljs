@@ -26,12 +26,14 @@
 
 (def this-app (atom nil))
 
-(declare make-picker-test make-login make-overview)
+(declare make-hhhack make-login make-overview)
 
-(defn make-family-test []
+(defn make-hhhack []
   (println :hello-make-family!!!!!!!!!!!!)
-  (navigation-page ["Login!" "/"][]
-    (make-picker-test)))
+  (navigation-page ["HHHack" "/"][]
+    (collapsible "Click for a surprise" []
+      (label "Surprise."))))
+
 
 (defn ^:export appinit [this pager shower]
   (reset!
@@ -41,9 +43,9 @@
      :pager pager
      :shower shower
      :kids (c?kids
-             (make-family-test)
-             ;; (make-login)
-             ;; (make-overview)
+             ;;(make-hhhack)
+             (make-login)
+             (make-overview)
              ))))
 
 (defn make-css-test []
@@ -121,7 +123,6 @@
 
 (defn make-login []
   (navigation-page ["Login!" "/"][]
-    (make-picker-test)
 
     (make-login-form)
     (button "Login"
@@ -130,10 +131,9 @@
                               (routing-get "/overview")))})
     (hbox []
       (label "picker!")
-      (let [p (make-picker-test)]
-        (println :picker p)
-        p)
+      (make-picker-test)
       (label "Post!"))
+
 
     (carousel [:name :carousel
                :css-class "cool"]
@@ -160,6 +160,7 @@
                   (md-reset! me :greet? (not (md-get me :greet?))))}
      :greet? (c-in false)
      ]
+    (label "start")
     (when (md-get me :greet?)
       (hbox []
         (vbox [:css-class "cool"]

@@ -46,7 +46,7 @@
 (defmacro drawer  [orientation [& top-args] & kids]
   `(tiltontec.model.core/make :type
     :tiltontec.qxia.types/m.Composite
-    :class js/qx.ui.mobile.container.Drawer
+    :qx-class js/qx.ui.mobile.container.Drawer
     :qx-new-args [tiltontec.model.family/*par*]
     :orientation ~orientation
     ~@top-args
@@ -55,7 +55,7 @@
 (defmacro collapsible  [title [& top-args] & kids]
   `(tiltontec.model.core/make :type
     :tiltontec.qxia.types/m.Composite
-    :class js/qx.ui.mobile.container.Collapsible
+    :qx-class js/qx.ui.mobile.container.Collapsible
     :qx-new-args [~title]
     ~@top-args
     :kids (tiltontec.model.family/c?kids ~@kids)))
