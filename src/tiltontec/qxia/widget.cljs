@@ -79,8 +79,6 @@
     (.addListener qx-page "initialize"
       (fn []
         (when-let [kids (md-getx :ini-nav page :kids)]
-          (println :start-page (ia-type qx-page)
-            qx-page)
           (let [content (. qx-page (getContent))]
             (doseq [k kids]
               (let [qxk  (qxme k)]
@@ -96,7 +94,7 @@
           (.removeAll content)
           (doseq [k newk]
             (let [qxk  (qxme k)]
-              (println 
+              (println
                 (.add content qxk)))))))))
 
 (defmethod qx-initialize ::qxty/m.TextField [me]
@@ -117,7 +115,6 @@
 ;;;
 
 (defn kids-refresh [me newk oldk]
-  (println :refresh-k (ia-type me) (:name me))
   (when-not (= oldk unbound)
     (let [lostks (difference (set oldk)(set newk))]
       (when-not (empty? lostks)
@@ -143,13 +140,11 @@
 (defmethod observe [:slot-data ::qxty/m.Picker]
   [_ me new old c]
   (with-integrity [:client [:2-post-make-qx me]]
-    (println :obs-sd (ia-type me) new old)
     (let [p (qxme me)]
       (when (not= old unbound)
         (doseq [n (range (count old))]
           (.removeSlot p n)))
       (doseq [sd  new]
-        (println :pickslot!! sd)
         (let [da (new js/qx.data.Array
                    (clj->js sd))]
           (.addSlot p da))))))

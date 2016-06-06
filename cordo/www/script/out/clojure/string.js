@@ -47,23 +47,23 @@ return s.replace(match,replacement);
  * separated by an optional separator.
  */
 clojure.string.join = (function clojure$string$join(){
-var args10726 = [];
-var len__5593__auto___10729 = arguments.length;
-var i__5594__auto___10730 = (0);
+var args18208 = [];
+var len__5593__auto___18211 = arguments.length;
+var i__5594__auto___18212 = (0);
 while(true){
-if((i__5594__auto___10730 < len__5593__auto___10729)){
-args10726.push((arguments[i__5594__auto___10730]));
+if((i__5594__auto___18212 < len__5593__auto___18211)){
+args18208.push((arguments[i__5594__auto___18212]));
 
-var G__10731 = (i__5594__auto___10730 + (1));
-i__5594__auto___10730 = G__10731;
+var G__18213 = (i__5594__auto___18212 + (1));
+i__5594__auto___18212 = G__18213;
 continue;
 } else {
 }
 break;
 }
 
-var G__10728 = args10726.length;
-switch (G__10728) {
+var G__18210 = args18208.length;
+switch (G__18210) {
 case 1:
 return clojure.string.join.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -73,7 +73,7 @@ return clojure.string.join.cljs$core$IFn$_invoke$arity$2((arguments[(0)]),(argum
 
 break;
 default:
-throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args10726.length)].join('')));
+throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args18208.length)].join('')));
 
 }
 });
@@ -83,10 +83,10 @@ var sb = (new goog.string.StringBuffer());
 var coll__$1 = cljs.core.seq.call(null,coll);
 while(true){
 if(!((coll__$1 == null))){
-var G__10733 = sb.append([cljs.core.str(cljs.core.first.call(null,coll__$1))].join(''));
-var G__10734 = cljs.core.next.call(null,coll__$1);
-sb = G__10733;
-coll__$1 = G__10734;
+var G__18215 = sb.append([cljs.core.str(cljs.core.first.call(null,coll__$1))].join(''));
+var G__18216 = cljs.core.next.call(null,coll__$1);
+sb = G__18215;
+coll__$1 = G__18216;
 continue;
 } else {
 return sb.toString();
@@ -108,10 +108,10 @@ if((coll__$2 == null)){
 sb.append(separator);
 }
 
-var G__10735 = sb;
-var G__10736 = coll__$2;
-sb = G__10735;
-coll__$1 = G__10736;
+var G__18217 = sb;
+var G__18218 = coll__$2;
+sb = G__18217;
+coll__$1 = G__18218;
 continue;
 } else {
 return sb.toString();
@@ -148,8 +148,8 @@ clojure.string.pop_last_while_empty = (function clojure$string$pop_last_while_em
 var v__$1 = v;
 while(true){
 if(("" === cljs.core.peek.call(null,v__$1))){
-var G__10737 = cljs.core.pop.call(null,v__$1);
-v__$1 = G__10737;
+var G__18219 = cljs.core.pop.call(null,v__$1);
+v__$1 = G__18219;
 continue;
 } else {
 return v__$1;
@@ -168,12 +168,12 @@ clojure.string.split_with_empty_regex = (function clojure$string$split_with_empt
 if(((limit <= (0))) || ((limit >= ((2) + cljs.core.count.call(null,s))))){
 return cljs.core.conj.call(null,cljs.core.vec.call(null,cljs.core.cons.call(null,"",cljs.core.map.call(null,cljs.core.str,cljs.core.seq.call(null,s)))),"");
 } else {
-var pred__10741 = cljs.core._EQ__EQ_;
-var expr__10742 = limit;
-if(cljs.core.truth_(pred__10741.call(null,(1),expr__10742))){
+var pred__18223 = cljs.core._EQ__EQ_;
+var expr__18224 = limit;
+if(cljs.core.truth_(pred__18223.call(null,(1),expr__18224))){
 return (new cljs.core.PersistentVector(null,1,(5),cljs.core.PersistentVector.EMPTY_NODE,[s],null));
 } else {
-if(cljs.core.truth_(pred__10741.call(null,(2),expr__10742))){
+if(cljs.core.truth_(pred__18223.call(null,(2),expr__18224))){
 return (new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,["",s],null));
 } else {
 var c = (limit - (2));
@@ -187,23 +187,23 @@ return cljs.core.conj.call(null,cljs.core.vec.call(null,cljs.core.cons.call(null
  * the maximum number of splits. Not lazy. Returns vector of the splits.
  */
 clojure.string.split = (function clojure$string$split(){
-var args10744 = [];
-var len__5593__auto___10747 = arguments.length;
-var i__5594__auto___10748 = (0);
+var args18226 = [];
+var len__5593__auto___18229 = arguments.length;
+var i__5594__auto___18230 = (0);
 while(true){
-if((i__5594__auto___10748 < len__5593__auto___10747)){
-args10744.push((arguments[i__5594__auto___10748]));
+if((i__5594__auto___18230 < len__5593__auto___18229)){
+args18226.push((arguments[i__5594__auto___18230]));
 
-var G__10749 = (i__5594__auto___10748 + (1));
-i__5594__auto___10748 = G__10749;
+var G__18231 = (i__5594__auto___18230 + (1));
+i__5594__auto___18230 = G__18231;
 continue;
 } else {
 }
 break;
 }
 
-var G__10746 = args10744.length;
-switch (G__10746) {
+var G__18228 = args18226.length;
+switch (G__18228) {
 case 2:
 return clojure.string.split.cljs$core$IFn$_invoke$arity$2((arguments[(0)]),(arguments[(1)]));
 
@@ -213,7 +213,7 @@ return clojure.string.split.cljs$core$IFn$_invoke$arity$3((arguments[(0)]),(argu
 
 break;
 default:
-throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args10744.length)].join('')));
+throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args18226.length)].join('')));
 
 }
 });
@@ -233,12 +233,12 @@ return cljs.core.conj.call(null,parts,s__$1);
 var m = cljs.core.re_find.call(null,re,s__$1);
 if(!((m == null))){
 var index = s__$1.indexOf(m);
-var G__10751 = s__$1.substring((index + cljs.core.count.call(null,m)));
-var G__10752 = (limit__$1 - (1));
-var G__10753 = cljs.core.conj.call(null,parts,s__$1.substring((0),index));
-s__$1 = G__10751;
-limit__$1 = G__10752;
-parts = G__10753;
+var G__18233 = s__$1.substring((index + cljs.core.count.call(null,m)));
+var G__18234 = (limit__$1 - (1));
+var G__18235 = cljs.core.conj.call(null,parts,s__$1.substring((0),index));
+s__$1 = G__18233;
+limit__$1 = G__18234;
+parts = G__18235;
 continue;
 } else {
 return cljs.core.conj.call(null,parts,s__$1);
@@ -288,8 +288,8 @@ return "";
 } else {
 var ch = cljs.core.get.call(null,s,(index - (1)));
 if((("\n" === ch)) || (("\r" === ch))){
-var G__10754 = (index - (1));
-index = G__10754;
+var G__18236 = (index - (1));
+index = G__18236;
 continue;
 } else {
 return s.substring((0),index);
@@ -327,8 +327,8 @@ buffer.append([cljs.core.str(replacement)].join(''));
 buffer.append(ch);
 }
 
-var G__10755 = (index + (1));
-index = G__10755;
+var G__18237 = (index + (1));
+index = G__18237;
 continue;
 }
 break;

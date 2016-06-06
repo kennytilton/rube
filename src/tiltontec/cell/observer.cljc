@@ -34,13 +34,13 @@
           ~@body)))
 
 (defmacro fn-obs
-  "Shortcut definer for cell-specific observers. 
+  "Shortcut definer for cell-specific observers.
 body can be multiple sexprs with access to
 call parameters: slot, me, new, old, and c."
   [& body]
   `(fn [~'slot ~'me ~'new ~'old ~'c]
      ~@body))
-     
+
 (defn c-observe
   ([c why]
    (c-observe c unbound why))

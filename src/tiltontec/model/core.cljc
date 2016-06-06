@@ -135,6 +135,7 @@
     :else (do ;; (trx :fget=-else! seek)
               (= seek poss))))
 
+
 (defn fget [what where & options]
   ;(trx :fget-entry what where)
   (when (and where what)

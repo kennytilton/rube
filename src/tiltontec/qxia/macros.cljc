@@ -16,6 +16,12 @@
     ~@hbox-args
     :kids (tiltontec.model.core/c?kids ~@kids)))
 
+(defmacro group [[& my-args] & kids]
+  `(tiltontec.model.core/make :type
+     :tiltontec.qxia.types/m.Group
+    ~@my-args
+    :kids (tiltontec.model.core/c?kids ~@kids)))
+
 (defmacro navigation-page [[title end-point] [& top-args] & kids]
   `(tiltontec.model.core/make :type
      :tiltontec.qxia.types/m.NavigationPage

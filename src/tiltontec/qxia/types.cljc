@@ -10,9 +10,11 @@
     [::mWidget
      [::m.Atom ::m.Image ::m.Label ::m.Button]
      [::m.Input
+      ::m.NumberField
       [::m.TextField ::m.PasswordField]]
      [::m.Composite
       ::m.Carousel ::m.Drawer ::m.Collapsible ::m.Picker
+      ::m.Group
       [::m.Page ::m.NavigationPage]
       ]
      ]

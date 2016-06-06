@@ -4,6 +4,7 @@
     :refer [ia-type ia-types unbound cells-reset]
     :as cty]
    [tiltontec.cell.observer :refer [observe]]
+   [tiltontec.cell.integrity :refer-macros [with-integrity]]
    [tiltontec.cell.core
     :refer-macros [c? c?+ c-reset-next! c?once c?n]
     :refer [c-in c-reset! make-cell]]
@@ -18,13 +19,13 @@
             text-field]]
    [tiltontec.qxia.macros
     :refer-macros [hbox vbox navigation-page form carousel
-                   label drawer collapsible]]
+                   label drawer collapsible group]]
    ))
 
 
 (def this-app (atom nil))
 
-(declare make-hhhack make-login make-overview)
+(declare make-picker-test make-login make-overview)
 
 (defn make-hhhack []
   (println :hello-make-family!!!!!!!!!!!!)
@@ -59,6 +60,18 @@
         :flex 3
         :css-class ["cool" "coolfont"]))))
 
+(defmethod observe [:validator-fn ::qxty/m.Input]
+  [_ me new-fn old _]
+  
+  (with-integrity [:client [:2-post-make-qx me]]
+    (when new-fn
+      (let [form (qxme (qx-par me))]
+        (assert form)
+        (println :form!!! form)
+        (let [vmgr (.getValidationManager form)]
+          (println :vmgr!! vmgr)
+          (.add vmgr (qxme me) new-fn))))))
+        
 (defn make-login-form []
   (form [][:name :login]
     (text-field "Username"
@@ -73,12 +86,76 @@
       :value "Zoommmmm"
       :placeholder "Your password"
       :required true
-      :requiredInvalidMessage "Password is required")))
+      :requiredInvalidMessage "Password is required")
+    (md/make ::qxty/m.NumberField
+      :label "A 42-ish Quantity"
+      :qx-new-args [42]
+      :validator-fn (c? (fn [val] 
+                          (println :bingo-val-fn!!!! val)
+                          (let [qm (qxme me)
+                                min (.getMinimum qm)
+                                max (.getMaximum qm)
+                                stp (.getStep qm)
+                                emsg (cond
+                                       (< val min) "Too low!"
+                                       (> val max) "Too high!"
+                                       (not (zero? (mod val stp))) "Out of step!")]
+                            (println :emsg! emsg)
+                            (when emsg
+                              (.setInvalidMessage qm emsg))
+                            (nil? emsg))))
+      :placeholder "Uni Answer"
+      :required true
+      :minimum -42
+      :step 42
+      :maximum 420
+      ;:liveUpdate true
+      :invalidMessage "NOT Answer to universe"
+      :requiredInvalidMessage "Answer to universe is required"
+      :listeners  {"changeValue"
+                  (fn [evt me]
+                    (let [data (.getData evt)
+                          jd (js->clj data)]
+                      (println "Galaxy value!!!! jd" jd)
+                      #_(md-reset! me :value
+                        (get (get jd "item") "title"))))})))
+
 
 (defmethod observe [:value ::qxty/m.Label]
   [_ me new old _]
   (when (not= old unbound)
+    (println :obs-set-value!!!! new (ia-type me))
     (.setValue (qxme me) new)))
+
+
+(defn make-login []
+  (navigation-page ["Login" "/"][]
+    (make-login-form)
+    (button "Login"
+      :listeners {"tap"
+                  #(let [login (qxme (fm! :login me))
+                         vmgr (.getValidationManager login)]
+                     (assert vmgr)
+                     (when-let [ok (.validate login)]
+                       (println :ok ok :items (js->clj (.getItems login)))
+                       #_(routing-get "/overview")))})
+
+    (make-picker-test)
+
+    (carousel [:name :carousel
+               :css-class "cool"]
+      (group [:showBorder true]
+        (label "one-a?") (label "one-b?") (label "one-c?"))
+      (hbox [] (label "two"))
+      (hbox [] (label "three")))
+    #_(drawer "bottom" [:name :drawer :css-class "hot"]
+        (hbox [] (label "socks"))
+        (hbox [] (label "shirts")))
+
+    (collapsible "Click for a surprise" []
+      (label "Surprise."))
+    ))
+
 
 (defn make-picker-test []
   (vbox [:name :picker-vbox]
@@ -118,35 +195,19 @@
                  "xxx" #_
                  (str (md-get myp :value)))))))
 
-(defn make-login []
-  (navigation-page ["Login!" "/"][]
+(defmethod observe [:buttonText ::qxty/m.NavigationPage]
+  [_ me new old _]
+  (when (not= old unbound)
+    (.setButtonText (qxme me) new)))
 
-    (make-login-form)
-    (button "Login"
-      :listeners {"tap"  #(let [login (fm! :login me)]
-                            (when (.validate (:qx-me @login))
-                              (routing-get "/overview")))})
-
-    (make-picker-test)
-
-    (carousel [:name :carousel
-               :css-class "cool"]
-      (hbox [] (label "one?"))
-      (hbox [] (label "two"))
-      (hbox [] (label "three")))
-    #_(drawer "bottom" [:name :drawer :css-class "hot"]
-        (hbox [] (label "socks"))
-        (hbox [] (label "shirts")))
-
-    (collapsible "Click for a surprise" []
-      (label "Surprise."))
-    ))
 
 (defn make-overview []
   (navigation-page ["Overview" "/overview"]
     [:name :oview
      :showButton true
-     :buttonText "Knock-Knock"
+     :buttonText (c? (if (md-get me :greet?)
+                       "Who's there?"
+                       "Knock-Knock"))
      :buttonIcon "identica/mmedia/games.png"
      :showBackButton true
      :backButtonText "Back"
@@ -157,11 +218,12 @@
      ]
     (hbox [:name :stuff]
       (if (md-get (qx-par me) :greet?)
+        (vbox [:css-class "cool"]
+          (label "Hello")
+          (label "World"))
+        
         (image "identica/mmedia/earth-from-moon.jpg"
           ;;:rotation -5
           ;;:scaleX 0.5 :scaleY 0.5
           ;; warning: specifiying the above suppresses css
-          :css-class "warning")
-        (vbox [:css-class "cool"]
-          (label "Hello")
-          (label "World"))))))
+          :css-class "warning")))))

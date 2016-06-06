@@ -28,5 +28,6 @@
     iargs))
 
 (defn text-field [label & iargs]
-  (md/make :type ::qxty/m.TextField
-    :label label))
+  (apply md/make :type ::qxty/m.TextField
+    :label label
+    iargs))

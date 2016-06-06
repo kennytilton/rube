@@ -47,10 +47,12 @@
 
     ::qxty/m.NavigationPage js/identica.NaviBack
     ::qxty/m.Form js/qx.ui.mobile.form.Form
+    ::qxty/m.Group js/qx.ui.mobile.form.Group
 
     ::qxty/m.Button js/qx.ui.mobile.form.Button
     ::qxty/m.TextField js/qx.ui.mobile.form.TextField
     ::qxty/m.PasswordField js/qx.ui.mobile.form.PasswordField
+    ::qxty/m.NumberField js/qx.ui.mobile.form.NumberField
 
     (throw (js/Error. (str "qxia-type-to-qx-class does not know about " type)))))
 
