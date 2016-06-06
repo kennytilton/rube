@@ -81,7 +81,7 @@
   [me]
   ;;(println :md-awaken!!!!!!!! (ia-type me))
   (md-awaken-before me)
-  (pme :awaken (md-state me))
+  ;;(pme :awaken (md-state me))
   (c-assert (= :nascent (md-state me)))
   (rmap-meta-setf [:state me] :awakening)
   (doall
@@ -96,18 +96,6 @@
   (rmap-meta-setf [:state me] :awake)
   me)
 
-(defn md-get [me slot]
-  (if-let [c  (md-cell me slot)]
-    (c-get c)
-    (slot @me)))
-
-(defn md-getx [tag me slot]
-  (md-get me slot)
-  #_
-  (wtrx [0 100 (str "md-getx " tag slot (ia-type me))]
-    (if-let [c  (md-cell me slot)]
-      (c-get c)
-      (slot @me))))
 
 
 

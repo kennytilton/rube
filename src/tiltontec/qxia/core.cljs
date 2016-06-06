@@ -4,8 +4,7 @@
    [tiltontec.cell.core
              :refer-macros [c? c?+ c-reset-next! c?once c?n]
              :refer [c-in c-reset! make-cell]]
-   [tiltontec.model.base :refer [md-get] :as mdb]
-   [tiltontec.model.core :refer [make] :as md]
+   [tiltontec.model.core :refer [md-get make] :as md]
    [tiltontec.qxia.types :as qxty]
     [tiltontec.qxia.base
     :refer [qx-class-new qx-initialize qx-initialize-all

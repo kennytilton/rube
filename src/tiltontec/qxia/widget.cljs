@@ -10,7 +10,7 @@
    [tiltontec.cell.observer
              :refer-macros [defobserver fn-obs]
              :refer [observe type-cljc]]
-   [tiltontec.model.base :refer [md-get md-getx]]
+   [tiltontec.model.core :refer [md-get md-getx]]
    [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.base
     :refer [qxme qx-obj-properties
@@ -92,12 +92,8 @@
   (when (not= oldk unbound)
     (with-integrity [:client [:2-post-make-qx page]]
       (let [qx-page (qxme page)]
-        (println :page!!!!!!!!!? (ia-type page)
-          qx-page)
         (let [content (. qx-page (getContent))]
-          (println :content!!!!! content)
           (.removeAll content)
-          (println :newk!!!!)
           (doseq [k newk]
             (let [qxk  (qxme k)]
               (println 
@@ -121,6 +117,7 @@
 ;;;
 
 (defn kids-refresh [me newk oldk]
+  (println :refresh-k (ia-type me) (:name me))
   (when-not (= oldk unbound)
     (let [lostks (difference (set oldk)(set newk))]
       (when-not (empty? lostks)
@@ -134,6 +131,7 @@
   (let [new-ks (if (= oldk unbound)
                  newk
                  (difference (set newk) (set oldk)))]
+    ;;(println :compo new-ks)
     (when-not (empty? new-ks)
       (doseq [k new-ks]
         (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe

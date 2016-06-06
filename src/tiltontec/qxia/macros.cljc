@@ -5,9 +5,7 @@
      :tiltontec.qxia.types/m.Composite
      :layout (new js/qx.ui.mobile.layout.HBox)
     ~@hbox-args
-    :kids (tiltontec.model.family/c?kids
-            (do (println :kids-make
-                  (tiltontec.cell.base/ia-type ~'me)) nil)
+    :kids (tiltontec.model.core/c?kids
             ~@kids)))
 
 
@@ -16,7 +14,7 @@
      :tiltontec.qxia.types/m.Composite
      :layout (new js/qx.ui.mobile.layout.VBox)
     ~@hbox-args
-    :kids (tiltontec.model.family/c?kids ~@kids)))
+    :kids (tiltontec.model.core/c?kids ~@kids)))
 
 (defmacro navigation-page [[title end-point] [& top-args] & kids]
   `(tiltontec.model.core/make :type
@@ -24,33 +22,33 @@
      :end-point ~end-point
      :title ~title
      ~@top-args
-     :kids (tiltontec.model.family/c?kids ~@kids)))
+     :kids (tiltontec.model.core/c?kids ~@kids)))
 
 (defmacro form [[& top-args][& form-args] & kids]
   `(tiltontec.model.core/make :type
     :tiltontec.qxia.types/m.Single
     ~@top-args
-    :kids (tiltontec.model.family/c?kids
+    :kids (tiltontec.model.core/c?kids
             (tiltontec.model.core/make :type
               :tiltontec.qxia.types/m.Form
               ~@form-args
-              :kids (tiltontec.model.family/c?kids ~@kids)))))
+              :kids (tiltontec.model.core/c?kids ~@kids)))))
 
 (defmacro carousel  [[& top-args] & kids]
   `(tiltontec.model.core/make :type
     :tiltontec.qxia.types/m.Carousel
     ;; :class js/qx.ui.mobile.container.Carousel
     ~@top-args
-    :kids (tiltontec.model.family/c?kids ~@kids)))
+    :kids (tiltontec.model.core/c?kids ~@kids)))
 
 (defmacro drawer  [orientation [& top-args] & kids]
   `(tiltontec.model.core/make :type
     :tiltontec.qxia.types/m.Composite
     :qx-class js/qx.ui.mobile.container.Drawer
-    :qx-new-args [tiltontec.model.family/*par*]
+    :qx-new-args [tiltontec.model.core/*par*]
     :orientation ~orientation
     ~@top-args
-    :kids (tiltontec.model.family/c?kids ~@kids)))
+    :kids (tiltontec.model.core/c?kids ~@kids)))
 
 (defmacro collapsible  [title [& top-args] & kids]
   `(tiltontec.model.core/make :type
@@ -58,7 +56,7 @@
     :qx-class js/qx.ui.mobile.container.Collapsible
     :qx-new-args [~title]
     ~@top-args
-    :kids (tiltontec.model.family/c?kids ~@kids)))
+    :kids (tiltontec.model.core/c?kids ~@kids)))
 
 (defmacro label [value & iargs]
   `(tiltontec.model.core/make :type

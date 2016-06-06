@@ -9,9 +9,9 @@
    [tiltontec.cell.integrity
     :refer-macros [with-integrity] :as md]
    [tiltontec.cell.observer :refer [observe]]
-   [tiltontec.model.base :refer [md-awaken-before
-                                 md-get md-getx]
+   [tiltontec.model.base :refer [md-awaken-before]
     :as mdb]
+   [tiltontec.model.core :refer [md-get md-getx]]
    [tiltontec.qxia.types :as qxty]
 
    ))
@@ -62,7 +62,7 @@
     ;; ...and we will not have that until qx-initialize.
 
     (if-let [qx-class (or (when (contains? iargs :qx-class)
-                            (println :class-arg!!!!! type)
+                            ;;(println :class-arg!!!!! type)
                             (let [qx-class (:qx-class iargs)]
                               
                               (when-not qx-class
@@ -73,7 +73,7 @@
                               qx-class))
                         (qxia-type-to-qx-class type))]
         (do
-          (println type (:name iargs) :finalclass qx-class
+          #_(println type (:name iargs) :finalclass qx-class
             (:qx-new-args iargs) iargs)
           (apply MyTerop/make qx-class (:qx-new-args iargs)))
         (throw (js/Error. (str "qx-class-new does not know about " type))))))
@@ -154,7 +154,7 @@
 
   (doseq [[name handler] (md-get me :listeners)]
     (let [qxme (qxme me)]
-      (println :bingo-listener! name (ia-type me))
+      ;;(println :bingo-listener! name (ia-type me))
       (.addListener qxme name
                     (fn [event]
                       (handler event me))))))

@@ -18,21 +18,21 @@
                                                   :output-to "resources/identica/source/script/qxia.js"
                                                   :output-dir "resources/identica/source/script/out"
                                                   :optimizations :whitespace}}
-                                 :qxiabuild {:source-paths ["src"]
-                                       :compiler {:externs ["externs.js"]
-                                                  :foreign-libs [{:file "resources/identica/source/script/identica.js"
-                                                                   :provides ["identica"]}]
-                                                  :output-to "resources/identica/build/script/qxia.js"
-                                                  :output-dir "resources/identica/build/script/out"
-                                                  :optimizations :whitespace}}
-                                 :dev {:source-paths ["src"]
-                                       :compiler {:output-to "resources/public/js/main.js"
-                                                  :output-dir "resources/public/js/out"
-                                                  :optimizations :whitespace}}
-                                 :test {:source-paths ["src" "test"]
-                                       :compiler {:output-to "resources/public/js/main-test.js"
-                                                  :optimizations :whitespace
-                                                  :pretty-print true}}
+                                 ;; :qxiabuild {:source-paths ["src"]
+                                 ;;       :compiler {:externs ["externs.js"]
+                                 ;;                  :foreign-libs [{:file "resources/identica/source/script/identica.js"
+                                 ;;                                   :provides ["identica"]}]
+                                 ;;                  :output-to "resources/identica/build/script/qxia.js"
+                                 ;;                  :output-dir "resources/identica/build/script/out"
+                                 ;;                  :optimizations :whitespace}}
+                                 ;; :dev {:source-paths ["src"]
+                                 ;;       :compiler {:output-to "resources/public/js/main.js"
+                                 ;;                  :output-dir "resources/public/js/out"
+                                 ;;                  :optimizations :whitespace}}
+                                 ;; :test {:source-paths ["src" "test"]
+                                 ;;       :compiler {:output-to "resources/public/js/main-test.js"
+                                 ;;                  :optimizations :whitespace
+                                 ;;                  :pretty-print true}}
                                  }
                         :test-commands {"unit" ["phantomjs"
                                                 "resources/test/phantom/runner.js"

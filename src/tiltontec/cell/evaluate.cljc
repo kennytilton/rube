@@ -335,7 +335,9 @@ then clear our record of them."
                                         ; the cell below. hhack
     (c-observe c prior-value :opti-away)
     (when-let [me (c-model c)]
-      (rmap-meta-setf [:cz me] (dissoc (:cz @me) (c-slot c)))
+      ;;(println :opti-away-nails-cz!!!!!!!!!! (c-slot c)(:name @me))
+
+      (rmap-meta-setf [:cz me] (dissoc (:cz (meta me)) (c-slot c)))
       (md-cell-flush c))
     
     ;; let callers know they need not check us for currency again

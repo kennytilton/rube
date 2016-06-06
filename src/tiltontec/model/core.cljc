@@ -35,11 +35,26 @@
              :refer [c-in c-reset! make-cell]]
       :clj [tiltontec.cell.core :refer :all])
 
-   [tiltontec.cell.evaluate :refer [c-get c-awaken]]
-   [tiltontec.model.base;;
-    :refer [md-get md-cell md-install-cell md-awaken]]
-   [tiltontec.model.family :refer [*par*]]
+   [tiltontec.cell.evaluate :refer [c-get c-awaken not-to-be]]
+   [tiltontec.model.base :refer [md-cell md-install-cell md-awaken]]
    ))
+
+(defn md-name [me]
+  (:name @me))
+
+(defn md-get [me slot]
+  (if-let [c  (md-cell me slot)]
+    (c-get c)
+    (slot @me)))
+
+(defn md-getx [tag me slot]
+  (md-get me slot)
+  #_
+  (wtrx [0 100 (str "md-getx " tag slot (ia-type me))]
+    (if-let [c  (md-cell me slot)]
+      (c-get c)
+      (slot @me))))
+(def ^:dynamic *par* nil)
 
 ;;; --- accessors ----
 
@@ -47,8 +62,12 @@
   (if-let [c  (md-cell me slot)]
     (c-reset! c new-value)
     (do
-      (err str "change to slot %s not mediated by cell" slot)
-      (rmap-setf [slot me] new-value))))
+      (println :meta (meta me))
+      (println :cz (:cz (meta me)))
+      (if (contains? @me slot)
+        (err str "change to slot not mediated by cell" slot)
+        (err str "change to slot not mediated by cell and map lacks slot" slot)))))
+  ;;(rmap-setf [slot me] new-value))))
 
 (defn make [& iargs]
   (cond
@@ -76,6 +95,7 @@
                                  (into {}))))]
        (assert (meta me))
        ;;(println (str "made me!!!!!!!" (:type (meta me))))
+
        (rmap-meta-setf
         [:cz me]
         (->> iargs
@@ -84,11 +104,92 @@
                        (md-install-cell me slot v)))
              (map vec)
              (into {})))
+
        (with-integrity (:awaken me)
          ;;(println :awakening (ia-type me))
          (md-awaken me))
        me))))
 
+;;; --- family ------------------------------------
+
+(def mm-obj #?(:clj Object :cljs js/Object))
+
+(defmethod observe [:kids ::family]
+  [_ _ newk oldk _]
+  (when-not (= oldk unbound)
+    (let [lostks (difference (set oldk)(set newk))]
+      (when-not (empty? lostks)
+        (doseq [k lostks]
+          (not-to-be k))))))
+
+(defn qx-par [me]
+  (:par @me))
+
+(defn fget= [seek poss]
+  (assert (any-ref? poss))
+  (cond
+    (fn? seek) (seek poss)
+    (keyword? seek)(do
+                     ;; (trx :fget=!!! seek @poss)
+                     (= seek (:name @poss)))
+    :else (do ;; (trx :fget=-else! seek)
+              (= seek poss))))
+
+(defn fget [what where & options]
+  ;(trx :fget-entry what where)
+  (when (and where what)
+    (let [options (merge {:me? false
+                          , :inside? false
+                          , :up? true
+                          , :wocd? true ;; without-c-dependency
+                          } (apply hash-map options))]
+      ;;(trx :fget-beef what (md-name where) options)
+      (binding [*depender* (if (:wocd? options) nil *depender*)]
+        (or (and (:me? options)
+                 (fget= what where)
+                 where)
+
+            (and (:inside? options)
+                 (if-let [kids (md-get where :kids)]
+                   (do
+                     ;;(trx :fget-inside (:skip options)(doall (map md-name kids)))
+                     (if-let [netkids (remove #{(:skip options)} kids)]
+                       (do
+                         ;;(trx netkids!!! netkids)
+                         (some #(fget what %
+                                      :me? true
+                                      :inside? true
+                                      :up? false) netkids))
+                       (trx :no-net-kids)))
+                   (trx nil :inside-no-kids @where)))
+
+            (and (:up? options)
+                 (when-let [par (:par @where)]
+                   ;; (trx :fget-up (:name @par))
+                   (fget what par
+                         :up? true
+                         :me? true
+                         :skip where
+                         :inside? true)))
+
+            (when (:must? options)
+              (err :fget-must-failed what where options)))))))
+
+(defn fm! [what where]
+  (fget what where :me? false :inside? true :must? true :up? true))
+
+(defmacro mdv! [what slot & [me]]
+  (let [me (or me 'me)]
+    `(md-get (tiltontec.model.core/fm! ~what ~me) ~slot)))
+
+;; (macroexpand-1 '(mdv! :aa :aa3))
+
+(defmacro the-kids [& tree]
+  `(binding [*par* ~'me]
+     (remove nil? (flatten (list ~@tree)))))
+
+(defmacro c?kids [& tree]
+  `(c? (the-kids ~@tree)))
 
 
 

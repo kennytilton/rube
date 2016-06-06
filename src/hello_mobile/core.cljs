@@ -7,12 +7,9 @@
    [tiltontec.cell.core
     :refer-macros [c? c?+ c-reset-next! c?once c?n]
     :refer [c-in c-reset! make-cell]]
-   [tiltontec.model.base :refer [md-get]]
-   [tiltontec.model.core :refer [make md-reset!] :as md]
-   [tiltontec.model.family
+   [tiltontec.model.core
     :refer-macros [the-kids c?kids mdv!]
-    :refer [fm! fget]]
-
+    :refer [md-get make md-reset! fm! fget qx-par] :as md]
    [tiltontec.qxia.types :refer [derive-tree]
     :as qxty]
    [tiltontec.qxia.base :refer [qxme]]
@@ -23,6 +20,7 @@
     :refer-macros [hbox vbox navigation-page form carousel
                    label drawer collapsible]]
    ))
+
 
 (def this-app (atom nil))
 
@@ -83,15 +81,10 @@
     (.setValue (qxme me) new)))
 
 (defn make-picker-test []
-  (println :building-picker!!!!!!!!!!!!!!!!!!!!)
   (vbox [:name :picker-vbox]
-     (label (c? (let [myp (fget :my-pick me  {:me? false
-                          , :inside? false
-                          , :up? true
-                          , :wocd? true ;; without-c-dependency
-                          })]
+     (label (c? (let [myp (fget :my-pick me)]
                  (println :lbl-computing!!!!!!! (ia-type myp))
-                 (str "Start" (md-get myp :value) "End"))))
+                 (str "Latest pick " (md-get myp :value)))))
     (md/make ::qxty/m.Picker
       :name :my-pick
       :height 100
@@ -115,7 +108,7 @@
                     {:title "iOS" :subtitle "Version 7.1"}
                     {:title "Android"}]
                    [{:title "Tablet"}
-                  {:title "Smartphone"}
+                    {:title "Smartphone"}
                     {:title "Phablet"}]))
     #_(label (c? (let [myp (fget :my-pick me  {:me? false
                           , :inside? false
@@ -151,7 +144,8 @@
 
 (defn make-overview []
   (navigation-page ["Overview" "/overview"]
-    [:showButton true
+    [:name :oview
+     :showButton true
      :buttonText "Knock-Knock"
      :buttonIcon "identica/mmedia/games.png"
      :showBackButton true
@@ -161,15 +155,13 @@
                   (md-reset! me :greet? (not (md-get me :greet?))))}
      :greet? (c-in false)
      ]
-    (label "start")
-    (do (println :kids!!!!! (md-get me :greet?)) nil)
-    (when (md-get me :greet?)
-      (hbox []
-        (vbox [:css-class "cool"]
-          (label "Hello")
-          (label "World"))
+    (hbox [:name :stuff]
+      (if (md-get (qx-par me) :greet?)
         (image "identica/mmedia/earth-from-moon.jpg"
           ;;:rotation -5
           ;;:scaleX 0.5 :scaleY 0.5
           ;; warning: specifiying the above suppresses css
-          :css-class "warning")))))
+          :css-class "warning")
+        (vbox [:css-class "cool"]
+          (label "Hello")
+          (label "World"))))))
