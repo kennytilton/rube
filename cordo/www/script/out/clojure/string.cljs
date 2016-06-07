@@ -24,6 +24,18 @@
   (-> (.replace s re-surrogate-pair "$2$1")
       (.. (split "") (reverse) (join ""))))
 
+(defn- replace-all
+  [s re replacement]
+  (.replace s (js/RegExp. (.-source re) "g") replacement))
+
+(defn- replace-with
+  [f]
+  (fn [& args]
+    (let [matches (drop-last 2 args)]
+      (if (= (count matches) 1)
+        (f (first matches))
+        (f (vec matches))))))
+
 (defn replace
   "Replaces all instance of match with replacement in s.
    match/replacement can be:
@@ -36,7 +48,9 @@
     (.replace s (js/RegExp. (gstring/regExpEscape match) "g") replacement)
 
     (instance? js/RegExp match)
-    (.replace s (js/RegExp. (.-source match) "g") replacement)
+    (if (string? replacement)
+      (replace-all s match replacement)
+      (replace-all s match (replace-with replacement)))
 
     :else (throw (str "Invalid match arg: " match))))
 
@@ -105,7 +119,7 @@
 
 (defn- discard-trailing-if-needed
   [limit v]
-  (if (== 0 limit)
+  (if (and (== 0 limit) (< 1 (count v)))
     (pop-last-while-empty v)
     v))
 
@@ -176,7 +190,7 @@
           (recur (dec index))
           (.substring s 0 index))))))
 
-(defn blank?
+(defn ^boolean blank?
   "True is s is nil, empty, or contains only whitespace."
   [s]
   (gstring/isEmptySafe s))
@@ -199,3 +213,46 @@
             (.append buffer (str replacement))
             (.append buffer ch))
           (recur (inc index)))))))
+
+(defn index-of
+  "Return index of value (string or char) in s, optionally searching
+  forward from from-index or nil if not found."
+  ([s value]
+   (let [result (.indexOf s value)]
+     (if (neg? result)
+       nil
+       result)))
+  ([s value from-index]
+   (let [result (.indexOf s value from-index)]
+     (if (neg? result)
+       nil
+       result))))
+
+(defn last-index-of
+  "Return last index of value (string or char) in s, optionally
+  searching backward from from-index or nil if not found."
+  ([s value]
+   (let [result (.lastIndexOf s value)]
+     (if (neg? result)
+       nil
+       result)))
+  ([s value from-index]
+   (let [result (.lastIndexOf s value from-index)]
+     (if (neg? result)
+       nil
+       result))))
+
+(defn ^boolean starts-with?
+  "True if s starts with substr."
+  [s substr]
+  (gstring/startsWith s substr))
+
+(defn ^boolean ends-with?
+  "True if s ends with substr."
+  [s substr]
+  (gstring/endsWith s substr))
+
+(defn ^boolean includes?
+  "True if s includes substr."
+  [s substr]
+  (gstring/contains s substr))

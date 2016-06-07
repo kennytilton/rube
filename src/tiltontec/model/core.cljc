@@ -64,7 +64,7 @@
     (do
       ;; (println :meta (meta me))      (println :cz (:cz (meta me)))
       (if (contains? @me slot)
-        (err str "change to slot not mediated by cell" slot)
+        (err str "change not mediated by cell " slot "/" (ia-type me))
         (err str "change to slot not mediated by cell and map lacks slot" slot)))))
   ;;(rmap-setf [slot me] new-value))))
 

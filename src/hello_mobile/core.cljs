@@ -78,14 +78,14 @@
       :required true
       :requiredInvalidMessage "Password is required")
     (number-field "A 42-ish Quantity"
-      :qx-new-args [42]
+      ;;:qx-new-args [42]
 
       :placeholder "something from -42 to 420 divisible by 42"
       :required true
       :minimum -42
       :step 42
       :maximum 420
-                                        ;:liveUpdate true
+      ;;:liveUpdate true
       :invalidMessage "NOT Answer to universe"
       :requiredInvalidMessage "Answer to universe is required")
 
@@ -112,7 +112,6 @@
                            jd (js->clj data)]
                        (md-reset! me :value jd)))})
 
-    ;;(group [:label "Dummy"]
       (md/make ::qxty/m.Slider
         :name :time-to-remember
         :label "How long to remember?"
@@ -128,11 +127,10 @@
                              jd (js->clj data)]
                          (md-reset! me :value jd)))})
       (text-field "Remember time"
-        :value (c?+ [:obs (fn-obs (println :fno (qxme me))
-                            (when-let [q (qxme me)]
+        :value (c?+ [:obs (fn-obs
+                            (when-let [q (qxme me)] ;; not at first
                               (.setValue (qxme me) new)))]
                  (let [r (mdv! :time-to-remember :value)]
-                   (println :computing!!!)
                    (when r (str r " days"))))
         :readOnly true)
 
@@ -140,35 +138,16 @@
       :label "Tell me a story."
       :placeholder "Your story here."
       :maxLength 300
+      :value (c-in nil)
       :listeners  {"changeValue"
                    (fn [evt me]
                      (let [data (.getData evt)
                            jd (js->clj data)]
                        (md-reset! me :value jd)))})))
 
-(defmethod observe [:value ::qxty/m.Label]
-  [_ me new old _]
-  (when (not= old unbound)
-    (.setValue (qxme me) new)))
-
-(defmethod observe [:value ::qxty/m.Slider]
-  [_ me newval oldval _]
-  (with-integrity [:client [:2-post-make-qx me]]
-    (when (= oldval unbound)
-      (.setValue (qxme me) newval))))
-
 (defn make-login []
   (navigation-page ["Login" "/"][]
     (make-login-form)
-    (md/make ::qxty/m.Slider
-        :label "How long to remember II?"
-        :value (c-in 10)
-        :minimum 1 :maximum 30 :step 2
-        :listeners  {"changeValue"
-                     (fn [evt me]
-                       (let [data (.getData evt)
-                             jd (js->clj data)]
-                         (md-reset! me :value jd)))})
     (button "Login"
       :listeners {"tap"
                   #(let [login (qxme (fm! :login me))
@@ -229,11 +208,6 @@
                           })]
                  "xxx" #_
                  (str (md-get myp :value)))))))
-
-(defmethod observe [:buttonText ::qxty/m.NavigationPage]
-  [_ me new old _]
-  (when (not= old unbound)
-    (.setButtonText (qxme me) new)))
 
 
 (defn make-overview []

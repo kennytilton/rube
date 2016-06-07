@@ -177,3 +177,17 @@
   (with-integrity [:client [:2-post-make-qx me]]
     (.setEnabled (qxme me) new-value)))
 
+;;; --- 
+
+
+(defmethod observe [:value ::qxty/m.Label]
+  [_ me new old _]
+  (when (not= old unbound)
+    (.setValue (qxme me) new)))
+
+(defmethod observe [:value ::qxty/m.Slider]
+  [_ me newval oldval _]
+  (with-integrity [:client [:2-post-make-qx me]]
+    (when (= oldval unbound)
+      (.setValue (qxme me) newval))))
+

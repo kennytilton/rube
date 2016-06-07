@@ -37,7 +37,6 @@
   (apply md/make ::qxty/m.NumberField
          :label label
          :validator-fn (c? (fn [val]
-                             (println :bingo-val-fn!!!! val)
                              (let [qm (qxme me)
                                    min (.getMinimum qm)
                                    max (.getMaximum qm)
@@ -46,7 +45,6 @@
                                           (< val min) "Too low!"
                                           (> val max) "Too high!"
                                           (not (zero? (mod val stp))) "Out of step!")]
-                               (println :emsg! emsg)
                                (when emsg
                                  (.setInvalidMessage qm emsg))
                                (nil? emsg))))
