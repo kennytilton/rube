@@ -84,16 +84,73 @@
       :minimum -42
       :step 42
       :maximum 420
-      ;:liveUpdate true
+                                        ;:liveUpdate true
       :invalidMessage "NOT Answer to universe"
       :requiredInvalidMessage "Answer to universe is required"
       :listeners  {"changeValue"
-                  (fn [evt me]
-                    (let [data (.getData evt)
-                          jd (js->clj data)]
-                      (println "Galaxy value!!!! jd" jd)
-                      #_(md-reset! me :value
-                        (get (get jd "item") "title"))))})))
+                   (fn [evt me]
+                     (let [data (.getData evt)
+                           jd (js->clj data)]
+                       (println "Galaxy value!!!! jd" jd)))})
+
+    (md/make ::qxty/m.CheckBox
+      :name :remember-me
+      :label "Remember you?"
+      :qx-new-args (c? [(md-get me :value)])
+      :value (c-in false)
+      :listeners  {"changeValue"
+                   (fn [evt me]
+                     (let [data (.getData evt)
+                           jd (js->clj data)]
+                       (println "Remember value!!!! jd" jd)
+                       (md-reset! me :value jd)))})
+
+    
+    (md/make ::qxty/m.ToggleButton
+      :name :really
+      :label "Really?"
+      :value (c-in false)
+      :qx-new-args (c? [(md-get me :value) "Yes" "Nahh"])
+      :listeners  {"changeValue"
+                   (fn [evt me]
+                     (let [data (.getData evt)
+                           jd (js->clj data)]
+                       (println "really!!!! jd" jd)
+                       (md-reset! me :value jd)))})
+
+    ;;(group [:label "Dummy"]
+      (md/make ::qxty/m.Slider
+        :label "How long to remember?"
+        :value (c-in 10)
+        :enabled (c? (println :slider-enabled?)
+                   (and (mdv! :remember-me :value)
+                     (mdv! :really :value)))
+        :minimum 1
+        :maximum 30
+        :step 2
+        :listeners  {"changeValue"
+                     (fn [evt me]
+                       (let [data (.getData evt)
+                             jd (js->clj data)]
+                         (println "Remember how long value!!!! jd" jd)
+                         (md-reset! me :value jd)))})
+      (text-field "42 days"
+        :label "Really?????"
+        :raedOnly true)
+
+    (md/make ::qxty/m.TextArea
+      :label "Tell me a story."
+      :placeholder "Your story here."
+      :maxLength 300
+      :listeners  {"changeValue"
+                   (fn [evt me]
+                     (let [data (.getData evt)
+                           jd (js->clj data)]
+                       (println "Story!!!! jd" jd)
+                       (md-reset! me :value jd)))})
+
+    
+    ))
 
 
 (defmethod observe [:value ::qxty/m.Label]
@@ -102,10 +159,25 @@
     (println :obs-set-value!!!! new (ia-type me))
     (.setValue (qxme me) new)))
 
+(defmethod observe [:value ::qxty/m.Slider]
+  [_ me newval oldval _]
+  (with-integrity [:client [:2-post-make-qx me]]
+    (when (= oldval unbound)
+      (.setValue (qxme me) newval))))
 
 (defn make-login []
   (navigation-page ["Login" "/"][]
     (make-login-form)
+    (md/make ::qxty/m.Slider
+        :label "How long to remember II?"
+        :value (c-in 10)
+        :minimum 1 :maximum 30 :step 2
+        :listeners  {"changeValue"
+                     (fn [evt me]
+                       (let [data (.getData evt)
+                             jd (js->clj data)]
+                         (println "Remember how long value!!!! jd" jd)
+                         (md-reset! me :value jd)))})
     (button "Login"
       :listeners {"tap"
                   #(let [login (qxme (fm! :login me))

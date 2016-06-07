@@ -64,9 +64,4 @@
     ~@top-args
     :kids (tiltontec.model.core/c?kids ~@kids)))
 
-(defmacro label [value & iargs]
-  `(tiltontec.model.core/make :type
-    :tiltontec.qxia.types/m.Label
-    :value ~value
-    ~@iargs))
 

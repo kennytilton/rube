@@ -10,7 +10,7 @@
    [tiltontec.cell.observer
              :refer-macros [defobserver fn-obs]
              :refer [observe type-cljc]]
-   [tiltontec.model.core :refer [md-get md-getx]]
+   [tiltontec.model.core :refer [md-get md-getx qx-par]]
    [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.base
     :refer [qxme qx-obj-properties
@@ -159,3 +159,23 @@
         (let [da (new js/qx.data.Array
                    (clj->js sd))]
           (.addSlot p da))))))
+
+
+(defmethod observe [:validator-fn ::qxty/m.Input]
+  [_ me new-fn old _]
+
+  (with-integrity [:client [:2-post-make-qx me]]
+    (when new-fn
+      (let [form (qxme (qx-par me))]
+        (assert form)
+        (println :form!!! form)
+        (let [vmgr (.getValidationManager form)]
+          (println :vmgr!! vmgr)
+          (.add vmgr (qxme me) new-fn))))))
+
+(defmethod observe [:enabled ::qxty/m.Input]
+  [_ me new-value old _]
+
+  (with-integrity [:client [:2-post-make-qx me]]
+    (.setEnabled (qxme me) new-value)))
+

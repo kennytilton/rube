@@ -50,9 +50,18 @@
     ::qxty/m.Group js/qx.ui.mobile.form.Group
 
     ::qxty/m.Button js/qx.ui.mobile.form.Button
+    ::qxty/m.Slider js/qx.ui.mobile.form.Slider
     ::qxty/m.TextField js/qx.ui.mobile.form.TextField
     ::qxty/m.PasswordField js/qx.ui.mobile.form.PasswordField
     ::qxty/m.NumberField js/qx.ui.mobile.form.NumberField
+    ::qxty/m.CheckBox js/qx.ui.mobile.form.CheckBox
+
+    ::qxty/m.TextArea qx.ui.mobile.form.TextArea
+    ::qxty/m.Title qx.ui.mobile.form.Title
+    ::qxty/m.ToggleButton qx.ui.mobile.form.ToggleButton
+    ::qxty/m.Row qx.ui.mobile.form.Row
+    ::qxty/m.RadioGroup qx.ui.mobile.form.RadioGroup
+    ::qxty/m.RadioButtone qx.ui.mobile.form.RadioButton
 
     (throw (js/Error. (str "qxia-type-to-qx-class does not know about " type)))))
 
@@ -66,7 +75,7 @@
     (if-let [qx-class (or (when (contains? iargs :qx-class)
                             ;;(println :class-arg!!!!! type)
                             (let [qx-class (:qx-class iargs)]
-                              
+
                               (when-not qx-class
                                 (println (str "ERROR! qx-class-new> key class specified but nil "
                                            "Do we need a new qx class mention in Application."))
@@ -100,7 +109,7 @@
   [:0-make-qx :1-layout :2-post-make-qx :3-post-assembly])
 
 (defn qxia-q-handler [user-q]
-  (doseq [[[qx-defer-code me] task] (reverse 
+  (doseq [[[qx-defer-code me] task] (reverse
                                       (fifo-data user-q))]
     (when-not (some #{qx-defer-code} +qxl-client-task-priority+)
       (throw js/Error. (str "unknown qxl client task opcode "

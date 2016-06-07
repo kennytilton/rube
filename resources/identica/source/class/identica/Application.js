@@ -60,14 +60,21 @@ qx.Class.define("identica.Application",
       qx.ui.mobile.form.TextField;
       qx.ui.mobile.form.PasswordField;
       qx.ui.mobile.form.Form;
+      qx.ui.mobile.form.CheckBox;
+      qx.ui.mobile.form.Slider;
       qx.ui.mobile.form.Group;
+      qx.ui.mobile.form.TextArea;
+      qx.ui.mobile.form.Title;
+      qx.ui.mobile.form.ToggleButton;
+      qx.ui.mobile.form.Row;
+      qx.ui.mobile.form.RadioGroup;
+      qx.ui.mobile.form.RadioButton;
+
       qx.ui.mobile.form.renderer.Single;
       qx.ui.mobile.container.Carousel;
       qx.ui.mobile.container.Drawer;
       qx.ui.mobile.container.Collapsible;
       qx.ui.mobile.control.Picker;
-
-
 
       hello_mobile.core.appinit
         (this, new qx.ui.mobile.page.Manager(false), this._show);

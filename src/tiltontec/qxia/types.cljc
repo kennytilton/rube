@@ -9,8 +9,10 @@
      [::ml.AbstractBox ::ml.HBox ::ml.VBox]]
     [::mWidget
      [::m.Atom ::m.Image ::m.Label ::m.Button]
-     [::m.Input
-      ::m.NumberField
+     [::m.Input ::m.Slider ::m.TextArea ::m.Title
+      ::m.ToggleButton ::m.Row
+      ::m.RadioGroup ::m.RadioButton
+      ::m.NumberField ::m.CheckBox
       [::m.TextField ::m.PasswordField]]
      [::m.Composite
       ::m.Carousel ::m.Drawer ::m.Collapsible ::m.Picker

@@ -19,7 +19,7 @@
                      unlink-from-callers *causation*
                      c-slot-name c-synaptic? caller-drop
                      c-pulse c-pulse-last-changed c-ephemeral? c-slot c-slots
-                     *depender* *not-to-be* 
+                     *depender* *not-to-be*
                      *c-prop-depth* md-slot-owning? c-lazy] :as cty])
    #?(:cljs [tiltontec.cell.integrity
              :refer-macros [with-integrity]]
@@ -62,8 +62,7 @@
   (if-let [c  (md-cell me slot)]
     (c-reset! c new-value)
     (do
-      (println :meta (meta me))
-      (println :cz (:cz (meta me)))
+      ;; (println :meta (meta me))      (println :cz (:cz (meta me)))
       (if (contains? @me slot)
         (err str "change to slot not mediated by cell" slot)
         (err str "change to slot not mediated by cell and map lacks slot" slot)))))
