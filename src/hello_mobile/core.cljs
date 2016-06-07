@@ -3,7 +3,9 @@
    [tiltontec.cell.base
     :refer [ia-type ia-types unbound cells-reset]
     :as cty]
-   [tiltontec.cell.observer :refer [observe]]
+   [tiltontec.cell.observer
+    :refer-macros [fn-obs]
+    :refer [observe]]
    [tiltontec.cell.integrity :refer-macros [with-integrity]]
    [tiltontec.cell.core
     :refer-macros [c? c?+ c-reset-next! c?once c?n]
@@ -15,13 +17,12 @@
     :as qxty]
    [tiltontec.qxia.base :refer [qxme]]
    [tiltontec.qxia.core
-    :refer [ image button routing-get
+    :refer [label image button routing-get
             text-field number-field]]
    [tiltontec.qxia.macros
     :refer-macros [hbox vbox navigation-page form carousel
-                   label drawer collapsible group]]
+                    drawer collapsible group]]
    ))
-
 
 (def this-app (atom nil))
 
@@ -65,33 +66,28 @@
   (form [][:name :login]
     (text-field "Username"
       :name :u-name
-      :value "KennY"
-      :placeholder "Username or e-mail"
+      ;;:value "KennY"
+      :placeholder "Just type something"
       :required true
       :requiredInvalidMessage "Please share your user name")
     (md/make ::qxty/m.PasswordField
       :name :p-word
       :label "Password"
-      :value "Zoommmmm"
-      :placeholder "Your password"
+      ;;:value "Zoommmmm"
+      :placeholder "Just type something"
       :required true
       :requiredInvalidMessage "Password is required")
     (number-field "A 42-ish Quantity"
       :qx-new-args [42]
 
-      :placeholder "Uni Answer"
+      :placeholder "something from -42 to 420 divisible by 42"
       :required true
       :minimum -42
       :step 42
       :maximum 420
                                         ;:liveUpdate true
       :invalidMessage "NOT Answer to universe"
-      :requiredInvalidMessage "Answer to universe is required"
-      :listeners  {"changeValue"
-                   (fn [evt me]
-                     (let [data (.getData evt)
-                           jd (js->clj data)]
-                       (println "Galaxy value!!!! jd" jd)))})
+      :requiredInvalidMessage "Answer to universe is required")
 
     (md/make ::qxty/m.CheckBox
       :name :remember-me
@@ -102,7 +98,6 @@
                    (fn [evt me]
                      (let [data (.getData evt)
                            jd (js->clj data)]
-                       (println "Remember value!!!! jd" jd)
                        (md-reset! me :value jd)))})
 
     
@@ -115,16 +110,15 @@
                    (fn [evt me]
                      (let [data (.getData evt)
                            jd (js->clj data)]
-                       (println "really!!!! jd" jd)
                        (md-reset! me :value jd)))})
 
     ;;(group [:label "Dummy"]
       (md/make ::qxty/m.Slider
+        :name :time-to-remember
         :label "How long to remember?"
         :value (c-in 10)
-        :enabled (c? (println :slider-enabled?)
-                   (and (mdv! :remember-me :value)
-                     (mdv! :really :value)))
+        :enabled (c? (and (mdv! :remember-me :value)
+                       (mdv! :really :value)))
         :minimum 1
         :maximum 30
         :step 2
@@ -132,11 +126,15 @@
                      (fn [evt me]
                        (let [data (.getData evt)
                              jd (js->clj data)]
-                         (println "Remember how long value!!!! jd" jd)
                          (md-reset! me :value jd)))})
-      (text-field "42 days"
-        :label "Really?????"
-        :raedOnly true)
+      (text-field "Remember time"
+        :value (c?+ [:obs (fn-obs (println :fno (qxme me))
+                            (when-let [q (qxme me)]
+                              (.setValue (qxme me) new)))]
+                 (let [r (mdv! :time-to-remember :value)]
+                   (println :computing!!!)
+                   (when r (str r " days"))))
+        :readOnly true)
 
     (md/make ::qxty/m.TextArea
       :label "Tell me a story."
@@ -146,17 +144,11 @@
                    (fn [evt me]
                      (let [data (.getData evt)
                            jd (js->clj data)]
-                       (println "Story!!!! jd" jd)
-                       (md-reset! me :value jd)))})
-
-    
-    ))
-
+                       (md-reset! me :value jd)))})))
 
 (defmethod observe [:value ::qxty/m.Label]
   [_ me new old _]
   (when (not= old unbound)
-    (println :obs-set-value!!!! new (ia-type me))
     (.setValue (qxme me) new)))
 
 (defmethod observe [:value ::qxty/m.Slider]
@@ -176,7 +168,6 @@
                      (fn [evt me]
                        (let [data (.getData evt)
                              jd (js->clj data)]
-                         (println "Remember how long value!!!! jd" jd)
                          (md-reset! me :value jd)))})
     (button "Login"
       :listeners {"tap"
@@ -184,8 +175,7 @@
                          vmgr (.getValidationManager login)]
                      (assert vmgr)
                      (when-let [ok (.validate login)]
-                       (println :ok ok :items (js->clj (.getItems login)))
-                       #_(routing-get "/overview")))})
+                       (routing-get "/overview")))})
 
     (make-picker-test)
 
@@ -203,11 +193,9 @@
       (label "Surprise."))
     ))
 
-
 (defn make-picker-test []
   (vbox [:name :picker-vbox]
      (label (c? (let [myp (fget :my-pick me)]
-                 (println :lbl-computing!!!!!!! (ia-type myp))
                  (str "Latest pick " (md-get myp :value)))))
     (md/make ::qxty/m.Picker
       :name :my-pick
@@ -219,7 +207,7 @@
                   (fn [evt me]
                     (let [data (.getData evt)
                           jd (js->clj data)]
-                      (println "picked!!!! jd" jd
+                      #_(println "picked!!!! jd" jd
                         (type jd) (ffirst jd)
                         (jd "item"))
                       (md-reset! me :value

@@ -33,7 +33,6 @@
     :label label
     iargs))
 
-<<<<<<< Updated upstream
 (defn number-field [label & iargs]
   (apply md/make ::qxty/m.NumberField
          :label label
@@ -52,11 +51,10 @@
                                  (.setInvalidMessage qm emsg))
                                (nil? emsg))))
          iargs))
-=======
 
 (defn label [value & iargs]
   (apply md/make
-    :type :qxty/m.Label
-    :value
+    :type ::qxty/m.Label
+    :value value
     iargs))
->>>>>>> Stashed changes
+

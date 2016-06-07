@@ -139,8 +139,8 @@
   (let [new-ks (if (= oldk unbound)
                  newk
                  (difference (set newk) (set oldk)))]
-    ;;(println :compo new-ks)
     (when-not (empty? new-ks)
+      ;;(println :compo-newks!!!!!!! new-ks)
       (doseq [k new-ks]
         (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
           (qx-add-kid me k))))))
@@ -168,9 +168,7 @@
     (when new-fn
       (let [form (qxme (qx-par me))]
         (assert form)
-        (println :form!!! form)
         (let [vmgr (.getValidationManager form)]
-          (println :vmgr!! vmgr)
           (.add vmgr (qxme me) new-fn))))))
 
 (defmethod observe [:enabled ::qxty/m.Input]

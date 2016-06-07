@@ -173,6 +173,11 @@
 
 (defn qx-add-kid [me kid]
   ;(println :add-kid (ia-type me)(ia-type kid))
+  (assert (qxme me) (str "no qxme me" (ia-type me) me))
+  (assert (qxme kid) (str "no qxme kid" (ia-type me)
+                       (:name @me)
+                       (ia-type kid) kid))
+  
   (if-let [flex (:flex @kid)]
     (.add (qxme me) (qxme kid) #js {:flex flex})
     (.add (qxme me) (qxme kid))))
