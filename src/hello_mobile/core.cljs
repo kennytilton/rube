@@ -16,7 +16,7 @@
    [tiltontec.qxia.base :refer [qxme]]
    [tiltontec.qxia.core
     :refer [ image button routing-get
-            text-field]]
+            text-field number-field]]
    [tiltontec.qxia.macros
     :refer-macros [hbox vbox navigation-page form carousel
                    label drawer collapsible group]]
@@ -60,17 +60,6 @@
         :flex 3
         :css-class ["cool" "coolfont"]))))
 
-(defmethod observe [:validator-fn ::qxty/m.Input]
-  [_ me new-fn old _]
-  
-  (with-integrity [:client [:2-post-make-qx me]]
-    (when new-fn
-      (let [form (qxme (qx-par me))]
-        (assert form)
-        (println :form!!! form)
-        (let [vmgr (.getValidationManager form)]
-          (println :vmgr!! vmgr)
-          (.add vmgr (qxme me) new-fn))))))
         
 (defn make-login-form []
   (form [][:name :login]
@@ -87,23 +76,9 @@
       :placeholder "Your password"
       :required true
       :requiredInvalidMessage "Password is required")
-    (md/make ::qxty/m.NumberField
-      :label "A 42-ish Quantity"
+    (number-field "A 42-ish Quantity"
       :qx-new-args [42]
-      :validator-fn (c? (fn [val] 
-                          (println :bingo-val-fn!!!! val)
-                          (let [qm (qxme me)
-                                min (.getMinimum qm)
-                                max (.getMaximum qm)
-                                stp (.getStep qm)
-                                emsg (cond
-                                       (< val min) "Too low!"
-                                       (> val max) "Too high!"
-                                       (not (zero? (mod val stp))) "Out of step!")]
-                            (println :emsg! emsg)
-                            (when emsg
-                              (.setInvalidMessage qm emsg))
-                            (nil? emsg))))
+
       :placeholder "Uni Answer"
       :required true
       :minimum -42

@@ -97,6 +97,17 @@
               (println
                 (.add content qxk)))))))))
 
+(defmethod observe [:validator-fn ::qxty/m.Input]
+  [_ me new-fn old _]
+  (with-integrity [:client [:2-post-make-qx me]]
+                  (when new-fn
+                    (let [form (qxme (qx-par me))]
+                      (assert form)
+                      (println :form!!! form)
+                      (let [vmgr (.getValidationManager form)]
+                        (println :vmgr!! vmgr)
+                        (.add vmgr (qxme me) new-fn))))))
+
 (defmethod qx-initialize ::qxty/m.TextField [me]
   (with-integrity [:client [:2-post-make-qx me]]
     (.setValue (qxme me) (md-get me :value))))

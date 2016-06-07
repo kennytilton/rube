@@ -7,7 +7,7 @@
    [tiltontec.model.core :refer [md-get make] :as md]
    [tiltontec.qxia.types :as qxty]
     [tiltontec.qxia.base
-    :refer [qx-class-new qx-initialize qx-initialize-all
+    :refer [qxme qx-class-new qx-initialize qx-initialize-all
             app-routing]]
    [tiltontec.qxia.widget]
    ))
@@ -21,6 +21,7 @@
          :source source
          iargs))
 
+
 (defn button [label-icon & iargs]
   (apply md/make :type ::qxty/m.Button
     :qx-new-args (if (coll? label-icon)
@@ -31,3 +32,22 @@
   (apply md/make :type ::qxty/m.TextField
     :label label
     iargs))
+
+(defn number-field [label & iargs]
+  (apply md/make ::qxty/m.NumberField
+         :label label
+         :validator-fn (c? (fn [val]
+                             (println :bingo-val-fn!!!! val)
+                             (let [qm (qxme me)
+                                   min (.getMinimum qm)
+                                   max (.getMaximum qm)
+                                   stp (.getStep qm)
+                                   emsg (cond
+                                          (< val min) "Too low!"
+                                          (> val max) "Too high!"
+                                          (not (zero? (mod val stp))) "Out of step!")]
+                               (println :emsg! emsg)
+                               (when emsg
+                                 (.setInvalidMessage qm emsg))
+                               (nil? emsg))))
+         iargs))
