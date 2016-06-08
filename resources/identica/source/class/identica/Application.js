@@ -61,6 +61,7 @@ qx.Class.define("identica.Application",
       qx.ui.mobile.form.PasswordField;
       qx.ui.mobile.form.Form;
       qx.ui.mobile.form.CheckBox;
+      qx.ui.mobile.form.SelectBox;
       qx.ui.mobile.form.Slider;
       qx.ui.mobile.form.Group;
       qx.ui.mobile.form.TextArea;

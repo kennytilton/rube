@@ -116,11 +116,10 @@
         :name :time-to-remember
         :label "How long to remember?"
         :value (c-in 10)
-        :enabled (c? (and (mdv! :remember-me :value)
+        :enabled (c? (println :enabling????)
+                   (and (mdv! :remember-me :value)
                        (mdv! :really :value)))
-        :minimum 1
-        :maximum 30
-        :step 2
+        :minimum 1 :maximum 30 :step 2
         :listeners  {"changeValue"
                      (fn [evt me]
                        (let [data (.getData evt)
@@ -134,16 +133,16 @@
                    (when r (str r " days"))))
         :readOnly true)
 
-    (md/make ::qxty/m.TextArea
-      :label "Tell me a story."
-      :placeholder "Your story here."
-      :maxLength 300
-      :value (c-in nil)
-      :listeners  {"changeValue"
-                   (fn [evt me]
-                     (let [data (.getData evt)
-                           jd (js->clj data)]
-                       (md-reset! me :value jd)))})))
+      (md/make ::qxty/m.SelectBox
+        :label "How many?"
+        :selection (c-in nil)
+        :items ["one" "two" "three"]
+        :listeners  {"changeSelection"
+                     (fn [evt me]
+                       (let [data (.getData evt)
+                             jd (js->clj data)]
+                         (println :changesel!!!!! jd)
+                         (md-reset! me :selection jd)))})))
 
 (defn make-login []
   (navigation-page ["Login" "/"][]
@@ -170,6 +169,18 @@
 
     (collapsible "Click for a surprise" []
       (label "Surprise."))
+
+    
+    (md/make ::qxty/m.TextArea
+      :label "Tell me a story."
+      :placeholder "Your story here."
+      :maxLength 300
+      :value (c-in nil)
+      :listeners  {"changeValue"
+                   (fn [evt me]
+                     (let [data (.getData evt)
+                           jd (js->clj data)]
+                       (md-reset! me :value jd)))})
     ))
 
 (defn make-picker-test []

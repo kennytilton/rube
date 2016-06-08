@@ -112,6 +112,13 @@
   (with-integrity [:client [:2-post-make-qx me]]
     (.setValue (qxme me) (md-get me :value))))
 
+(defmethod qx-initialize ::qxty/m.SelectBox [me]
+  (with-integrity [:client [:2-post-make-qx me]]
+    (let [items (md-get me :items)
+          model-data (new js/qx.data.Array
+                       (clj->js items))]
+      (.setModel (qxme me) model-data))))
+
 ;;; --- observer handles changes to kids -----------
 ;;;
 
@@ -171,7 +178,7 @@
         (let [vmgr (.getValidationManager form)]
           (.add vmgr (qxme me) new-fn))))))
 
-(defmethod observe [:enabled ::qxty/m.Input]
+(defmethod observe [:enabled ::qxty/m.Widget]
   [_ me new-value old _]
 
   (with-integrity [:client [:2-post-make-qx me]]

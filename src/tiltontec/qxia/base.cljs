@@ -32,6 +32,10 @@
 
 (defn qxia-type-to-qx-class [type]
   ;; make sure each of these is mentioned in your Application.js
+  ;; (println :atom-super!!!!!!! js/qx.ui.mobile.basic.Atom.superclass)
+  ;; (println :atom-super!!!!!!!name js/qx.ui.mobile.basic.Atom.superclass.name)
+  ;; (let [reg  js/qx.Class.$$registry]
+  ;;   (println :reg!!! (aget reg 0)))
   (case type
     ::qxty/Mobile qx.application.Mobile
     ::qxty/m.Single js/qx.ui.mobile.form.renderer.Single
@@ -55,6 +59,7 @@
     ::qxty/m.PasswordField js/qx.ui.mobile.form.PasswordField
     ::qxty/m.NumberField js/qx.ui.mobile.form.NumberField
     ::qxty/m.CheckBox js/qx.ui.mobile.form.CheckBox
+    ::qxty/m.SelectBox js/qx.ui.mobile.form.SelectBox
 
     ::qxty/m.TextArea qx.ui.mobile.form.TextArea
     ::qxty/m.Title qx.ui.mobile.form.Title
