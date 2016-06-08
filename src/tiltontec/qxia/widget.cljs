@@ -14,8 +14,9 @@
    [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.base
     :refer [qxme qx-obj-properties
+            qx-property-observe
             qx-class-new qx-initialize
-            qxme qx-add-kid]]
+            qxme qx-add-kid qx-data-array]]
    ))
 
 (declare kids-refresh)
@@ -103,21 +104,31 @@
                   (when new-fn
                     (let [form (qxme (qx-par me))]
                       (assert form)
-                      (println :form!!! form)
                       (let [vmgr (.getValidationManager form)]
-                        (println :vmgr!! vmgr)
                         (.add vmgr (qxme me) new-fn))))))
 
 (defmethod qx-initialize ::qxty/m.TextField [me]
   (with-integrity [:client [:2-post-make-qx me]]
     (.setValue (qxme me) (md-get me :value))))
 
-(defmethod qx-initialize ::qxty/m.SelectBox [me]
-  (with-integrity [:client [:2-post-make-qx me]]
-    (let [items (md-get me :items)
-          model-data (new js/qx.data.Array
-                       (clj->js items))]
-      (.setModel (qxme me) model-data))))
+
+(defmethod observe [:model-items ::qxty/m.SelectBox]
+  [_ me new _ _]
+  (when new
+    (with-integrity [:client [:2-post-make-qx me]]
+      (let [model-data (qx-data-array new)]
+        (println :obs-setmodel-data!!! model-data)
+        (.setModel (qxme me) model-data)))))
+
+(defmethod qx-property-observe [:selection ::qxty/m.SelectBox]
+  [_ me new _ _]
+  (when new
+    ;; we have to let the model get set first, so defer even longer
+    ;; by leveraging the post-assembly tag albeit mnemonically off a bit
+    (with-integrity [:client [:3-post-assembly me]]
+      (assert (.getModel (qxme me)))
+      (.setSelection (qxme me) new))))
+
 
 ;;; --- observer handles changes to kids -----------
 ;;;
@@ -177,24 +188,4 @@
         (assert form)
         (let [vmgr (.getValidationManager form)]
           (.add vmgr (qxme me) new-fn))))))
-
-(defmethod observe [:enabled ::qxty/m.Widget]
-  [_ me new-value old _]
-
-  (with-integrity [:client [:2-post-make-qx me]]
-    (.setEnabled (qxme me) new-value)))
-
-;;; --- 
-
-
-(defmethod observe [:value ::qxty/m.Label]
-  [_ me new old _]
-  (when (not= old unbound)
-    (.setValue (qxme me) new)))
-
-(defmethod observe [:value ::qxty/m.Slider]
-  [_ me newval oldval _]
-  (with-integrity [:client [:2-post-make-qx me]]
-    (when (= oldval unbound)
-      (.setValue (qxme me) newval))))
 

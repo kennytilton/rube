@@ -17,8 +17,13 @@
                     [slot-name (type-cljc me)])
   :hierarchy #'cty/ia-types)
 
+(def +observe-default-handler+ (atom nil))
+
 (defmethod observe :default [slot me new-val old-val c]
-  #_(println :obs-fall-thru  slot (type-cljc me)))
+  (if-let [obs @+observe-default-handler+]
+    (do ;; (println :app-def-obs!!!)
+        (obs slot me new-val old-val c))
+    (println :obs-fall-thru  slot (type-cljc me))))
 
 (defmacro defobserver [slot types params & body]
      (assert (keyword? slot) "defobserver> slot should be a keyword.")

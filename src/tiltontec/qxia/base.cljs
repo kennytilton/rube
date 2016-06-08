@@ -8,7 +8,7 @@
             +client-q-handler+] :as cty]
    [tiltontec.cell.integrity
     :refer-macros [with-integrity] :as md]
-   [tiltontec.cell.observer :refer [observe]]
+   [tiltontec.cell.observer :refer [observe +observe-default-handler+]]
    [tiltontec.model.base :refer [md-awaken-before]
     :as mdb]
    [tiltontec.model.core :refer [md-get md-getx]]
@@ -29,6 +29,8 @@
     (assert app "app touyign")
     (.getRouting app)))
 
+(defn qx-data-array [items]
+  (new js/qx.data.Array (clj->js items)))
 
 (defn qxia-type-to-qx-class [type]
   ;; make sure each of these is mentioned in your Application.js
@@ -140,6 +142,8 @@
 (defmethod qx-initialize :default [me]
   #_(println (str "No initialization provided for type "  (ia-type me))))
 
+;;; --- qx properties -----------------------------------
+
 (defn qx-obj-properties [me]
   (map keyword (.getProperties qx.Class
                                (or (:class @me)
@@ -175,6 +179,27 @@
                     (fn [event]
                       (handler event me))))))
 
+;;; --- auto-observe qx properties -------------------
+
+(defmulti qx-property-observe
+  (fn [slot me new old c]
+    [slot (ia-type me)])
+  :hierarchy #'cty/ia-types)
+
+(defmethod qx-property-observe :default
+  [slot me new old c]
+  (when-let [qxme (qxme me)]
+    (when (not= old unbound)
+      (let [sd (into {} [[(name slot) new]])]
+        (println :def-prop-obs!!! slot new (ia-type me))
+        (.set qxme (clj->js sd))))))
+
+(defn qx-observe-default [slot me new old c]
+  (when (and (isa? cty/ia-types (ia-type me) ::qxty/qx.Object)
+          (some #{slot} (qx-obj-properties me)))
+    (qx-property-observe slot me new old c)))
+
+(reset! +observe-default-handler+ qx-observe-default)
 
 (defn qx-add-kid [me kid]
   ;(println :add-kid (ia-type me)(ia-type kid))
@@ -182,7 +207,7 @@
   (assert (qxme kid) (str "no qxme kid" (ia-type me)
                        (:name @me)
                        (ia-type kid) kid))
-  
+
   (if-let [flex (:flex @kid)]
     (.add (qxme me) (qxme kid) #js {:flex flex})
     (.add (qxme me) (qxme kid))))

@@ -15,7 +15,7 @@
     :refer [md-get make md-reset! fm! fget qx-par] :as md]
    [tiltontec.qxia.types :refer [derive-tree]
     :as qxty]
-   [tiltontec.qxia.base :refer [qxme]]
+   [tiltontec.qxia.base :refer [qxme qx-data-array]]
    [tiltontec.qxia.core
     :refer [label image button routing-get
             text-field number-field]]
@@ -116,8 +116,7 @@
         :name :time-to-remember
         :label "How long to remember?"
         :value (c-in 10)
-        :enabled (c? (println :enabling????)
-                   (and (mdv! :remember-me :value)
+        :enabled (c? (and (mdv! :remember-me :value)
                        (mdv! :really :value)))
         :minimum 1 :maximum 30 :step 2
         :listeners  {"changeValue"
@@ -125,6 +124,7 @@
                        (let [data (.getData evt)
                              jd (js->clj data)]
                          (md-reset! me :value jd)))})
+
       (text-field "Remember time"
         :value (c?+ [:obs (fn-obs
                             (when-let [q (qxme me)] ;; not at first
@@ -135,14 +135,17 @@
 
       (md/make ::qxty/m.SelectBox
         :label "How many?"
-        :selection (c-in nil)
-        :items ["one" "two" "three"]
+        ;;:init-sel 2
+        :selection (c-in 2)
+        :model (qx-data-array ["one" "two" "three"])
+        :placeholder "Pick a number, any number"
         :listeners  {"changeSelection"
                      (fn [evt me]
                        (let [data (.getData evt)
                              jd (js->clj data)]
-                         (println :changesel!!!!! jd)
-                         (md-reset! me :selection jd)))})))
+                         (println :changesel!!!!! (jd "index"))
+                         (with-integrity (:change)
+                           (md-reset! me :selection (jd "index")))))})))
 
 (defn make-login []
   (navigation-page ["Login" "/"][]
