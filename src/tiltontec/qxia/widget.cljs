@@ -180,7 +180,7 @@
         (let [vmgr (.getValidationManager form)]
           (.add vmgr (qxme me) new-fn))))))
 
-(defmethod observe [:value ::qxty/m.Valued]
+(defmethod observe [:value ::qxty/m.MValue]
   ;; oddly, value is not a property
   [_ me new old _]
   (with-integrity [:client [:2-post-make-qx me]]

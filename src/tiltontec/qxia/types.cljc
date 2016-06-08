@@ -4,7 +4,7 @@
 
 (def qx-type-tree
   [::qx.Object ::m.Form ::m.Single ::m.DialogManager
-   [::m.Valued ::m.TextField ::m.NumberField ::m.Slider
+   [::m.MValue ::m.TextField ::m.NumberField ::m.Slider
     ::.ToggleButton ::m.CheckBox ::m.RadioButton
     ::m.SelectBox]
    [::Application ::Mobile]
