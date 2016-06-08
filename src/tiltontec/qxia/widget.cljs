@@ -111,15 +111,6 @@
   (with-integrity [:client [:2-post-make-qx me]]
     (.setValue (qxme me) (md-get me :value))))
 
-
-(defmethod observe [:model-items ::qxty/m.SelectBox]
-  [_ me new _ _]
-  (when new
-    (with-integrity [:client [:2-post-make-qx me]]
-      (let [model-data (qx-data-array new)]
-        (println :obs-setmodel-data!!! model-data)
-        (.setModel (qxme me) model-data)))))
-
 (defmethod qx-property-observe [:selection ::qxty/m.SelectBox]
   [_ me new _ _]
   (when new
@@ -188,4 +179,10 @@
         (assert form)
         (let [vmgr (.getValidationManager form)]
           (.add vmgr (qxme me) new-fn))))))
+
+(defmethod observe [:value ::qxty/m.Slider]
+  [_ me new old _]
+  (when (= old unbound)
+    (with-integrity [:client [:2-post-make-qx me]]
+      (.setValue (qxme me) new))))
 

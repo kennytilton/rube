@@ -104,6 +104,8 @@
     (md/make ::qxty/m.ToggleButton
       :name :really
       :label "Really?"
+      :visibility (c? (if (mdv! :remember-me :value)
+                        "visible" "excluded"))
       :value (c-in false)
       :qx-new-args (c? [(md-get me :value) "Yes" "Nahh"])
       :listeners  {"changeValue"
@@ -115,6 +117,7 @@
       (md/make ::qxty/m.Slider
         :name :time-to-remember
         :label "How long to remember?"
+        :displayValue "value"
         :value (c-in 10)
         :enabled (c? (and (mdv! :remember-me :value)
                        (mdv! :really :value)))
@@ -135,15 +138,12 @@
 
       (md/make ::qxty/m.SelectBox
         :label "How many?"
-        ;;:init-sel 2
         :selection (c-in 2)
         :model (qx-data-array ["one" "two" "three"])
         :placeholder "Pick a number, any number"
         :listeners  {"changeSelection"
                      (fn [evt me]
-                       (let [data (.getData evt)
-                             jd (js->clj data)]
-                         (println :changesel!!!!! (jd "index"))
+                       (let [jd (js->clj (.getData evt))]
                          (with-integrity (:change)
                            (md-reset! me :selection (jd "index")))))})))
 

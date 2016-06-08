@@ -191,7 +191,6 @@
   (when-let [qxme (qxme me)]
     (when (not= old unbound)
       (let [sd (into {} [[(name slot) new]])]
-        (println :def-prop-obs!!! slot new (ia-type me))
         (.set qxme (clj->js sd))))))
 
 (defn qx-observe-default [slot me new old c]
