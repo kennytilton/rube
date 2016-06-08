@@ -66,7 +66,7 @@
   (form [][:name :login]
     (text-field "Username"
       :name :u-name
-      ;;:value "KennY"
+      :value (c-in "KennY")
       :placeholder "Just type something"
       :required true
       :requiredInvalidMessage "Please share your user name")

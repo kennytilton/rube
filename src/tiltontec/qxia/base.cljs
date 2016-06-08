@@ -4,7 +4,7 @@
    [tiltontec.util.base :refer [prog1]]
    [tiltontec.util.core :refer [fifo-data fifo-clear]]
    [tiltontec.cell.base
-    :refer [unbound ia-type ia-types
+    :refer [unbound ia-type ia-types ia-type?
             +client-q-handler+] :as cty]
    [tiltontec.cell.integrity
     :refer-macros [with-integrity] :as md]
@@ -194,6 +194,8 @@
         (.set qxme (clj->js sd))))))
 
 (defn qx-observe-default [slot me new old c]
+  (when (ia-type? me ::qxty/m.TextField)
+    (println :text-props!!!  (qx-obj-properties me)))
   (when (and (isa? cty/ia-types (ia-type me) ::qxty/qx.Object)
           (some #{slot} (qx-obj-properties me)))
     (qx-property-observe slot me new old c)))

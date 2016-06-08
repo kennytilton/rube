@@ -107,9 +107,9 @@
                       (let [vmgr (.getValidationManager form)]
                         (.add vmgr (qxme me) new-fn))))))
 
-(defmethod qx-initialize ::qxty/m.TextField [me]
-  (with-integrity [:client [:2-post-make-qx me]]
-    (.setValue (qxme me) (md-get me :value))))
+;; (defmethod qx-initialize ::qxty/m.TextField [me]
+;;   (with-integrity [:client [:2-post-make-qx me]]
+;;     (.setValue (qxme me) (md-get me :value))))
 
 (defmethod qx-property-observe [:selection ::qxty/m.SelectBox]
   [_ me new _ _]
@@ -180,9 +180,10 @@
         (let [vmgr (.getValidationManager form)]
           (.add vmgr (qxme me) new-fn))))))
 
-(defmethod observe [:value ::qxty/m.Slider]
+(defmethod observe [:value ::qxty/m.Valued]
+  ;; oddly, value is not a property
   [_ me new old _]
-  (when (= old unbound)
-    (with-integrity [:client [:2-post-make-qx me]]
-      (.setValue (qxme me) new))))
+  (with-integrity [:client [:2-post-make-qx me]]
+    (println :setval!!! (ia-type me) new old)
+    (.setValue (qxme me) new)))
 

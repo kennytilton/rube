@@ -4,24 +4,27 @@
 
 (def qx-type-tree
   [::qx.Object ::m.Form ::m.Single ::m.DialogManager
-    [::Application ::Mobile]
-    [::ml.Abstract
-     [::ml.AbstractBox ::ml.HBox ::ml.VBox]]
-    [::m.Widget
-     ::m.Atom ::m.Image ::m.Label ::m.Button
-     ::m.SelectBox ::m.Slider ::m.TextArea ::m.Title
-      ::m.ToggleButton ::m.Row ::m.List
-      ::m.RadioGroup ::m.RadioButton ::m.Collapsible 
-     [::m.Input 
-      ::m.NumberField ::m.CheckBox
-      [::m.TextField
-       ::m.PasswordField]]
-     [::m.Composite
-      ::m.Carousel ::m.Drawer ::m.Picker
-      ::m.Group
-      [::m.Page ::m.NavigationPage]
-      ]
+   [::m.Valued ::m.TextField ::m.NumberField ::m.Slider
+    ::.ToggleButton ::m.CheckBox ::m.RadioButton
+    ::m.SelectBox]
+   [::Application ::Mobile]
+   [::ml.Abstract
+    [::ml.AbstractBox ::ml.HBox ::ml.VBox]]
+   [::m.Widget
+    ::m.Atom ::m.Image ::m.Label ::m.Button
+    ::m.SelectBox ::m.Slider ::m.TextArea ::m.Title
+    ::m.ToggleButton ::m.Row ::m.List
+    ::m.RadioGroup ::m.RadioButton ::m.Collapsible 
+    [::m.Input 
+     ::m.NumberField ::m.CheckBox
+     [::m.TextField
+      ::m.PasswordField]]
+    [::m.Composite
+     ::m.Carousel ::m.Drawer ::m.Picker
+     ::m.Group
+     [::m.Page ::m.NavigationPage]
      ]
+    ]
    ])
 
 
