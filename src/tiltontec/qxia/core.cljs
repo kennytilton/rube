@@ -15,11 +15,17 @@
 (defn routing-get [end-point]
   (.executeGet (app-routing) end-point))
 
+(defn qx-make [type & iargs]
+  (assert (isa? ia-types type ::qxty/qx.Object)
+    (str "First argument to qx-make " type
+      " is not a descendant of qx.Object"))
+  (apply md/make type iargs))
+
 (defn image [source & iargs]
-  (apply md/make
-         :type ::qxty/m.Image
-         :source source
-         iargs))
+  (apply qx-make
+    ::qxty/m.Image
+    :source source
+    iargs))
 
 
 (defn button [label-icon & iargs]

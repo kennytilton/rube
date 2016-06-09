@@ -47,6 +47,16 @@
   (when-let [lyo (:layout @me)]
     (.setLayout (qxme me) lyo)))
 
+(defn form-build-radio-group-stub [form stub]
+  (let [qx-form (qxme form)]
+    (when-let [h (:header @stub)]
+      (do (.addGroupHeader qx-form h)))
+    (let [group (new js/qx.ui.mobile.form.RadioGroup)]
+      (.setAllowEmptySelection group (or (:allowEmptySelection @stub) false))
+      (doseq [rb (md-get stub :kids)]
+        (.add group (qxme rb))
+        (.add qx-form (qxme rb) (:label @rb))))))
+
 (defmethod observe [:kids ::qxty/m.Form]
   [_ me new old _]
   (with-integrity [:client [:2-post-make-qx me]]
@@ -59,9 +69,11 @@
 
       (when-let [kids new]
         (doseq [k kids]
-          (let [qxk  (qxme k)
-                label (md-get k :label)]
-            (.add qx-form qxk label)))))))
+          (case (ia-type k)
+            ::qxty/m.RadioGroupStub (form-build-radio-group-stub me k)
+            (let [qxk  (qxme k)
+                  label (md-get k :label)]
+              (.add qx-form qxk label))))))))
 
 (defmethod qx-initialize ::qxty/m.Single [me]
   (with-integrity [:client [:2-post-make-qx me]]
@@ -106,10 +118,6 @@
                       (assert form)
                       (let [vmgr (.getValidationManager form)]
                         (.add vmgr (qxme me) new-fn))))))
-
-;; (defmethod qx-initialize ::qxty/m.TextField [me]
-;;   (with-integrity [:client [:2-post-make-qx me]]
-;;     (.setValue (qxme me) (md-get me :value))))
 
 (defmethod qx-property-observe [:selection ::qxty/m.SelectBox]
   [_ me new _ _]

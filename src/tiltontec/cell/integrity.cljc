@@ -89,30 +89,28 @@
 
 (defn finish-business []
   (un-stopped
-   (loop [tag :tell-dependents]
-     (case tag
-       :tell-dependents
-       (do (ufb-do :tell-dependents)
-           (ufb-do :awaken)
+    (loop [tag :tell-dependents]
+      (case tag
+        :tell-dependents
+        (do (ufb-do :tell-dependents)
+            (ufb-do :awaken)
 
-           (recur
-            (if (fifo-peek (ufb-queue-ensure :tell-dependents))
-              :tell-dependents
-              :handle-clients)))
+            (recur
+              (if (fifo-peek (ufb-queue-ensure :tell-dependents))
+                :tell-dependents
+                :handle-clients)))
 
         :handle-clients
-        (do ;;(println :handle-clients!!!)
-            (when-let [clientq (ufb-queue :client)]
-          ;;(println :clq!!!!!!!!!!!)
-          (if-let [cqh @+client-q-handler+]
-            (do ;;(println :clqh!!!!!!!!!)
-                (cqh clientq))
-            (ufb-do clientq :client))
+        (do
+          (when-let [clientq (ufb-queue :client)]
+            (if-let [cqh @+client-q-handler+]
+              (cqh clientq)
+              (ufb-do clientq :client))
 
-          (recur
-           (if (fifo-peek (ufb-queue :client))
-             :handle-clients
-             :ephemeral-reset))))
+            (recur
+              (if (fifo-peek (ufb-queue :client))
+                :handle-clients
+                :ephemeral-reset))))
 
         :ephemeral-reset
         (do (ufb-do :ephemeral-reset)

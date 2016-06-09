@@ -25,8 +25,6 @@
 
 (defn app-routing []
   (let [app  (js/qx.core.Init.getApplication)]
-    (println :app!!!!!!!!!!! app)
-    (assert app "app touyign")
     (.getRouting app)))
 
 (defn qx-data-array [items]
@@ -34,10 +32,6 @@
 
 (defn qxia-type-to-qx-class [type]
   ;; make sure each of these is mentioned in your Application.js
-  ;; (println :atom-super!!!!!!! js/qx.ui.mobile.basic.Atom.superclass)
-  ;; (println :atom-super!!!!!!!name js/qx.ui.mobile.basic.Atom.superclass.name)
-  ;; (let [reg  js/qx.Class.$$registry]
-  ;;   (println :reg!!! (aget reg 0)))
   (case type
     ::qxty/Mobile qx.application.Mobile
     ::qxty/m.Single js/qx.ui.mobile.form.renderer.Single
@@ -68,9 +62,11 @@
     ::qxty/m.ToggleButton qx.ui.mobile.form.ToggleButton
     ::qxty/m.Row qx.ui.mobile.form.Row
     ::qxty/m.RadioGroup qx.ui.mobile.form.RadioGroup
-    ::qxty/m.RadioButtone qx.ui.mobile.form.RadioButton
+    ::qxty/m.RadioButton qx.ui.mobile.form.RadioButton
 
-    (throw (js/Error. (str "qxia-type-to-qx-class does not know about " type)))))
+    (do (println :throwing-type-err type)
+        (throw (js/Error. (str "qxia-type-to-qx-class does not know about "
+                            type))))))
 
 (defn qx-class-new [type iargs]
   ;; make sure each of these is mentioned in your Application.js
@@ -78,7 +74,11 @@
     ::qxty/Mobile nil ;; mobile app instance is provided by qooxdoo. See Application.js
     ::qxty/m.Single nil ;; Single constructor must be passed the wrapped Form
     ;; ...and we will not have that until qx-initialize.
-
+    ::qxty/m.RadioGroupStub nil ;; qooxdoo gets weird on RadioGroups
+                                        ; nothing will be instantiated
+                                        ; header and
+                                        ; kids of this just get added to form
+                                        ; ungrouped by anything
     (if-let [qx-class (or (when (contains? iargs :qx-class)
                             ;;(println :class-arg!!!!! type)
                             (let [qx-class (:qx-class iargs)]
@@ -96,16 +96,17 @@
           (apply MyTerop/make qx-class (:qx-new-args iargs)))
         (throw (js/Error. (str "qx-class-new does not know about " type))))))
 
+(defmethod mdb/md-awaken-before ::qxty/m.RadioGroupStub [me])
 
 (defmethod mdb/md-awaken-before ::qxty/qx.Object [me]
   (when (and  ;; not Mobile
           (qxia-type-to-qx-class (ia-type me)))
-    ;(println :qxia-obj-queue-its:obj!!! (ia-type me))
     (with-integrity [:client [:0-make-qx me]]
       (when (nil? (qxme me))
-        ;(println :qxia-obj-gets-its:obj!!! (ia-type me))
         (swap! me assoc :qx-me
           (qx-class-new (ia-type me) @me)))
+      (when-not (ia-type? me ::qxty/m.Single)
+        (assert (qxme me) (str "nope " (ia-type me))))
       (qx-initialize me)
       (qx-initialize-all me))))
 
@@ -123,13 +124,9 @@
                          qx-defer-code))))
 
   (let [sorted (let [data (fifo-data user-q)]
-                 ;;(println :firstd (first data))
-                 ;;(println :ffirst (ffirst (first data)))
                  (sort-by ffirst data))]
-    ;(println :sorted!!!!!!!!!! (count sorted))
     (fifo-clear user-q)
     (doseq [[defer-info task] sorted]
-      ;(println :ddeffo!!! (first defer-info))
       (task :client-q defer-info))))
 
 (reset! +client-q-handler+ qxia-q-handler)
@@ -139,8 +136,7 @@
 (defmulti qx-initialize ia-type
   :hierarchy #'cty/ia-types)
 
-(defmethod qx-initialize :default [me]
-  #_(println (str "No initialization provided for type "  (ia-type me))))
+(defmethod qx-initialize :default [me])
 
 ;;; --- qx properties -----------------------------------
 
@@ -161,7 +157,6 @@
                      [k val])]
     (let [qx (qxme me)]
       (assert qx (str "no qxme " (ia-type me)))
-      ;(println :qx!? qx)
       (.set qx (clj->js (into {} inits)))))
 
   (assert (qxme me) (str "no qx initall " (ia-type me)))
@@ -174,7 +169,6 @@
 
   (doseq [[name handler] (md-get me :listeners)]
     (let [qxme (qxme me)]
-      ;;(println :bingo-listener! name (ia-type me))
       (.addListener qxme name
                     (fn [event]
                       (handler event me))))))
@@ -194,9 +188,9 @@
         (.set qxme (clj->js sd))))))
 
 (defn qx-observe-default [slot me new old c]
-  (when (ia-type? me ::qxty/m.TextField)
-    (println :text-props!!!  (qx-obj-properties me)))
-  (when (and (isa? cty/ia-types (ia-type me) ::qxty/qx.Object)
+  (when (and 
+          (not (isa? cty/ia-types (ia-type me) ::qxty/m.RadioGroupStub))
+          (isa? cty/ia-types (ia-type me) ::qxty/qx.Object)
           (some #{slot} (qx-obj-properties me)))
     (qx-property-observe slot me new old c)))
 

@@ -74,6 +74,7 @@
     :else
     (#?(:clj dosync :cljs do)
      ;;(println (str :md-making (nth iargs 1)))
+      
      (let [me (#?(:clj ref :cljs atom)
                (merge {:par *par*}
                       (->> iargs
@@ -93,7 +94,6 @@
                                  (map vec)
                                  (into {}))))]
        (assert (meta me))
-       ;;(println (str "made me!!!!!!!" (:type (meta me))))
 
        (rmap-meta-setf
         [:cz me]
@@ -105,7 +105,6 @@
              (into {})))
 
        (with-integrity (:awaken me)
-         ;;(println :awakening (ia-type me))
          (md-awaken me))
        me))))
 
@@ -129,21 +128,18 @@
   (cond
     (fn? seek) (seek poss)
     (keyword? seek)(do
-                     ;; (trx :fget=!!! seek @poss)
                      (= seek (:name @poss)))
     :else (do ;; (trx :fget=-else! seek)
               (= seek poss))))
 
 
 (defn fget [what where & options]
-  ;(trx :fget-entry what where)
   (when (and where what)
     (let [options (merge {:me? false
                           , :inside? false
                           , :up? true
                           , :wocd? true ;; without-c-dependency
                           } (apply hash-map options))]
-      ;;(trx :fget-beef what (md-name where) options)
       (binding [*depender* (if (:wocd? options) nil *depender*)]
         (or (and (:me? options)
                  (fget= what where)
@@ -152,10 +148,8 @@
             (and (:inside? options)
                  (if-let [kids (md-get where :kids)]
                    (do
-                     ;;(trx :fget-inside (:skip options)(doall (map md-name kids)))
                      (if-let [netkids (remove #{(:skip options)} kids)]
                        (do
-                         ;;(trx netkids!!! netkids)
                          (some #(fget what %
                                       :me? true
                                       :inside? true
@@ -165,7 +159,6 @@
 
             (and (:up? options)
                  (when-let [par (:par @where)]
-                   ;; (trx :fget-up (:name @par))
                    (fget what par
                          :up? true
                          :me? true

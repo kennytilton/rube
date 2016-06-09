@@ -12,13 +12,13 @@
     :refer [c-in c-reset! make-cell]]
    [tiltontec.model.core
     :refer-macros [the-kids c?kids mdv!]
-    :refer [md-get make md-reset! fm! fget qx-par] :as md]
+    :refer [md-get md-reset! fm! fget qx-par] :as md]
    [tiltontec.qxia.types :refer [derive-tree]
     :as qxty]
    [tiltontec.qxia.base :refer [qxme qx-data-array]]
    [tiltontec.qxia.core
     :refer [label image button routing-get
-            text-field number-field]]
+            text-field number-field qx-make] :as qx]
    [tiltontec.qxia.macros
     :refer-macros [hbox vbox navigation-page form carousel
                     drawer collapsible group]]
@@ -38,14 +38,14 @@
 (defn ^:export appinit [this pager shower]
   (reset!
    this-app
-   (md/make ::qxty/Mobile
+   (qx-make ::qxty/Mobile
      :qx-me this
      :pager pager
      :shower shower
      :kids (c?kids
              ;;(make-hhhack)
              (make-login)
-             (make-overview)
+             ;;(make-overview)
              ))))
 
 (defn make-css-test []
@@ -64,13 +64,14 @@
         
 (defn make-login-form []
   (form [][:name :login]
+    (comment
     (text-field "Username"
       :name :u-name
       :value (c-in "KennY")
       :placeholder "Just type something"
       :required true
       :requiredInvalidMessage "Please share your user name")
-    (md/make ::qxty/m.PasswordField
+    (qx-make ::qxty/m.PasswordField
       :name :p-word
       :label "Password"
       ;;:value "Zoommmmm"
@@ -87,9 +88,22 @@
       :maximum 420
       ;;:liveUpdate true
       :invalidMessage "NOT Answer to universe"
-      :requiredInvalidMessage "Answer to universe is required")
+      :requiredInvalidMessage "Answer to universe is required"))
 
-    (md/make ::qxty/m.CheckBox
+    (qx-make ::qxty/m.RadioGroupStub
+      :header "Favorite Color"
+      :kids (c?kids
+              (qx-make ::qxty/m.RadioButton
+                :qx-new-args [:red]
+                :label "Red")
+              (qx-make ::qxty/m.RadioButton
+                :qx-new-args [:green]
+                :label "Green")
+              (qx-make ::qxty/m.RadioButton
+                :qx-new-args [:blue]
+                :label "Blue")))
+
+    #_(qx-make ::qxty/m.CheckBox
       :name :remember-me
       :label "Remember you?"
       :qx-new-args (c? [(md-get me :value)])
@@ -100,8 +114,8 @@
                            jd (js->clj data)]
                        (md-reset! me :value jd)))})
 
-    
-    (md/make ::qxty/m.ToggleButton
+    (comment
+    (qx-make ::qxty/m.ToggleButton
       :name :really
       :label "Really?"
       :visibility (c? (if (mdv! :remember-me :value)
@@ -114,7 +128,7 @@
                            jd (js->clj data)]
                        (md-reset! me :value jd)))})
 
-      (md/make ::qxty/m.Slider
+      (qx-make ::qxty/m.Slider
         :name :time-to-remember
         :label "How long to remember?"
         :displayValue "value"
@@ -136,7 +150,7 @@
                    (when r (str r " days"))))
         :readOnly true)
 
-      (md/make ::qxty/m.SelectBox
+      (qx-make ::qxty/m.SelectBox
         :label "How many?"
         :selection (c-in 2)
         :model (qx-data-array ["one" "two" "three"])
@@ -145,11 +159,12 @@
                      (fn [evt me]
                        (let [jd (js->clj (.getData evt))]
                          (with-integrity (:change)
-                           (md-reset! me :selection (jd "index")))))})))
+                           (md-reset! me :selection (jd "index")))))}))))
 
 (defn make-login []
   (navigation-page ["Login" "/"][]
     (make-login-form)
+    (comment
     (button "Login"
       :listeners {"tap"
                   #(let [login (qxme (fm! :login me))
@@ -171,10 +186,10 @@
         (hbox [] (label "shirts")))
 
     (collapsible "Click for a surprise" []
-      (label "Surprise."))
+      (label "Surprise.")))
 
     
-    (md/make ::qxty/m.TextArea
+    (qx-make ::qxty/m.TextArea
       :label "Tell me a story."
       :placeholder "Your story here."
       :maxLength 300
@@ -190,7 +205,7 @@
   (vbox [:name :picker-vbox]
      (label (c? (let [myp (fget :my-pick me)]
                  (str "Latest pick " (md-get myp :value)))))
-    (md/make ::qxty/m.Picker
+    (qx-make ::qxty/m.Picker
       :name :my-pick
       :height 100
       :width 200

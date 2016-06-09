@@ -72,7 +72,7 @@
   :hierarchy #'cty/ia-types)
 
 (defmethod md-awaken-before :default [me]
-  #_(println :awaken-before-default!!!!!!!!!!!!
+  (println :awaken-before-default!!!!!!!!!!!!
     (ia-type me)))
 
 (defn md-awaken
