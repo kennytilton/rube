@@ -29,8 +29,6 @@
     (let [app (:qx-me @me)
           shower (:shower @me)
           pager (:pager @me)]
-      ;;(println :obs-me (ia-type me))
-      (assert app "obs mob kids")
       (let [routing (.getRouting app)]
         (when (not= old unbound)
           (doseq [page old]
@@ -48,14 +46,35 @@
     (.setLayout (qxme me) lyo)))
 
 (defn form-build-radio-group-stub [form stub]
+  ;; qooxdoo does not make radio groups very
+  ;; easy to work with, so...
+
   (let [qx-form (qxme form)]
+
     (when-let [h (:header @stub)]
       (do (.addGroupHeader qx-form h)))
+
     (let [group (new js/qx.ui.mobile.form.RadioGroup)]
-      (.setAllowEmptySelection group (or (:allowEmptySelection @stub) false))
+      (.setAllowEmptySelection group
+        (or (:allowEmptySelection @stub) false))
+      (.addListener group "changeSelection"
+        (fn [e]
+          (let [rb (first (js->clj (.getData e)))]
+            (when rb
+              (println :model? (keyword (.getModel rb)))
+              #_(md-reset! stub :selection 
+                (keyword (.getModel rb)))))))
+
       (doseq [rb (md-get stub :kids)]
         (.add group (qxme rb))
-        (.add qx-form (qxme rb) (:label @rb))))))
+        (.add qx-form (qxme rb) (:label @rb)))
+
+      (if-let [s (md-get stub :selection)]
+        (let [gs (filter (fn [rb]
+                           (= s (:model @rb)))
+                   (md-get stub :kids))]
+          (.setSelection group (clj->js (map qxme gs))))
+        (.resetSelection group)))))
 
 (defmethod observe [:kids ::qxty/m.Form]
   [_ me new old _]
@@ -86,6 +105,7 @@
         ;; must be provided to the constructor of a renderer
         ;; but the form child will not have its qx-me until now
         (swap! me assoc :qx-me (new js/qx.ui.mobile.form.renderer.Single qx-form))))))
+
 
 (defmethod qx-initialize ::qxty/m.NavigationPage [page]
   (let [qx-page (qxme page)]

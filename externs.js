@@ -6,6 +6,9 @@ TextField = {};
 Button = {};
 NavigationPage = {};
 Composite = {};
+RadioButoon = {};
+
+RadioButton.getValue = function() {};
 
 Manager.addDetail = function() {};
 Manager.getRouting = function() {};

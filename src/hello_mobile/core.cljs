@@ -92,14 +92,20 @@
 
     (qx-make ::qxty/m.RadioGroupStub
       :header "Favorite Color"
+      :allowEmptySelection true
+      :selection (c-in :blue)
       :kids (c?kids
               (qx-make ::qxty/m.RadioButton
+                :name "Bob"
+                :model :red
                 :qx-new-args [:red]
                 :label "Red")
               (qx-make ::qxty/m.RadioButton
                 :qx-new-args [:green]
+                :model :green
                 :label "Green")
               (qx-make ::qxty/m.RadioButton
+                :model :blue
                 :qx-new-args [:blue]
                 :label "Blue")))
 
