@@ -16,14 +16,14 @@
     ::m.Atom ::m.Image ::m.Label ::m.Button
     ::m.SelectBox ::m.Slider ::m.TextArea ::m.Title
     ::m.ToggleButton ::m.Row ::m.List
-     ::m.Collapsible 
-    [::m.Input 
+     ::m.Collapsible
+    [::m.Input
      ::m.NumberField ::m.CheckBox ::m.RadioButton
      [::m.TextField
       ::m.PasswordField]]
     [::m.Composite
      ::m.Carousel ::m.Drawer ::m.Picker
-     ::m.Group
+     ::m.Group ::m.Row
      [::m.Page ::m.NavigationPage]
      ]
     ]
@@ -57,7 +57,7 @@
   ;;   }
   ;; </script>
 
-;; #?(:cljs (demo-subs))                   
+;; #?(:cljs (demo-subs))
 #?(:cljs (derive-tree nil qx-type-tree))
 
 ;;     :class js/qx.ui.mobile.container.Carousel

@@ -1,5 +1,6 @@
 (ns hello-mobile.core
   (:require
+   [clojure.string :refer [capitalize]]
    [tiltontec.cell.base
     :refer [ia-type ia-types unbound cells-reset]
     :as cty]
@@ -65,74 +66,73 @@
 (defn make-login-form []
   (form [][:name :login]
     (comment
-    (text-field "Username"
-      :name :u-name
-      :value (c-in "KennY")
-      :placeholder "Just type something"
-      :required true
-      :requiredInvalidMessage "Please share your user name")
-    (qx-make ::qxty/m.PasswordField
-      :name :p-word
-      :label "Password"
-      ;;:value "Zoommmmm"
-      :placeholder "Just type something"
-      :required true
-      :requiredInvalidMessage "Password is required")
-    (number-field "A 42-ish Quantity"
-      ;;:qx-new-args [42]
+      (text-field "Username"
+        :name :u-name
+        :value (c-in "KennY")
+        :placeholder "Just type something"
+        :required true
+        :requiredInvalidMessage "Please share your user name")
+      (qx-make ::qxty/m.PasswordField
+        :name :p-word
+        :label "Password"
+        ;;:value "Zoommmmm"
+        :placeholder "Just type something"
+        :required true
+        :requiredInvalidMessage "Password is required")
+      (number-field "A 42-ish Quantity"
+        ;;:qx-new-args [42]
 
-      :placeholder "something from -42 to 420 divisible by 42"
-      :required true
-      :minimum -42
-      :step 42
-      :maximum 420
-      ;;:liveUpdate true
-      :invalidMessage "NOT Answer to universe"
-      :requiredInvalidMessage "Answer to universe is required"))
+        :placeholder "something from -42 to 420 divisible by 42"
+        :required true
+        :minimum -42
+        :step 42
+        :maximum 420
+        ;;:liveUpdate true
+        :invalidMessage "NOT Answer to universe"
+        :requiredInvalidMessage "Answer to universe is required"))
 
     (qx-make ::qxty/m.RadioGroupStub
+      :name :fav-css
       :header "Favorite Color"
       :allowEmptySelection true
       :selection (c-in :blue)
-      :kids (c?kids
-              (qx-make ::qxty/m.RadioButton
-                :name "Bob"
-                :model :red
-                :qx-new-args [:red]
-                :label "Red")
-              (qx-make ::qxty/m.RadioButton
-                :qx-new-args [:green]
-                :model :green
-                :label "Green")
-              (qx-make ::qxty/m.RadioButton
-                :model :blue
-                :qx-new-args [:blue]
-                :label "Blue")))
+      :kids (c? (let [mrb (fn [model & [label]]
+                            (qx-make ::qxty/m.RadioButton
+                              :model model
+                              :qx-new-args [model]
+                              :label (or label
+                                       (capitalize (name model)))))]
+                  (the-kids
+                    (mrb :cool "Kinda Kool")
+                    (mrb :mild)
+                    (mrb :hot)))))
+
+    
 
     #_(qx-make ::qxty/m.CheckBox
-      :name :remember-me
-      :label "Remember you?"
-      :qx-new-args (c? [(md-get me :value)])
-      :value (c-in false)
-      :listeners  {"changeValue"
-                   (fn [evt me]
-                     (let [data (.getData evt)
-                           jd (js->clj data)]
-                       (md-reset! me :value jd)))})
+        :name :remember-me
+        :label "Remember you?"
+        :qx-new-args (c? [(md-get me :value)])
+        :value (c-in false)
+        :listeners  {"changeValue"
+                     (fn [evt me]
+                       (let [data (.getData evt)
+                             jd (js->clj data)]
+                         (md-reset! me :value jd)))})
 
     (comment
-    (qx-make ::qxty/m.ToggleButton
-      :name :really
-      :label "Really?"
-      :visibility (c? (if (mdv! :remember-me :value)
-                        "visible" "excluded"))
-      :value (c-in false)
-      :qx-new-args (c? [(md-get me :value) "Yes" "Nahh"])
-      :listeners  {"changeValue"
-                   (fn [evt me]
-                     (let [data (.getData evt)
-                           jd (js->clj data)]
-                       (md-reset! me :value jd)))})
+      (qx-make ::qxty/m.ToggleButton
+        :name :really
+        :label "Really?"
+        :visibility (c? (if (mdv! :remember-me :value)
+                          "visible" "excluded"))
+        :value (c-in false)
+        :qx-new-args (c? [(md-get me :value) "Yes" "Nahh"])
+        :listeners  {"changeValue"
+                     (fn [evt me]
+                       (let [data (.getData evt)
+                             jd (js->clj data)]
+                         (md-reset! me :value jd)))})
 
       (qx-make ::qxty/m.Slider
         :name :time-to-remember
@@ -170,6 +170,14 @@
 (defn make-login []
   (navigation-page ["Login" "/"][]
     (make-login-form)
+    (qx-make ::qxty/m.Row
+      :label "Voila"
+      :yaya (c? (when-let [css (mdv! :fav-css :selection)]
+                  (println :woow css)
+                  [css]))
+      :kids (c?kids
+              (label "Hi Mom")
+              (label "Hi world")))
     (comment
     (button "Login"
       :listeners {"tap"
