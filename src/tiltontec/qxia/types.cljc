@@ -1,5 +1,6 @@
 (ns tiltontec.qxia.types
   (:require
+   [tiltontec.util.core :refer [ensure-vec]]
    [tiltontec.cell.base :refer [ia-types] :as cty]))
 
 (def qx-type-tree
@@ -29,9 +30,6 @@
     ]
    ])
 
-
-(defn ensure-vec [x]
-  (if (coll? x) (vec x) [x]))
 
 #?(:cljs (defn derive-tree [super tree]
            (let [[class & subs] (ensure-vec tree)]

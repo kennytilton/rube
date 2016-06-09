@@ -10,7 +10,7 @@
    [tiltontec.cell.observer
              :refer-macros [defobserver fn-obs]
              :refer [observe type-cljc]]
-   [tiltontec.model.core :refer [md-get md-getx qx-par]]
+   [tiltontec.model.core :refer [md-get md-getx qx-par md-reset!]]
    [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.base
     :refer [qxme qx-obj-properties
@@ -57,13 +57,16 @@
     (let [group (new js/qx.ui.mobile.form.RadioGroup)]
       (.setAllowEmptySelection group
         (or (:allowEmptySelection @stub) false))
-      (.addListener group "changeSelection"
-        (fn [e]
-          (let [rb (first (js->clj (.getData e)))]
-            (when rb
-              (println :model? (keyword (.getModel rb)))
-              #_(md-reset! stub :selection 
-                (keyword (.getModel rb)))))))
+      (with-integrity [:client [:3-post-assembly stub]]
+        ;; qx sets selection as each rb added so
+        ;; defer selection change handling
+        (.addListener group "changeSelection"
+          (fn [e]
+            (let [rb (first (js->clj (.getData e)))]
+              (when rb
+                (println :model? (keyword (.getModel rb)))
+                (md-reset! stub :selection 
+                  (keyword (.getModel rb))))))))
 
       (doseq [rb (md-get stub :kids)]
         (.add group (qxme rb))

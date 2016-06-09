@@ -1,8 +1,8 @@
 (ns tiltontec.qxia.base
   (:require
-   [clojure.set :refer [union]]
+   [clojure.set :refer [union difference]]
    [tiltontec.util.base :refer [prog1]]
-   [tiltontec.util.core :refer [fifo-data fifo-clear]]
+   [tiltontec.util.core :refer [ensure-vec fifo-data fifo-clear]]
    [tiltontec.cell.base
     :refer [unbound ia-type ia-types ia-type?
             +client-q-handler+] :as cty]
@@ -161,11 +161,6 @@
 
   (assert (qxme me) (str "no qx initall " (ia-type me)))
 
-  (when-let [c (:css-class @me)]
-    (if (coll? c)
-      (let [cs (vec c)]
-        (.addCssClasses (qxme me) (clj->js cs)))
-      (.addCssClass (qxme me) c)))
 
   (doseq [[name handler] (md-get me :listeners)]
     (let [qxme (qxme me)]
@@ -206,3 +201,25 @@
   (if-let [flex (:flex @kid)]
     (.add (qxme me) (qxme kid) #js {:flex flex})
     (.add (qxme me) (qxme kid))))
+
+(defmethod observe [:css-class ::qxty/qx.Object]
+  [_ me new old _]
+  (with-integrity [:client [:2-post-make-qx me]]
+    (println :obs-css new :old old)
+    (when-not (= old unbound)
+      (let [oldv (ensure-vec old)]
+        (let [lost (if new
+                     (difference (set oldv)(set (ensure-vec new)))
+                     oldv)]
+          (when-not (empty? lost)
+            (.removeCssClasses (qxme me)
+              (clj->js (vec lost)))))))
+    (when new
+      (let [newv (ensure-vec new)]
+        (let [gained (if (= old unbound)
+                       newv
+                       (difference (set newv)
+                         (set (ensure-vec old))))]
+          (when-not (empty? gained)
+            ;; (println :gainedcss!!!!!! (i
+            (.addCssClasses (qxme me) (clj->js (vec gained)))))))))

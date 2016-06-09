@@ -95,7 +95,7 @@
       :name :fav-css
       :header "Favorite Color"
       :allowEmptySelection true
-      :selection (c-in :blue)
+      :selection (c-in :mild)
       :kids (c? (let [mrb (fn [model & [label]]
                             (qx-make ::qxty/m.RadioButton
                               :model model
@@ -172,9 +172,11 @@
     (make-login-form)
     (qx-make ::qxty/m.Row
       :label "Voila"
-      :yaya (c? (when-let [css (mdv! :fav-css :selection)]
-                  (println :woow css)
-                  [css]))
+      :css-class (c? (let [rg (fget :fav-css me)]
+                       (println :rg (ia-type rg))
+                       (when-let [css (md-get rg :selection)]
+                         (println :woow css)
+                         [(name css)])))
       :kids (c?kids
               (label "Hi Mom")
               (label "Hi world")))

@@ -107,3 +107,7 @@
      (first @q)
      (#?(:clj alter :cljs swap!) q subvec 1))))
 
+;;; --- detritus ----------------------
+
+(defn ensure-vec [x]
+  (if (coll? x) (vec x) [x]))
