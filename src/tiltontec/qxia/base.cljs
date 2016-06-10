@@ -2,9 +2,9 @@
   (:require
    [clojure.set :refer [union difference]]
    [tiltontec.util.base :refer [prog1]]
-   [tiltontec.util.core :refer [ensure-vec fifo-data fifo-clear]]
+   [tiltontec.util.core :refer [pln ensure-vec fifo-data fifo-clear]]
    [tiltontec.cell.base
-    :refer [unbound ia-type ia-types ia-type?
+    :refer [unbound ia-type  ia-type?
             +client-q-handler+] :as cty]
    [tiltontec.cell.integrity
     :refer-macros [with-integrity] :as md]
@@ -37,6 +37,7 @@
     ::qxty/m.Single js/qx.ui.mobile.form.renderer.Single
     ::qxty/m.Composite js/qx.ui.mobile.container.Composite
     ::qxty/m.Carousel js/qx.ui.mobile.container.Carousel
+    ::qxty/m.Scroll js/qx.ui.mobile.container.Scroll
     ::qxty/m.Picker js/qx.ui.mobile.control.Picker
     ::qxty/ml.HBox js/qx.ui.mobile.layout.HBox
     ::qxty/ml.VBox js/qx.ui.mobile.layout.VBox
@@ -91,22 +92,23 @@
                               qx-class))
                         (qxia-type-to-qx-class type))]
         (do
-          #_(println type (:name iargs) :finalclass qx-class
-            (:qx-new-args iargs) iargs)
-          (apply MyTerop/make qx-class (:qx-new-args iargs)))
+          (println :making-qx!!!!! type (:name iargs) :finalclass qx-class
+            (:qx-new-args iargs))
+          (or (apply MyTerop/make qx-class (:qx-new-args iargs))
+            (throw (js/Error. (str "qx-class-new tried making " qx-class
+                                " but got back nada.")))))
         (throw (js/Error. (str "qx-class-new does not know about " type))))))
 
 (defmethod mdb/md-awaken-before ::qxty/m.RadioGroupStub [me])
 
 (defmethod mdb/md-awaken-before ::qxty/qx.Object [me]
-  (when (and  ;; not Mobile
-          (qxia-type-to-qx-class (ia-type me)))
+  (when (qxia-type-to-qx-class (ia-type me)) ;; not Mobile, eg
     (with-integrity [:client [:0-make-qx me]]
       (when (nil? (qxme me))
         (swap! me assoc :qx-me
           (qx-class-new (ia-type me) @me)))
       (when-not (ia-type? me ::qxty/m.Single)
-        (assert (qxme me) (str "nope " (ia-type me))))
+        (assert (qxme me) (str "md-awaken-before failed to establish qxme " (ia-type me))))
       (qx-initialize me)
       (qx-initialize-all me))))
 
@@ -127,14 +129,14 @@
                  (sort-by ffirst data))]
     (fifo-clear user-q)
     (doseq [[defer-info task] sorted]
+      (pln :deffo (first defer-info))
       (task :client-q defer-info))))
 
 (reset! +client-q-handler+ qxia-q-handler)
 
 ;;; ---- qx initialize ----------------------------
 
-(defmulti qx-initialize ia-type
-  :hierarchy #'cty/ia-types)
+(defmulti qx-initialize ia-type)
 
 (defmethod qx-initialize :default [me])
 
@@ -156,7 +158,7 @@
                          :when (not (nil? val))]
                      [k val])]
     (let [qx (qxme me)]
-      (assert qx (str "no qxme " (ia-type me)))
+      (assert qx (str "qx-initialize-all-def> no qxme " (ia-type me)))
       (.set qx (clj->js (into {} inits)))))
 
   (assert (qxme me) (str "no qx initall " (ia-type me)))
@@ -172,8 +174,7 @@
 
 (defmulti qx-property-observe
   (fn [slot me new old c]
-    [slot (ia-type me)])
-  :hierarchy #'cty/ia-types)
+    [slot (ia-type me)]))
 
 (defmethod qx-property-observe :default
   [slot me new old c]
@@ -184,8 +185,8 @@
 
 (defn qx-observe-default [slot me new old c]
   (when (and 
-          (not (isa? cty/ia-types (ia-type me) ::qxty/m.RadioGroupStub))
-          (isa? cty/ia-types (ia-type me) ::qxty/qx.Object)
+          (not (isa?  (ia-type me) ::qxty/m.RadioGroupStub))
+          (isa?  (ia-type me) ::qxty/qx.Object)
           (some #{slot} (qx-obj-properties me)))
     (qx-property-observe slot me new old c)))
 

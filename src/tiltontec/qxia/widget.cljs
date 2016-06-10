@@ -3,7 +3,7 @@
    [clojure.set :refer [difference]]
    [tiltontec.util.core :refer [pln]]
    [tiltontec.cell.base
-    :refer [ia-type ia-type? ia-types unbound]
+    :refer [ia-type ia-type?  unbound]
     :as cty]
    [tiltontec.cell.evaluate :refer [not-to-be]]
    [tiltontec.cell.integrity
@@ -101,7 +101,9 @@
               (.add qx-form qxk label))))))))
 
 (defmethod qx-initialize ::qxty/m.Single [me]
+  (pln :qx-init-single-enqueues-qxme!!!!)
   (with-integrity [:client [:2-post-make-qx me]]
+    (pln :qx-init-single-does--qxme!!!!)
     (let [kids (:kids @me)]
       (assert (= 1 (count kids)))
       (let [form (first kids)
@@ -110,6 +112,7 @@
         ;; forms differ from the usual add/remove children scheme and
         ;; must be provided to the constructor of a renderer
         ;; but the form child will not have its qx-me until now
+        (pln :qx-init-single-gets-qxme!!!!)
         (swap! me assoc :qx-me (new js/qx.ui.mobile.form.renderer.Single qx-form))))))
 
 
@@ -121,7 +124,7 @@
           (let [content (. qx-page (getContent))]
             (doseq [k kids]
               (let [qxk  (qxme k)]
-                ;;(pln :navpage-initialize-add (ia-type k))
+                (pln :navpage-initialize-add (ia-type k))
                 (.add content qxk)))))
         qx-page))))
 
@@ -185,10 +188,10 @@
                  newk
                  (difference (set newk) (set oldk)))]
     (when-not (empty? new-ks)
-      ;;(println :compo-newks!!!!!!! (ia-type me) (count new-ks))
+      (println :compo-newks!!!!!!! (ia-type me) (count new-ks))
       (doseq [k new-ks]
         (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
-          ;;(pln :compo-newk-add (ia-type me)(ia-type k))
+          (pln :compo-newk-add (ia-type me)(ia-type k))
           (qx-add-kid me k))))))
 
 ;;; --- picker ----------

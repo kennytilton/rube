@@ -4,7 +4,7 @@
                :clj  [tiltontec.util.base
                       :refer :all])
             [tiltontec.util.core
-             :refer [err fifo-add fifo-peek fifo-pop cl-find]]
+             :refer [ensure-vec err pln fifo-add fifo-peek fifo-pop cl-find]]
             #?(:cljs [tiltontec.cell.base
                       :refer-macros [un-stopped]
                       :refer [+pulse+ c-pulse c-optimized-away?
@@ -102,6 +102,7 @@
 
         :handle-clients
         (do
+          (pln :handle-clients!!!!!)
           (when-let [clientq (ufb-queue :client)]
             (if-let [cqh @+client-q-handler+]
               (cqh clientq)
@@ -109,7 +110,8 @@
 
             (recur
               (if (fifo-peek (ufb-queue :client))
-                :handle-clients
+                (do (pln :re-handling-clients!!!!)
+                    :handle-clients)
                 :ephemeral-reset))))
 
         :ephemeral-reset
@@ -159,7 +161,7 @@
            ;; in the place, but if the SETF is deferred we return
            ;; something that will help someone who tries to use
            ;; the setf'ed value figure out what is going on:
-           ;;(println :cwi-defers opcode defer-info)
+           (println :cwi-defers opcode (first (ensure-vec defer-info)))
            (ufb-add opcode [defer-info action]))
 
           ;; thus by not supplying an opcode one can get something

@@ -11,7 +11,7 @@
          :cljs [tiltontec.cell.base
                 :refer-macros [without-c-dependency pcell]
                 :refer [c-optimized-away? c-formula? c-value c-optimize
-                        c-unbound? c-input? ia-types ia-type
+                        c-unbound? c-input?  ia-type
                         c-model mdead? c-valid? c-useds c-ref? md-ref?
                         c-state +pulse+ c-pulse-observed
                         *call-stack* *defer-changes*
@@ -186,8 +186,7 @@
 
 (defmulti c-awaken (fn [c]
                      #?(:clj (type c)
-                        :cljs (:type (meta c))))
-  :hierarchy #'cty/ia-types)
+                        :cljs (:type (meta c)))))
 
 (defmethod c-awaken :default [c]
   ;;(trx :awk-fallthru-entry (type c)(seq? c)(coll? c)(vector? c))
@@ -359,6 +358,7 @@ then clear our record of them."
 ;; --- c-quiesce -----------
 
 (defn c-quiesce [c]
+  (assert c)
   (unlink-from-callers c)
   (unlink-from-used c :quiesce)
   (#?(:clj ref-set :cljs reset!) c :dead-c))
@@ -368,12 +368,12 @@ then clear our record of them."
 
 (defmulti not-to-be (fn [me]
                       (assert (md-ref? me))
-                      [(type (when me @me))])
-  :hierarchy #'cty/ia-types)
+                      [(type (when me @me))]))
 
 (defmethod not-to-be :default [me]
   (doseq [c (vals (:cz (meta me)))]
-    (c-quiesce c))
+    (when c ;; not if optimized away
+      (c-quiesce c)))
   (#?(:clj ref-set :cljs reset!) me nil)
   (rmap-meta-setf [:state me] :dead))
 
@@ -386,8 +386,7 @@ then clear our record of them."
   with it a different test."
 
   (fn [me slot]
-    [(when me (type @me)) slot])
-  :hierarchy #'cty/ia-types)
+    [(when me (type @me)) slot]))
 
      
 (defmethod unchanged-test :default [self slotname]

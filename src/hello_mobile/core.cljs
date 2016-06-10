@@ -3,7 +3,7 @@
    [clojure.string :refer [capitalize]]
    [tiltontec.util.core :refer [pln]]
    [tiltontec.cell.base
-    :refer [ia-type ia-types unbound cells-reset]
+    :refer [ia-type unbound cells-reset]
     :as cty]
    [tiltontec.cell.observer
     :refer-macros [fn-obs]
@@ -15,8 +15,7 @@
    [tiltontec.model.core
     :refer-macros [the-kids c?kids mdv!]
     :refer [md-get md-reset! fm! fget qx-par] :as md]
-   [tiltontec.qxia.types :refer [derive-tree]
-    :as qxty]
+   [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.base :refer [qxme qx-data-array]]
    [tiltontec.qxia.core
     :refer [label image button routing-get
@@ -46,6 +45,9 @@
 
 (defn make-login []
   (navigation-page ["Login" "/"][]
+    #_(qx-make ::qxty/m.Scroll
+      :kids (c?kids
+              (make-login-form)))
     (make-login-form)
     
     (qx-make ::qxty/m.Row
@@ -57,7 +59,7 @@
       :kids (c?kids
               (label "Hi Mom" :name :row-me-label)))
 
-    #_(comment
+    (list
       (button "Login"
         :listeners {"tap"
                     #(let [login (qxme (fm! :login me))
@@ -83,7 +85,7 @@
       (collapsible "Click for a surprise" []
         (label "Surprise.")))
 
-    #_
+    
     (qx-make ::qxty/m.TextArea
       :label "Tell me a story."
       :placeholder "Your story here."
@@ -97,7 +99,7 @@
         
 (defn make-login-form []
   (form [][:name :login]
-    #_(comment
+    (list
       (text-field "Username"
         :name :u-name
         :value (c-in "KennY")
@@ -270,8 +272,12 @@
 (defn make-hhhack []
   (println :hello-make-family!!!!!!!!!!!!)
   (navigation-page ["HHHack" "/"][]
-    (collapsible "Click for a surprise" []
-      (label "Surprise."))))
+        (qx-make ::qxty/m.Scroll
+      :kids (c?kids
+              (make-login-form)))
+        #_(qx-make ::qxty/m.Scroll
+      :kids (c?kids
+              (label "Surprise.")))))
 
 (defn make-css-test []
   (hbox []

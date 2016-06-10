@@ -1,7 +1,7 @@
 (ns tiltontec.qxia.types
   (:require
    [tiltontec.util.core :refer [ensure-vec]]
-   [tiltontec.cell.base :refer [ia-types] :as cty]))
+   [tiltontec.cell.base :as cty]))
 
 (def qx-type-tree
   [::qx.Object
@@ -24,7 +24,7 @@
       ::m.PasswordField]]
     [::m.Composite
      ::m.Carousel ::m.Drawer ::m.Picker
-     ::m.Group ::m.Row
+     ::m.Group ::m.Row ::m.Scroll
      [::m.Page ::m.NavigationPage]
      ]
     ]
@@ -34,8 +34,7 @@
 #?(:cljs (defn derive-tree [super tree]
            (let [[class & subs] (ensure-vec tree)]
              (when super
-               (set! cty/ia-types
-                 (derive cty/ia-types class super)))
+               (derive class super))
              (doseq [sub subs]
                (derive-tree class sub)))))
 
@@ -53,14 +52,12 @@
 
   ;;     return subclasses;
   ;;   }
-  ;; </script>
 
-;; #?(:cljs (demo-subs))
 #?(:cljs (derive-tree nil qx-type-tree))
 
 ;;     :class js/qx.ui.mobile.container.Carousel
-#?(:cljs
-   (doseq [ctype [::m.Carousel]]
-     (set! cty/ia-types
-       (derive cty/ia-types
-         ctype ::m.Composite))))
+;; #?(:cljs
+;;    (doseq [ctype [::m.Carousel]]
+;;      (set! cty/ia-types
+;;        (derive cty/ia-types
+;;          ctype ::m.Composite))))

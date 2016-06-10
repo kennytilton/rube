@@ -75,6 +75,7 @@ qx.Class.define("identica.Application",
       qx.ui.mobile.container.Carousel;
       qx.ui.mobile.container.Drawer;
       qx.ui.mobile.container.Collapsible;
+      qx.ui.mobile.container.Scroll;
       qx.ui.mobile.control.Picker;
 
       hello_mobile.core.appinit

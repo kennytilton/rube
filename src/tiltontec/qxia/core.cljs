@@ -1,6 +1,6 @@
 (ns tiltontec.qxia.core
   (:require
-   [tiltontec.cell.base :refer [ia-type ia-types]]
+   [tiltontec.cell.base :refer [ia-type ]]
    [tiltontec.cell.core
              :refer-macros [c? c?+ c-reset-next! c?once c?n]
              :refer [c-in c-reset! make-cell]]
@@ -16,7 +16,7 @@
   (.executeGet (app-routing) end-point))
 
 (defn qx-make [type & iargs]
-  (assert (isa? ia-types type ::qxty/qx.Object)
+  (assert (isa? type ::qxty/qx.Object)
     (str "First argument to qx-make " type
       " is not a descendant of qx.Object"))
   (assert (even? (count iargs))

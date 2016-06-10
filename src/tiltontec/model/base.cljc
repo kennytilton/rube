@@ -11,7 +11,7 @@
       :cljs [tiltontec.cell.base
              :refer-macros [without-c-dependency]
              :refer [cells-init c-optimized-away? c-formula? c-value c-optimize
-                     c-unbound? c-input? ia-type? ia-types ia-type
+                     c-unbound? c-input? ia-type? ia-type
                      c-model mdead? c-valid? c-useds c-ref? md-ref?
                      c-state +pulse+ c-pulse-observed c-assert
                      *call-stack* *defer-changes* unbound
@@ -68,8 +68,7 @@
             (rmap-setf [slot me] c)
             false)))
 
-(defmulti md-awaken-before ia-type
-  :hierarchy #'cty/ia-types)
+(defmulti md-awaken-before ia-type)
 
 (defmethod md-awaken-before :default [me]
   #_(println :awaken-before-default!!!!!!!!!!!!

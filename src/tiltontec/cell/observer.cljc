@@ -10,7 +10,7 @@
    [tiltontec.cell.base
     :refer [c-ref? md-ref? unbound
             +pulse+ c-slot c-value c-md-name
-            c-model ia-types] :as cty]
+            c-model] :as cty]
 
    #?(:clj [tiltontec.model.macros :refer :all]
       :cljs [tiltontec.model.macros
@@ -23,8 +23,7 @@
                (type x))))
 
 (defmulti observe (fn [slot-name me new-val old-val c]
-                    [slot-name (type-cljc me)])
-  :hierarchy #'cty/ia-types)
+                    [slot-name (type-cljc me)]))
 
 (def +observe-default-handler+ (atom nil))
 

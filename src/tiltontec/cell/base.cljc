@@ -104,11 +104,9 @@ rule to get once behavior or just when fm-traversing to find someone"
 
 ;; ------------------------------------------------------
 
-(def ia-types
-  (-> (make-hierarchy)
-      (derive ::model ::object)
-      (derive ::cell ::object)
-      (derive ::c-formula ::cell)))
+(derive ::model ::object)
+(derive ::cell ::object)
+(derive ::c-formula ::cell)
 
 (defn ia-type [it]
  #?(:clj (type it)
@@ -118,7 +116,7 @@ rule to get once behavior or just when fm-traversing to find someone"
             :default (type it))))
 
 (defn ia-type? [it typ]
-  (isa? ia-types (ia-type it) typ))
+  (isa? (ia-type it) typ))
 
 (defn c-formula? [c]
   (ia-type? c ::c-formula))
@@ -204,8 +202,7 @@ rule to get once behavior or just when fm-traversing to find someone"
 (defmulti mdead? (fn [me]
                    (assert (or (nil? me)
                                (md-ref? me)))
-                   [(type (when me @me))])
-  :hierarchy #'ia-types)
+                   [(type (when me @me))]))
 
 (defmethod mdead? :default [me]
   false)
