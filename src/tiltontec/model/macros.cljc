@@ -3,4 +3,6 @@
    [tiltontec.cell.base :refer [ia-type]]))
 
 (defmacro pme [& mas]
-  `(println (ia-type ~'me) ~@mas))
+  `(when false ;;  (= :login (:name (deref ~'me)))
+     (println (ia-type ~'me)
+       (:name (deref ~'me)) ~@mas)))

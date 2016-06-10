@@ -1,6 +1,7 @@
 (ns tiltontec.qxia.widget
   (:require
    [clojure.set :refer [difference]]
+   [tiltontec.util.core :refer [pln]]
    [tiltontec.cell.base
     :refer [ia-type ia-type? ia-types unbound]
     :as cty]
@@ -10,6 +11,9 @@
    [tiltontec.cell.observer
              :refer-macros [defobserver fn-obs]
              :refer [observe type-cljc]]
+   [tiltontec.model.macros
+    :refer-macros [pme]]
+
    [tiltontec.model.core :refer [md-get md-getx qx-par md-reset!]]
    [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.base
@@ -48,7 +52,6 @@
 (defn form-build-radio-group-stub [form stub]
   ;; qooxdoo does not make radio groups very
   ;; easy to work with, so...
-
   (let [qx-form (qxme form)]
 
     (when-let [h (:header @stub)]
@@ -57,6 +60,7 @@
     (let [group (new js/qx.ui.mobile.form.RadioGroup)]
       (.setAllowEmptySelection group
         (or (:allowEmptySelection @stub) false))
+
       (with-integrity [:client [:3-post-assembly stub]]
         ;; qx sets selection as each rb added so
         ;; defer selection change handling
@@ -64,7 +68,6 @@
           (fn [e]
             (let [rb (first (js->clj (.getData e)))]
               (when rb
-                (println :model? (keyword (.getModel rb)))
                 (md-reset! stub :selection 
                   (keyword (.getModel rb))))))))
 
@@ -118,6 +121,7 @@
           (let [content (. qx-page (getContent))]
             (doseq [k kids]
               (let [qxk  (qxme k)]
+                ;;(pln :navpage-initialize-add (ia-type k))
                 (.add content qxk)))))
         qx-page))))
 
@@ -130,8 +134,8 @@
           (.removeAll content)
           (doseq [k newk]
             (let [qxk  (qxme k)]
-              (println
-                (.add content qxk)))))))))
+                ;;(pln :navpage-obs-kid--add (ia-type k))
+                (.add content qxk))))))))
 
 (defmethod observe [:validator-fn ::qxty/m.Input]
   [_ me new-fn old _]
@@ -140,6 +144,7 @@
                     (let [form (qxme (qx-par me))]
                       (assert form)
                       (let [vmgr (.getValidationManager form)]
+                        (pln :validmgr-add (ia-type me))
                         (.add vmgr (qxme me) new-fn))))))
 
 (defmethod qx-property-observe [:selection ::qxty/m.SelectBox]
@@ -180,9 +185,10 @@
                  newk
                  (difference (set newk) (set oldk)))]
     (when-not (empty? new-ks)
-      ;;(println :compo-newks!!!!!!! new-ks)
+      ;;(println :compo-newks!!!!!!! (ia-type me) (count new-ks))
       (doseq [k new-ks]
         (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
+          ;;(pln :compo-newk-add (ia-type me)(ia-type k))
           (qx-add-kid me k))))))
 
 ;;; --- picker ----------
@@ -215,6 +221,6 @@
   ;; oddly, value is not a property
   [_ me new old _]
   (with-integrity [:client [:2-post-make-qx me]]
-    (println :setval!!! (ia-type me) new old)
+    ;;(println :setval!!! (ia-type me) new old)
     (.setValue (qxme me) new)))
 

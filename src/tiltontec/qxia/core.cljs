@@ -19,7 +19,10 @@
   (assert (isa? ia-types type ::qxty/qx.Object)
     (str "First argument to qx-make " type
       " is not a descendant of qx.Object"))
-  (apply md/make type iargs))
+  (assert (even? (count iargs))
+    (str "arglist after type " type " is not of even length: "
+      iargs))
+  (apply md/make :type type iargs))
 
 (defn image [source & iargs]
   (apply qx-make

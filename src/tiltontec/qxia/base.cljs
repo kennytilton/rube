@@ -192,7 +192,6 @@
 (reset! +observe-default-handler+ qx-observe-default)
 
 (defn qx-add-kid [me kid]
-  ;(println :add-kid (ia-type me)(ia-type kid))
   (assert (qxme me) (str "no qxme me" (ia-type me) me))
   (assert (qxme kid) (str "no qxme kid" (ia-type me)
                        (:name @me)
@@ -205,7 +204,6 @@
 (defmethod observe [:css-class ::qxty/qx.Object]
   [_ me new old _]
   (with-integrity [:client [:2-post-make-qx me]]
-    (println :obs-css new :old old)
     (when-not (= old unbound)
       (let [oldv (ensure-vec old)]
         (let [lost (if new
@@ -221,5 +219,4 @@
                        (difference (set newv)
                          (set (ensure-vec old))))]
           (when-not (empty? gained)
-            ;; (println :gainedcss!!!!!! (i
             (.addCssClasses (qxme me) (clj->js (vec gained)))))))))

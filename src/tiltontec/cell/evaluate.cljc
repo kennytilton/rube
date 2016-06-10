@@ -104,7 +104,7 @@
     (do ;; we seem to need update, but...
       ;; (trx nil :seem-to-need)
       (when-not (c-current? c)
-        (trx :not-current-so-calc (c-slot c)(c-state c))
+        ;; (trx :not-current-so-calc (c-slot c)(c-state c))
         ;; happens if dependent changed and its observer read/updated me
         (calculate-and-set c :evic ensurer))
       (c-value c))
@@ -335,9 +335,10 @@ then clear our record of them."
                                         ; the cell below. hhack
     (c-observe c prior-value :opti-away)
     (when-let [me (c-model c)]
-      ;;(println :opti-away-nails-cz!!!!!!!!!! (c-slot c)(:name @me))
+      #_(when (= :login (:name @me))
+        (println :opti-away-nails-cz!!!!!!!!!! (c-slot c)))
 
-      (rmap-meta-setf [:cz me] (dissoc (:cz (meta me)) (c-slot c)))
+      (rmap-meta-setf [:cz me] (assoc (:cz (meta me)) (c-slot c) nil))
       (md-cell-flush c))
     
     ;; let callers know they need not check us for currency again

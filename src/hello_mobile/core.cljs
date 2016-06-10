@@ -1,6 +1,7 @@
 (ns hello-mobile.core
   (:require
    [clojure.string :refer [capitalize]]
+   [tiltontec.util.core :refer [pln]]
    [tiltontec.cell.base
     :refer [ia-type ia-types unbound cells-reset]
     :as cty]
@@ -27,14 +28,9 @@
 
 (def this-app (atom nil))
 
-(declare make-picker-test make-login make-overview)
-
-(defn make-hhhack []
-  (println :hello-make-family!!!!!!!!!!!!)
-  (navigation-page ["HHHack" "/"][]
-    (collapsible "Click for a surprise" []
-      (label "Surprise."))))
-
+(declare make-picker-test make-login make-overview
+  make-remembrance make-hhhack make-css-test
+  make-login-form)
 
 (defn ^:export appinit [this pager shower]
   (reset!
@@ -46,26 +42,62 @@
      :kids (c?kids
              ;;(make-hhhack)
              (make-login)
-             ;;(make-overview)
-             ))))
+             #_(make-overview)))))
 
-(defn make-css-test []
-  (hbox []
-    (label "Hello cool222"
-      :flex 0
-      :css-class "cool")
-    (vbox []
-      (label "world 2!"
-        :flex 3
-        :css-class ["cool" "coolfont"])
-      (label "world 3!"
-        :flex 3
-        :css-class ["cool" "coolfont"]))))
+(defn make-login []
+  (navigation-page ["Login" "/"][]
+    (make-login-form)
+    
+    (qx-make ::qxty/m.Row
+      :name :row-me
+      :label "Voila"
+      :css-class (c? (let [rg (fget :fav-css me)]
+                       (when-let [css (md-get rg :selection)]
+                         [(name css)])))
+      :kids (c?kids
+              (label "Hi Mom" :name :row-me-label)))
 
+    #_(comment
+      (button "Login"
+        :listeners {"tap"
+                    #(let [login (qxme (fm! :login me))
+                           vmgr (.getValidationManager login)]
+                       (assert vmgr)
+                       (when-let [ok (.validate login)]
+                         (routing-get "/overview")))})
+
+      (make-picker-test)
+
+      (carousel [:name :carousel
+                 :css-class "cool"]
+        (group [:showBorder true]
+          (label "one-a?") (label "one-b?") (label "one-c?"))
+        (hbox [] (label "two"))
+        (hbox [] (label "three")))
+
+      ;; drawers do not work yet
+      #_(drawer "bottom" [:name :drawer :css-class "hot"]
+          (hbox [] (label "socks"))
+          (hbox [] (label "shirts")))
+
+      (collapsible "Click for a surprise" []
+        (label "Surprise.")))
+
+    #_
+    (qx-make ::qxty/m.TextArea
+      :label "Tell me a story."
+      :placeholder "Your story here."
+      :maxLength 300
+      :value (c-in nil)
+      :listeners  {"changeValue"
+                   (fn [evt me]
+                     (let [data (.getData evt)
+                           jd (js->clj data)]
+                       (md-reset! me :value jd)))})))
         
 (defn make-login-form []
   (form [][:name :login]
-    (comment
+    #_(comment
       (text-field "Username"
         :name :u-name
         :value (c-in "KennY")
@@ -93,12 +125,13 @@
 
     (qx-make ::qxty/m.RadioGroupStub
       :name :fav-css
-      :header "Favorite Color"
+      :header "How's the weather?"
       :allowEmptySelection true
       :selection (c-in :mild)
       :kids (c? (let [mrb (fn [model & [label]]
                             (qx-make ::qxty/m.RadioButton
                               :model model
+                              :name model
                               :qx-new-args [model]
                               :label (or label
                                        (capitalize (name model)))))]
@@ -107,115 +140,66 @@
                     (mrb :mild)
                     (mrb :hot)))))
 
-    
+    #_(make-remembrance)
 
-    #_(qx-make ::qxty/m.CheckBox
-        :name :remember-me
-        :label "Remember you?"
-        :qx-new-args (c? [(md-get me :value)])
-        :value (c-in false)
-        :listeners  {"changeValue"
-                     (fn [evt me]
-                       (let [data (.getData evt)
-                             jd (js->clj data)]
-                         (md-reset! me :value jd)))})
+    #_(qx-make ::qxty/m.SelectBox
+      :label "How many?"
+      :selection (c-in 2)
+      :model (qx-data-array ["one" "two" "three"])
+      :placeholder "Pick a number, any number"
+      :listeners  {"changeSelection"
+                   (fn [evt me]
+                     (let [jd (js->clj (.getData evt))]
+                       (with-integrity (:change)
+                         (md-reset! me :selection (jd "index")))))})))
 
-    (comment
-      (qx-make ::qxty/m.ToggleButton
-        :name :really
-        :label "Really?"
-        :visibility (c? (if (mdv! :remember-me :value)
-                          "visible" "excluded"))
-        :value (c-in false)
-        :qx-new-args (c? [(md-get me :value) "Yes" "Nahh"])
-        :listeners  {"changeValue"
-                     (fn [evt me]
-                       (let [data (.getData evt)
-                             jd (js->clj data)]
-                         (md-reset! me :value jd)))})
-
-      (qx-make ::qxty/m.Slider
-        :name :time-to-remember
-        :label "How long to remember?"
-        :displayValue "value"
-        :value (c-in 10)
-        :enabled (c? (and (mdv! :remember-me :value)
-                       (mdv! :really :value)))
-        :minimum 1 :maximum 30 :step 2
-        :listeners  {"changeValue"
-                     (fn [evt me]
-                       (let [data (.getData evt)
-                             jd (js->clj data)]
-                         (md-reset! me :value jd)))})
-
-      (text-field "Remember time"
-        :value (c?+ [:obs (fn-obs
-                            (when-let [q (qxme me)] ;; not at first
-                              (.setValue (qxme me) new)))]
-                 (let [r (mdv! :time-to-remember :value)]
-                   (when r (str r " days"))))
-        :readOnly true)
-
-      (qx-make ::qxty/m.SelectBox
-        :label "How many?"
-        :selection (c-in 2)
-        :model (qx-data-array ["one" "two" "three"])
-        :placeholder "Pick a number, any number"
-        :listeners  {"changeSelection"
-                     (fn [evt me]
-                       (let [jd (js->clj (.getData evt))]
-                         (with-integrity (:change)
-                           (md-reset! me :selection (jd "index")))))}))))
-
-(defn make-login []
-  (navigation-page ["Login" "/"][]
-    (make-login-form)
-    (qx-make ::qxty/m.Row
-      :label "Voila"
-      :css-class (c? (let [rg (fget :fav-css me)]
-                       (println :rg (ia-type rg))
-                       (when-let [css (md-get rg :selection)]
-                         (println :woow css)
-                         [(name css)])))
-      :kids (c?kids
-              (label "Hi Mom")
-              (label "Hi world")))
-    (comment
-    (button "Login"
-      :listeners {"tap"
-                  #(let [login (qxme (fm! :login me))
-                         vmgr (.getValidationManager login)]
-                     (assert vmgr)
-                     (when-let [ok (.validate login)]
-                       (routing-get "/overview")))})
-
-    (make-picker-test)
-
-    (carousel [:name :carousel
-               :css-class "cool"]
-      (group [:showBorder true]
-        (label "one-a?") (label "one-b?") (label "one-c?"))
-      (hbox [] (label "two"))
-      (hbox [] (label "three")))
-    #_(drawer "bottom" [:name :drawer :css-class "hot"]
-        (hbox [] (label "socks"))
-        (hbox [] (label "shirts")))
-
-    (collapsible "Click for a surprise" []
-      (label "Surprise.")))
-
-    
-    (qx-make ::qxty/m.TextArea
-      :label "Tell me a story."
-      :placeholder "Your story here."
-      :maxLength 300
-      :value (c-in nil)
+(defn make-remembrance []
+  (list
+    (qx-make ::qxty/m.CheckBox
+      :name :remember-me
+      :label "Remember you?"
+      :qx-new-args (c? [(md-get me :value)])
+      :value (c-in false)
       :listeners  {"changeValue"
                    (fn [evt me]
                      (let [data (.getData evt)
                            jd (js->clj data)]
                        (md-reset! me :value jd)))})
-    ))
+
+    (qx-make ::qxty/m.ToggleButton
+      :name :really
+      :label "Really?"
+      :visibility (c? (if (mdv! :remember-me :value)
+                                  "visible" "excluded"))
+      :value (c-in false)
+      :qx-new-args (c? [(md-get me :value) "Yes" "Nahh"])
+      :listeners  {"changeValue"
+                   (fn [evt me]
+                     (let [data (.getData evt)
+                           jd (js->clj data)]
+                       (md-reset! me :value jd)))})
+
+    (qx-make ::qxty/m.Slider
+      :name :time-to-remember
+      :label "How long to remember?"
+      :displayValue "value"
+      :value (c-in 10)
+      :enabled (c? (and (mdv! :remember-me :value)
+                          (mdv! :really :value)))
+      :minimum 1 :maximum 30 :step 2
+      :listeners  {"changeValue"
+                   (fn [evt me]
+                     (let [data (.getData evt)
+                           jd (js->clj data)]
+                       (md-reset! me :value jd)))})
+
+    (text-field "Remember time"
+      :value (c?+ [:obs (fn-obs
+                          (when-let [q (qxme me)] ;; not at first
+                            (.setValue (qxme me) new)))]
+               (let [r (mdv! :time-to-remember :value)]
+                 (when r (str r " days"))))
+      :readOnly true)))
 
 (defn make-picker-test []
   (vbox [:name :picker-vbox]
@@ -281,3 +265,23 @@
           ;;:scaleX 0.5 :scaleY 0.5
           ;; warning: specifiying the above suppresses css
           :css-class "warning")))))
+
+
+(defn make-hhhack []
+  (println :hello-make-family!!!!!!!!!!!!)
+  (navigation-page ["HHHack" "/"][]
+    (collapsible "Click for a surprise" []
+      (label "Surprise."))))
+
+(defn make-css-test []
+  (hbox []
+    (label "Hello cool222"
+      :flex 0
+      :css-class "cool")
+    (vbox []
+      (label "world 2!"
+        :flex 3
+        :css-class ["cool" "coolfont"])
+      (label "world 3!"
+        :flex 3
+        :css-class ["cool" "coolfont"]))))

@@ -48,7 +48,7 @@ return (new cljs.core.MultiFn(cljs.core.symbol.call(null,"tiltontec.model.base",
 })();
 }
 cljs.core._add_method.call(null,tiltontec.model.base.md_awaken_before,new cljs.core.Keyword(null,"default","default",-1987822328),(function (me){
-return null;
+return cljs.core.println.call(null,new cljs.core.Keyword(null,"awaken-before-default!!!!!!!!!!!!","awaken-before-default!!!!!!!!!!!!",-712874669),tiltontec.cell.base.ia_type.call(null,me));
 }));
 /**
  * (1) do initial evaluation of all ruled slots
@@ -61,22 +61,22 @@ tiltontec.cell.base.c_assert.call(null,cljs.core._EQ_.call(null,new cljs.core.Ke
 
 tiltontec.util.core.rmap_meta_setf.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"state","state",-1988618099),me], null),new cljs.core.Keyword(null,"awakening","awakening",838364227));
 
-cljs.core.doall.call(null,(function (){var iter__6990__auto__ = (function tiltontec$model$base$md_awaken_$_iter__27998(s__27999){
+cljs.core.doall.call(null,(function (){var iter__6990__auto__ = (function tiltontec$model$base$md_awaken_$_iter__41831(s__41832){
 return (new cljs.core.LazySeq(null,(function (){
-var s__27999__$1 = s__27999;
+var s__41832__$1 = s__41832;
 while(true){
-var temp__4425__auto__ = cljs.core.seq.call(null,s__27999__$1);
+var temp__4425__auto__ = cljs.core.seq.call(null,s__41832__$1);
 if(temp__4425__auto__){
-var s__27999__$2 = temp__4425__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,s__27999__$2)){
-var c__6988__auto__ = cljs.core.chunk_first.call(null,s__27999__$2);
+var s__41832__$2 = temp__4425__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,s__41832__$2)){
+var c__6988__auto__ = cljs.core.chunk_first.call(null,s__41832__$2);
 var size__6989__auto__ = cljs.core.count.call(null,c__6988__auto__);
-var b__28001 = cljs.core.chunk_buffer.call(null,size__6989__auto__);
-if((function (){var i__28000 = (0);
+var b__41834 = cljs.core.chunk_buffer.call(null,size__6989__auto__);
+if((function (){var i__41833 = (0);
 while(true){
-if((i__28000 < size__6989__auto__)){
-var slot = cljs.core._nth.call(null,c__6988__auto__,i__28000);
-cljs.core.chunk_append.call(null,b__28001,(function (){var c = slot.call(null,tiltontec.model.base.md_cz.call(null,me));
+if((i__41833 < size__6989__auto__)){
+var slot = cljs.core._nth.call(null,c__6988__auto__,i__41833);
+cljs.core.chunk_append.call(null,b__41834,(function (){var c = slot.call(null,tiltontec.model.base.md_cz.call(null,me));
 if(cljs.core.truth_(c)){
 return tiltontec.cell.evaluate.c_awaken.call(null,c);
 } else {
@@ -85,8 +85,8 @@ return tiltontec.cell.observer.observe.call(null,slot,me,slot.call(null,cljs.cor
 }
 })());
 
-var G__28002 = (i__28000 + (1));
-i__28000 = G__28002;
+var G__41835 = (i__41833 + (1));
+i__41833 = G__41835;
 continue;
 } else {
 return true;
@@ -94,12 +94,12 @@ return true;
 break;
 }
 })()){
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__28001),tiltontec$model$base$md_awaken_$_iter__27998.call(null,cljs.core.chunk_rest.call(null,s__27999__$2)));
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__41834),tiltontec$model$base$md_awaken_$_iter__41831.call(null,cljs.core.chunk_rest.call(null,s__41832__$2)));
 } else {
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__28001),null);
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__41834),null);
 }
 } else {
-var slot = cljs.core.first.call(null,s__27999__$2);
+var slot = cljs.core.first.call(null,s__41832__$2);
 return cljs.core.cons.call(null,(function (){var c = slot.call(null,tiltontec.model.base.md_cz.call(null,me));
 if(cljs.core.truth_(c)){
 return tiltontec.cell.evaluate.c_awaken.call(null,c);
@@ -107,7 +107,7 @@ return tiltontec.cell.evaluate.c_awaken.call(null,c);
 return tiltontec.cell.observer.observe.call(null,slot,me,slot.call(null,cljs.core.deref.call(null,me)),tiltontec.cell.base.unbound,null);
 
 }
-})(),tiltontec$model$base$md_awaken_$_iter__27998.call(null,cljs.core.rest.call(null,s__27999__$2)));
+})(),tiltontec$model$base$md_awaken_$_iter__41831.call(null,cljs.core.rest.call(null,s__41832__$2)));
 }
 } else {
 return null;

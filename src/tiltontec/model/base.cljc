@@ -72,27 +72,37 @@
   :hierarchy #'cty/ia-types)
 
 (defmethod md-awaken-before :default [me]
-  (println :awaken-before-default!!!!!!!!!!!!
-    (ia-type me)))
+  #_(println :awaken-before-default!!!!!!!!!!!!
+    (ia-type me) (meta me)))
 
 (defn md-awaken
   "(1) do initial evaluation of all ruled slots
    (2) call observers of all slots"
   [me]
-  ;;(println :md-awaken!!!!!!!! (ia-type me))
+  (assert me "md-awaken passed nil")
+  (pme :md-awaken!!!!!!!!)
   (md-awaken-before me)
-  ;;(pme :awaken (md-state me))
   (c-assert (= :nascent (md-state me)))
   (rmap-meta-setf [:state me] :awakening)
   (doall
    (for [slot (keys @me)]
-     (let [c (slot (md-cz me))]
+     ;; next is tricky: if slot is in :cz but nil, it has been 
+     ;; optimized-away and observed then in the rare case
+     ;; it gets optimized away on other than the initial
+     ;; value.
+     (when-let [c (slot (md-cz me) :not-found)]
        (cond
-         c (do ;;(trx :md-awaken-awks-cell slot (c-slot c)(c-md-name c))
-               (c-awaken c))
-         :else (do ;(trx :noslot slot (slot @me) me)
-                   (observe slot me (slot @me) unbound nil))))))
-
+         (= c :not-found)
+         ;; these need at least an initial observe
+         (do (when (= slot :kids)
+               (pme :md-awaken-noslot-obs slot
+                 (keys (md-cz me))
+                 (:kids (md-cz me) :hunh))
+               )
+             (observe slot me (slot @me) unbound nil))
+         :else (do
+                 (pme :md-awaken-awks-cell slot)
+                 (c-awaken c)) ))))
   (rmap-meta-setf [:state me] :awake)
   me)
 

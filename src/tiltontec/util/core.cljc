@@ -111,3 +111,6 @@
 
 (defn ensure-vec [x]
   (if (coll? x) (vec x) [x]))
+
+(defn pln [& r]
+  (println (pr-str r)))

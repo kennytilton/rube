@@ -32,19 +32,26 @@ return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMP
 ,new cljs.core.Keyword(null,"default","default",-1987822328),hierarchy__7139__auto__,method_table__7135__auto__,prefer_table__7136__auto__,method_cache__7137__auto__,cached_hierarchy__7138__auto__));
 })();
 }
+tiltontec.cell.observer._PLUS_observe_default_handler_PLUS_ = cljs.core.atom.call(null,null);
 cljs.core._add_method.call(null,tiltontec.cell.observer.observe,new cljs.core.Keyword(null,"default","default",-1987822328),(function (slot,me,new_val,old_val,c){
-return null;
+var temp__4423__auto__ = cljs.core.deref.call(null,tiltontec.cell.observer._PLUS_observe_default_handler_PLUS_);
+if(cljs.core.truth_(temp__4423__auto__)){
+var obs = temp__4423__auto__;
+return obs.call(null,slot,me,new_val,old_val,c);
+} else {
+return cljs.core.println.call(null,new cljs.core.Keyword(null,"obs-fall-thru","obs-fall-thru",128901469),slot,tiltontec.cell.observer.type_cljc.call(null,me));
+}
 }));
 tiltontec.cell.observer.defobserver = (function tiltontec$cell$observer$defobserver(var_args){
 var args__7292__auto__ = [];
-var len__7285__auto___27511 = arguments.length;
-var i__7286__auto___27512 = (0);
+var len__7285__auto___41344 = arguments.length;
+var i__7286__auto___41345 = (0);
 while(true){
-if((i__7286__auto___27512 < len__7285__auto___27511)){
-args__7292__auto__.push((arguments[i__7286__auto___27512]));
+if((i__7286__auto___41345 < len__7285__auto___41344)){
+args__7292__auto__.push((arguments[i__7286__auto___41345]));
 
-var G__27513 = (i__7286__auto___27512 + (1));
-i__7286__auto___27512 = G__27513;
+var G__41346 = (i__7286__auto___41345 + (1));
+i__7286__auto___41345 = G__41346;
 continue;
 } else {
 }
@@ -74,18 +81,18 @@ return cljs.core._conj.call(null,cljs.core.List.EMPTY,x__7044__auto__);
 
 tiltontec.cell.observer.defobserver.cljs$lang$maxFixedArity = (5);
 
-tiltontec.cell.observer.defobserver.cljs$lang$applyTo = (function (seq27505){
-var G__27506 = cljs.core.first.call(null,seq27505);
-var seq27505__$1 = cljs.core.next.call(null,seq27505);
-var G__27507 = cljs.core.first.call(null,seq27505__$1);
-var seq27505__$2 = cljs.core.next.call(null,seq27505__$1);
-var G__27508 = cljs.core.first.call(null,seq27505__$2);
-var seq27505__$3 = cljs.core.next.call(null,seq27505__$2);
-var G__27509 = cljs.core.first.call(null,seq27505__$3);
-var seq27505__$4 = cljs.core.next.call(null,seq27505__$3);
-var G__27510 = cljs.core.first.call(null,seq27505__$4);
-var seq27505__$5 = cljs.core.next.call(null,seq27505__$4);
-return tiltontec.cell.observer.defobserver.cljs$core$IFn$_invoke$arity$variadic(G__27506,G__27507,G__27508,G__27509,G__27510,seq27505__$5);
+tiltontec.cell.observer.defobserver.cljs$lang$applyTo = (function (seq41338){
+var G__41339 = cljs.core.first.call(null,seq41338);
+var seq41338__$1 = cljs.core.next.call(null,seq41338);
+var G__41340 = cljs.core.first.call(null,seq41338__$1);
+var seq41338__$2 = cljs.core.next.call(null,seq41338__$1);
+var G__41341 = cljs.core.first.call(null,seq41338__$2);
+var seq41338__$3 = cljs.core.next.call(null,seq41338__$2);
+var G__41342 = cljs.core.first.call(null,seq41338__$3);
+var seq41338__$4 = cljs.core.next.call(null,seq41338__$3);
+var G__41343 = cljs.core.first.call(null,seq41338__$4);
+var seq41338__$5 = cljs.core.next.call(null,seq41338__$4);
+return tiltontec.cell.observer.defobserver.cljs$core$IFn$_invoke$arity$variadic(G__41339,G__41340,G__41341,G__41342,G__41343,seq41338__$5);
 });
 
 
@@ -97,14 +104,14 @@ tiltontec.cell.observer.defobserver.cljs$lang$macro = true;
  */
 tiltontec.cell.observer.fn_obs = (function tiltontec$cell$observer$fn_obs(var_args){
 var args__7292__auto__ = [];
-var len__7285__auto___27517 = arguments.length;
-var i__7286__auto___27518 = (0);
+var len__7285__auto___41350 = arguments.length;
+var i__7286__auto___41351 = (0);
 while(true){
-if((i__7286__auto___27518 < len__7285__auto___27517)){
-args__7292__auto__.push((arguments[i__7286__auto___27518]));
+if((i__7286__auto___41351 < len__7285__auto___41350)){
+args__7292__auto__.push((arguments[i__7286__auto___41351]));
 
-var G__27519 = (i__7286__auto___27518 + (1));
-i__7286__auto___27518 = G__27519;
+var G__41352 = (i__7286__auto___41351 + (1));
+i__7286__auto___41351 = G__41352;
 continue;
 } else {
 }
@@ -123,34 +130,34 @@ return cljs.core._conj.call(null,cljs.core.List.EMPTY,x__7044__auto__);
 
 tiltontec.cell.observer.fn_obs.cljs$lang$maxFixedArity = (2);
 
-tiltontec.cell.observer.fn_obs.cljs$lang$applyTo = (function (seq27514){
-var G__27515 = cljs.core.first.call(null,seq27514);
-var seq27514__$1 = cljs.core.next.call(null,seq27514);
-var G__27516 = cljs.core.first.call(null,seq27514__$1);
-var seq27514__$2 = cljs.core.next.call(null,seq27514__$1);
-return tiltontec.cell.observer.fn_obs.cljs$core$IFn$_invoke$arity$variadic(G__27515,G__27516,seq27514__$2);
+tiltontec.cell.observer.fn_obs.cljs$lang$applyTo = (function (seq41347){
+var G__41348 = cljs.core.first.call(null,seq41347);
+var seq41347__$1 = cljs.core.next.call(null,seq41347);
+var G__41349 = cljs.core.first.call(null,seq41347__$1);
+var seq41347__$2 = cljs.core.next.call(null,seq41347__$1);
+return tiltontec.cell.observer.fn_obs.cljs$core$IFn$_invoke$arity$variadic(G__41348,G__41349,seq41347__$2);
 });
 
 
 tiltontec.cell.observer.fn_obs.cljs$lang$macro = true;
 tiltontec.cell.observer.c_observe = (function tiltontec$cell$observer$c_observe(var_args){
-var args27520 = [];
-var len__7285__auto___27523 = arguments.length;
-var i__7286__auto___27524 = (0);
+var args41353 = [];
+var len__7285__auto___41356 = arguments.length;
+var i__7286__auto___41357 = (0);
 while(true){
-if((i__7286__auto___27524 < len__7285__auto___27523)){
-args27520.push((arguments[i__7286__auto___27524]));
+if((i__7286__auto___41357 < len__7285__auto___41356)){
+args41353.push((arguments[i__7286__auto___41357]));
 
-var G__27525 = (i__7286__auto___27524 + (1));
-i__7286__auto___27524 = G__27525;
+var G__41358 = (i__7286__auto___41357 + (1));
+i__7286__auto___41357 = G__41358;
 continue;
 } else {
 }
 break;
 }
 
-var G__27522 = args27520.length;
-switch (G__27522) {
+var G__41355 = args41353.length;
+switch (G__41355) {
 case 2:
 return tiltontec.cell.observer.c_observe.cljs$core$IFn$_invoke$arity$2((arguments[(0)]),(arguments[(1)]));
 
@@ -160,7 +167,7 @@ return tiltontec.cell.observer.c_observe.cljs$core$IFn$_invoke$arity$3((argument
 
 break;
 default:
-throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args27520.length)].join('')));
+throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args41353.length)].join('')));
 
 }
 });

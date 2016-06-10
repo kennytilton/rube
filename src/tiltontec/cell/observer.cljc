@@ -1,11 +1,20 @@
 (ns tiltontec.cell.observer
   (:require
+   #?(:cljs [tiltontec.util.base
+             :refer-macros [trx]]
+      :clj  [tiltontec.util.base
+             :refer :all])
+
    [tiltontec.util.core
     :refer [rmap-setf]]
    [tiltontec.cell.base
     :refer [c-ref? md-ref? unbound
-            +pulse+ c-slot c-value
-            c-model ia-types] :as cty]))
+            +pulse+ c-slot c-value c-md-name
+            c-model ia-types] :as cty]
+
+   #?(:clj [tiltontec.model.macros :refer :all]
+      :cljs [tiltontec.model.macros
+             :refer-macros [pme]])))
 
 (defn type-cljc [x]
   #?(:clj (type x)
@@ -53,7 +62,9 @@ call parameters: slot, me, new, old, and c."
    ;; (trx :cobs-3 (c-slot c) why)
    (assert (c-ref? c))
    (rmap-setf [:pulse-observed c] @+pulse+)
-   ;;(trx :c-obs-pulse! (c-slot c) why @+pulse+ (:obs @c))
+   (if-let [me (c-model c)]
+     (pme :c-observe!!!! (c-slot c) why @+pulse+ (nil? (:obs @c)))
+     (trx :c-observe-no-me!!!! (c-slot c) why @+pulse+ (nil? (:obs @c))))
    ;;(trx :c-obs-value! why (c-slot c) (c-model c) (c-value c) prior-value c)
    ((or (:obs @c) observe)
     (c-slot c)(c-model c)(c-value c) prior-value c)))
