@@ -230,23 +230,9 @@
 
 ;;; --- canvas ------------------------
 
-
 (defmethod observe [:drawing ::qxty/m.Canvas]
   [_ me new-fn _ _]
   (println :drawing!!!!!!!!!!!)
   (when new-fn
     (with-integrity [:client [:2-post-make-qx me]]
-      (new-fn me)
-      #_ 
-      (let [ctx (.getContext2d (qxme me))]
-        (assert ctx)
-        (aset ctx "strokeStyle" "#FF0000") ;; "#3D72C9")
-        (.beginPath ctx)
-        (.arc ctx 75 85 50 0 (* 2 Math.PI)  true)
-        (.moveTo ctx 110 85)
-        (.arc ctx 75 85 35 0 Math.PI  false)
-        (.moveTo ctx 65 75)
-        (.arc ctx 60 75 5 0 (* 2 Math.PI) true)
-        (.moveTo ctx 95 75)
-        (.arc ctx 90 75 5 0 (* 2 Math.PI) true)
-        (.stroke ctx)))))
+      (new-fn me))))

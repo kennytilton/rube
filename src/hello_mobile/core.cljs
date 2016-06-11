@@ -268,35 +268,66 @@
           ;; warning: specifiying the above suppresses css
           :css-class "warning")))))
 
+(defn mood-face [me]
+  (let [mood (md-get me :mood)]
+    (fn [me]
+      (let [ctx (.getContext2d (qxme me))]
+        (assert ctx)
+        (assert mood)
+
+        (aset ctx "strokeStyle"
+          (case mood
+            :happy "#FF0"
+            :sad "#F00"))
+                     
+        (.beginPath ctx)
+        (.arc ctx 75 85 50 0 (* 2 Math.PI)  true)
+        (case (md-get me :mood)
+          :sad (do
+                 (.moveTo ctx 110 85)
+                 (.arc ctx 75 110 15 0 Math.PI true))
+          :happy (do
+                   (.moveTo ctx 110 85)
+                   (.arc ctx 75 85 35 0 Math.PI false)))
+                     
+        (.moveTo ctx 65 75)
+        (.arc ctx 60 75 5 0 (* 2 Math.PI) true)
+        (.moveTo ctx 95 75)
+        (.arc ctx 90 75 5 0 (* 2 Math.PI) true)
+        (.stroke ctx)))))
 
 (defn make-hhhack []
   (println :hello-make-family!!!!!!!!!!!!)
   (navigation-page ["HHHack" "/"][]
     (qx-make ::qxty/m.Drawer
-      :orientation "left"
+      :orientation "top"
       :kids (c?kids
               (label "Socks")))
+    (qx-make ::qxty/m.Drawer
+      :orientation "left"
+      :kids (c?kids
+              (label "Undies")))
+    (qx-make ::qxty/m.Drawer
+      :orientation "right"
+      :kids (c?kids
+              (label "T-Shirts")))
+    
     (group [:showBorder true]
       (qx-make ::qxty/m.Html
         :html "<h1>Hi mom!</>")
       (qx-make ::qxty/m.Canvas
-        :width 175
-        :height 150
-        :css-class "cool"
-        :drawing (fn [me]
-                   (let [ctx (.getContext2d (qxme me))]
-                     (assert ctx)
-                     (aset ctx "strokeStyle" "#FF0000") ;; "#3D72C9")
-                     
-                     (.beginPath ctx)
-                     (.arc ctx 75 85 50 0 (* 2 Math.PI)  true)
-                     (.moveTo ctx 110 85)
-                     (.arc ctx 75 85 35 0 Math.PI  false)
-                     (.moveTo ctx 65 75)
-                     (.arc ctx 60 75 5 0 (* 2 Math.PI) true)
-                     (.moveTo ctx 95 75)
-                     (.arc ctx 90 75 5 0 (* 2 Math.PI) true)
-                     (.stroke ctx)))))))
+        :width 175 :height 150
+        :mood (c-in :happy)
+        :css-class (c? (case (md-get me :mood)
+                         :sad "cool"
+                         :happy "hot"))
+        :drawing (c? (mood-face me))
+        :listeners {"click"
+                    (fn [e me]
+                      (md-reset! me :mood
+                        (case (md-get me :mood)
+                         :sad :happy
+                         :happy :sad)))}))))
 
 (defn make-css-test []
   (hbox []
