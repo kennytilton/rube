@@ -17,7 +17,7 @@
     ::m.Atom ::m.Image ::m.Label ::m.Button
     ::m.SelectBox ::m.Slider ::m.TextArea ::m.Title
     ::m.ToggleButton ::m.Row ::m.List
-     ::m.Collapsible
+     ::m.Collapsible ::m.Html ::m.Canvas
     [::m.Input
      ::m.NumberField ::m.CheckBox ::m.RadioButton
      [::m.TextField

@@ -28,6 +28,8 @@
 (def +observe-default-handler+ (atom nil))
 
 (defmethod observe :default [slot me new-val old-val c]
+  (println :obs-fallthru slot me new-val)
+
   (if-let [obs @+observe-default-handler+]
     (do ;; (println :app-def-obs!!!)
         (obs slot me new-val old-val c))

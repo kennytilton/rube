@@ -161,7 +161,7 @@
            ;; in the place, but if the SETF is deferred we return
            ;; something that will help someone who tries to use
            ;; the setf'ed value figure out what is going on:
-           (println :cwi-defers opcode (first (ensure-vec defer-info)))
+           (pln :cwi :defers opcode (first (ensure-vec defer-info)))
            (ufb-add opcode [defer-info action]))
 
           ;; thus by not supplying an opcode one can get something

@@ -113,4 +113,5 @@
   (if (coll? x) (vec x) [x]))
 
 (defn pln [& r]
-  (println (pr-str r)))
+  (when (some #{(first r)} [])
+    (println (pr-str r))))

@@ -39,8 +39,8 @@
      :pager pager
      :shower shower
      :kids (c?kids
-             ;;(make-hhhack)
-             (make-login)
+             (make-hhhack)
+             ;;(make-login)
              #_(make-overview)))))
 
 (defn make-login []
@@ -272,12 +272,31 @@
 (defn make-hhhack []
   (println :hello-make-family!!!!!!!!!!!!)
   (navigation-page ["HHHack" "/"][]
-        (qx-make ::qxty/m.Scroll
+    (qx-make ::qxty/m.Drawer
+      :orientation "left"
       :kids (c?kids
-              (make-login-form)))
-        #_(qx-make ::qxty/m.Scroll
-      :kids (c?kids
-              (label "Surprise.")))))
+              (label "Socks")))
+    (group [:showBorder true]
+      (qx-make ::qxty/m.Html
+        :html "<h1>Hi mom!</>")
+      (qx-make ::qxty/m.Canvas
+        :width 175
+        :height 150
+        :css-class "cool"
+        :drawing (fn [me]
+                   (let [ctx (.getContext2d (qxme me))]
+                     (assert ctx)
+                     (aset ctx "strokeStyle" "#FF0000") ;; "#3D72C9")
+                     
+                     (.beginPath ctx)
+                     (.arc ctx 75 85 50 0 (* 2 Math.PI)  true)
+                     (.moveTo ctx 110 85)
+                     (.arc ctx 75 85 35 0 Math.PI  false)
+                     (.moveTo ctx 65 75)
+                     (.arc ctx 60 75 5 0 (* 2 Math.PI) true)
+                     (.moveTo ctx 95 75)
+                     (.arc ctx 90 75 5 0 (* 2 Math.PI) true)
+                     (.stroke ctx)))))))
 
 (defn make-css-test []
   (hbox []

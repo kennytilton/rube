@@ -70,6 +70,8 @@ qx.Class.define("identica.Application",
       qx.ui.mobile.form.Row;
       qx.ui.mobile.form.RadioGroup;
       qx.ui.mobile.form.RadioButton;
+      qx.ui.mobile.embed.Html;
+      qx.ui.mobile.embed.Canvas;
 
       qx.ui.mobile.form.renderer.Single;
       qx.ui.mobile.container.Carousel;

@@ -38,6 +38,7 @@
     ::qxty/m.Composite js/qx.ui.mobile.container.Composite
     ::qxty/m.Carousel js/qx.ui.mobile.container.Carousel
     ::qxty/m.Scroll js/qx.ui.mobile.container.Scroll
+    ::qxty/m.Drawer js/qx.ui.mobile.container.Drawer
     ::qxty/m.Picker js/qx.ui.mobile.control.Picker
     ::qxty/ml.HBox js/qx.ui.mobile.layout.HBox
     ::qxty/ml.VBox js/qx.ui.mobile.layout.VBox
@@ -64,6 +65,8 @@
     ::qxty/m.Row qx.ui.mobile.form.Row
     ::qxty/m.RadioGroup qx.ui.mobile.form.RadioGroup
     ::qxty/m.RadioButton qx.ui.mobile.form.RadioButton
+    ::qxty/m.Canvas qx.ui.mobile.embed.Canvas
+    ::qxty/m.Html qx.ui.mobile.embed.Html
 
     (do (println :throwing-type-err type)
         (throw (js/Error. (str "qxia-type-to-qx-class does not know about "
@@ -92,7 +95,7 @@
                               qx-class))
                         (qxia-type-to-qx-class type))]
         (do
-          (println :making-qx!!!!! type (:name iargs) :finalclass qx-class
+          (pln :making :qx!!!!! type (:name iargs) :finalclass qx-class
             (:qx-new-args iargs))
           (or (apply MyTerop/make qx-class (:qx-new-args iargs))
             (throw (js/Error. (str "qx-class-new tried making " qx-class
@@ -184,7 +187,8 @@
         (.set qxme (clj->js sd))))))
 
 (defn qx-observe-default [slot me new old c]
-  (when (and 
+  (println :obs-qx-fallthru slot me new)
+  (when (and
           (not (isa?  (ia-type me) ::qxty/m.RadioGroupStub))
           (isa?  (ia-type me) ::qxty/qx.Object)
           (some #{slot} (qx-obj-properties me)))

@@ -82,6 +82,8 @@
           (.setSelection group (clj->js (map qxme gs))))
         (.resetSelection group)))))
 
+;;; --- forms + single renderer ------------------------
+
 (defmethod observe [:kids ::qxty/m.Form]
   [_ me new old _]
   (with-integrity [:client [:2-post-make-qx me]]
@@ -115,6 +117,7 @@
         (pln :qx-init-single-gets-qxme!!!!)
         (swap! me assoc :qx-me (new js/qx.ui.mobile.form.renderer.Single qx-form))))))
 
+;;; --- navigation page -------------------------------
 
 (defmethod qx-initialize ::qxty/m.NavigationPage [page]
   (let [qx-page (qxme page)]
@@ -188,14 +191,13 @@
                  newk
                  (difference (set newk) (set oldk)))]
     (when-not (empty? new-ks)
-      (println :compo-newks!!!!!!! (ia-type me) (count new-ks))
+      (pln :compo-newks!!!!!!! (ia-type me) (count new-ks))
       (doseq [k new-ks]
         (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
-          (pln :compo-newk-add (ia-type me)(ia-type k))
+          (pln :addk :compo-newk-add (ia-type me)(ia-type k))
           (qx-add-kid me k))))))
 
 ;;; --- picker ----------
-
 
 (defmethod observe [:slot-data ::qxty/m.Picker]
   [_ me new old c]
@@ -208,7 +210,6 @@
         (let [da (new js/qx.data.Array
                    (clj->js sd))]
           (.addSlot p da))))))
-
 
 (defmethod observe [:validator-fn ::qxty/m.Input]
   [_ me new-fn old _]
@@ -227,3 +228,25 @@
     ;;(println :setval!!! (ia-type me) new old)
     (.setValue (qxme me) new)))
 
+;;; --- canvas ------------------------
+
+
+(defmethod observe [:drawing ::qxty/m.Canvas]
+  [_ me new-fn _ _]
+  (println :drawing!!!!!!!!!!!)
+  (when new-fn
+    (with-integrity [:client [:2-post-make-qx me]]
+      (new-fn me)
+      #_ 
+      (let [ctx (.getContext2d (qxme me))]
+        (assert ctx)
+        (aset ctx "strokeStyle" "#FF0000") ;; "#3D72C9")
+        (.beginPath ctx)
+        (.arc ctx 75 85 50 0 (* 2 Math.PI)  true)
+        (.moveTo ctx 110 85)
+        (.arc ctx 75 85 35 0 Math.PI  false)
+        (.moveTo ctx 65 75)
+        (.arc ctx 60 75 5 0 (* 2 Math.PI) true)
+        (.moveTo ctx 95 75)
+        (.arc ctx 90 75 5 0 (* 2 Math.PI) true)
+        (.stroke ctx)))))
