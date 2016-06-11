@@ -269,23 +269,33 @@
           :css-class "warning")))))
 
 (defn mood-face [me]
-  (let [mood (md-get me :mood)]
+  (let [mood (md-get (:par @me) :mood)]
+    (println :new-mood mood)
     (fn [me]
       (let [ctx (.getContext2d (qxme me))]
+        (.clearRect ctx 0 0 300 300)
         (assert ctx)
         (assert mood)
+        (println :mood mood)
 
         (aset ctx "strokeStyle"
           (case mood
             :happy "#FF0"
-            :sad "#F00"))
+            :sad "#F00"
+            :whatever "#000"))
+
+        (aset ctx "lineWidth" 3)
                      
         (.beginPath ctx)
         (.arc ctx 75 85 50 0 (* 2 Math.PI)  true)
-        (case (md-get me :mood)
+        (case mood
           :sad (do
-                 (.moveTo ctx 110 85)
-                 (.arc ctx 75 110 15 0 Math.PI true))
+                 (.moveTo ctx 60 110)
+                 (.arc ctx 75 110 15 Math.PI 0 false))
+          :whatever (do
+                      (.moveTo ctx 55 110)
+                      (.lineTo ctx 95 110))
+
           :happy (do
                    (.moveTo ctx 110 85)
                    (.arc ctx 75 85 35 0 Math.PI false)))
@@ -312,22 +322,30 @@
       :kids (c?kids
               (label "T-Shirts")))
     
-    (group [:showBorder true]
+    (group [:showBorder true
+            :mood (c-in :whatever)]
       (qx-make ::qxty/m.Html
-        :html "<h1>Hi mom!</>")
+        :html (c? (let [m (md-get (:par @me) :mood)]
+                    (case m
+                      :happy "<h1>Hi mom!</>"
+                      :sad "<i>Uh-oh</>"
+                      "<h3>hmmm...</>"))))
       (qx-make ::qxty/m.Canvas
+        :name :picasso
         :width 175 :height 150
-        :mood (c-in :happy)
-        :css-class (c? (case (md-get me :mood)
+        ;;:mood (c-in :happy)
+        :css-class (c? (case (md-get (:par @me) :mood)
                          :sad "cool"
-                         :happy "hot"))
+                         :happy "hot"
+                         :whatever "mild"))
         :drawing (c? (mood-face me))
         :listeners {"click"
                     (fn [e me]
-                      (md-reset! me :mood
-                        (case (md-get me :mood)
+                      (md-reset! (:par @me) :mood
+                        (case (md-get (:par @me) :mood)
                          :sad :happy
-                         :happy :sad)))}))))
+                         :happy :whatever
+                         :whatever :sad)))}))))
 
 (defn make-css-test []
   (hbox []

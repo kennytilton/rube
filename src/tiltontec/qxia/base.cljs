@@ -187,7 +187,8 @@
         (.set qxme (clj->js sd))))))
 
 (defn qx-observe-default [slot me new old c]
-  (println :obs-qx-fallthru slot me new)
+  (when-not (some #{slot} [:par :type])
+    (println :obs-qx-fallthru slot (ia-type me)))
   (when (and
           (not (isa?  (ia-type me) ::qxty/m.RadioGroupStub))
           (isa?  (ia-type me) ::qxty/qx.Object)

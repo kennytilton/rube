@@ -232,7 +232,9 @@
 
 (defmethod observe [:drawing ::qxty/m.Canvas]
   [_ me new-fn _ _]
-  (println :drawing!!!!!!!!!!!)
+  (println :obs-drawing!!!!!!!!!!! (not (nil? new-fn)))
   (when new-fn
+    (println :enq-drawing!!!!!!!!!!!)
     (with-integrity [:client [:2-post-make-qx me]]
+      (println :call-drawing!!!!!!!!!!!)
       (new-fn me))))
