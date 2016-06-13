@@ -1,0 +1,28 @@
+.coolfont {
+  font-family: Gill Sans, Verdana;
+	font-size: 11px;
+	line-height: 14px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-weight: bold;
+}
+
+.warning {
+  border: 10px solid #f00;
+  -webkit-transform : scale(0.5, 0.5);
+  transform         : scale(0.5, 0.5);
+}
+
+.hot {
+  background-color: Red;
+}
+
+.cool {
+  background-color: Cyan;
+}
+
+.mild {
+  background-color: forestgreen;
+}
+
+

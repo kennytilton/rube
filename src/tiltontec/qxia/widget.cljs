@@ -166,8 +166,9 @@
 ;;; --- observer handles changes to kids -----------
 ;;;
 
-(defmethod observe [:kids ::qxty/m.Composite]
+(defmethod observe [:kids ::qxty/qx.Object]
   [_ me newk oldk _]
+  (pme :obs-kids!!!)
   (with-integrity [:client [:2-post-make-qx me]]
     (kids-refresh me newk oldk)))
 
@@ -232,9 +233,15 @@
 
 (defmethod observe [:drawing ::qxty/m.Canvas]
   [_ me new-fn _ _]
-  (println :obs-drawing!!!!!!!!!!! (not (nil? new-fn)))
   (when new-fn
-    (println :enq-drawing!!!!!!!!!!!)
     (with-integrity [:client [:2-post-make-qx me]]
-      (println :call-drawing!!!!!!!!!!!)
       (new-fn me))))
+
+;;; --- popup ---------------------------
+
+(defmethod observe [:anchor ::qxty/m.Widget]
+  [_ me new-anchor  _]
+  (with-integrity [:client [:2-post-make-qx me]]
+    (when new-anchor
+      (.setAnchor (qxme me)
+        (qxme new-anchor)))))

@@ -34,6 +34,10 @@
   ;; make sure each of these is mentioned in your Application.js
   (case type
     ::qxty/Mobile qx.application.Mobile
+
+    ::qxty/m.Popup js/qx.ui.mobile.dialog.Popup
+    ::qxty/m.Menu js/qx.ui.mobile.dialog.Menu
+    ::qxty/m.BusyIndicator js/qx.ui.mobile.dialog.BusyIndicator
     ::qxty/m.Single js/qx.ui.mobile.form.renderer.Single
     ::qxty/m.Composite js/qx.ui.mobile.container.Composite
     ::qxty/m.Carousel js/qx.ui.mobile.container.Carousel
@@ -187,7 +191,7 @@
         (.set qxme (clj->js sd))))))
 
 (defn qx-observe-default [slot me new old c]
-  (when-not (some #{slot} [:par :type])
+  #_(when-not (some #{slot} [:par :type])
     (println :obs-qx-fallthru slot (ia-type me)))
   (when (and
           (not (isa?  (ia-type me) ::qxty/m.RadioGroupStub))

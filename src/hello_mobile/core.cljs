@@ -217,9 +217,6 @@
                   (fn [evt me]
                     (let [data (.getData evt)
                           jd (js->clj data)]
-                      #_(println "picked!!!! jd" jd
-                        (type jd) (ffirst jd)
-                        (jd "item"))
                       (md-reset! me :value
                         (get (get jd "item") "title"))))}
 
@@ -269,14 +266,15 @@
           :css-class "warning")))))
 
 (defn mood-face [me]
+
+  ;; mood itself could have been passed in
+  ;; but this demonstrates that dependency is established
+  ;; even though md-get is inside a function...
+
   (let [mood (md-get (:par @me) :mood)]
-    (println :new-mood mood)
     (fn [me]
       (let [ctx (.getContext2d (qxme me))]
         (.clearRect ctx 0 0 300 300)
-        (assert ctx)
-        (assert mood)
-        (println :mood mood)
 
         (aset ctx "strokeStyle"
           (case mood
@@ -307,7 +305,6 @@
         (.stroke ctx)))))
 
 (defn make-hhhack []
-  (println :hello-make-family!!!!!!!!!!!!)
   (navigation-page ["HHHack" "/"][]
     (qx-make ::qxty/m.Drawer
       :orientation "top"
@@ -316,7 +313,7 @@
     (qx-make ::qxty/m.Drawer
       :orientation "left"
       :kids (c?kids
-              (label "Undies")))
+              (label "Jeans")))
     (qx-make ::qxty/m.Drawer
       :orientation "right"
       :kids (c?kids
@@ -325,11 +322,14 @@
     (group [:showBorder true
             :mood (c-in :whatever)]
       (qx-make ::qxty/m.Html
+        :css-class "face-label"
         :html (c? (let [m (md-get (:par @me) :mood)]
                     (case m
                       :happy "<h1>Hi mom!</>"
                       :sad "<i>Uh-oh</>"
                       "<h3>hmmm...</>"))))
+      
+      
       (qx-make ::qxty/m.Canvas
         :name :picasso
         :width 175 :height 150
@@ -343,9 +343,78 @@
                     (fn [e me]
                       (md-reset! (:par @me) :mood
                         (case (md-get (:par @me) :mood)
-                         :sad :happy
-                         :happy :whatever
-                         :whatever :sad)))}))))
+                          :sad :happy
+                          :happy :whatever
+                          :whatever :sad)))}))
+    
+    (group [:name :dlgz
+            :showBorder true
+            :popper (c? (let [dlgz me]
+                         (qx-make ::qxty/m.Popup
+                           :anchor me
+                           :kids (c?kids (vbox []
+                                           (label "<h2>Told ya!</>")
+                                           (button "Bang"
+                                             :listeners {"click"
+                                                         (fn [e me]
+                                                           (.hide (qxme 
+                                                                    (:popper @dlgz))))}))))))
+            :itemz (c? (let [dlgz me]
+                         (qx-make ::qxty/m.Menu
+                           :anchor (let [hbox (first (md-get dlgz :kids))]
+                                     (nth (md-get hbox :kids) 1))
+                           :qx-new-args [(new js/qx.data.Array
+                                           (clj->js ["item1" "item2" "item3"]))]
+                           :listeners {"changeSelection"
+                                       (fn [evt me]
+                                         (let [jd (js->clj (.getData evt))]
+                                           (let [mo (fget :menu-order
+                                                        dlgz :up? false
+                                                              :inside? true)]
+                                             (assert dlgz)
+                                             (assert mo)
+                                             (md-reset!  mo
+                                               :order (get jd "item")))))})))
+            ;; :buzy (c? (let [dlgz me]
+            ;;              (qx-make ::qxty/m.BusyIndicator
+            ;;                :label "gogo"
+            ;;                :spinnerClass "loader"
+            ;;                :qx-new-args ["Patience..."])))
+            ]
+
+      (hbox []
+        (qx-make ::qxty/m.Atom
+          :label "Careful..."
+          :listeners {"click"
+                      (fn [e me]
+                        (let [dlgz (fget :dlgz me)]
+                          (when-let [pop (:popper @dlgz)]
+                            (.show (qxme pop)))))})
+        (qx-make ::qxty/m.Atom
+          :name :menu-order
+          :label "Choose..."
+          :order (c-in nil)
+          :listeners {"click"
+                      (fn [e me]
+                        (when-let [m (md-get (fget :dlgz me) :itemz)]
+                          (.show (qxme m))))})
+        (label (c? (if-let [item (md-get (fget :menu-order me) :order)]
+                     (str " I'll have " item)
+                     "nada, thx")))
+        #_ ;; no dice
+        (qx-make ::qxty/m.Atom
+          :label "Get Busy!"
+          :listeners {"click"
+                      (fn [e me]
+                        (when-let [dlg (md-get (fget :dlgz me) :buzy)]
+                          (println :bidlg!!!! (nil? dlg)
+                            (.getSpinnerClass (qxme dlg)))
+                          (let [app (qxme @this-app)
+                                root (.getRoot app)]
+                            (assert app)
+                            (assert root)
+                            (.add root (qxme dlg)))))})))))
+
 
 (defn make-css-test []
   (hbox []

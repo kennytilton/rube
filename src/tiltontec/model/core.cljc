@@ -128,6 +128,7 @@
   (cond
     (fn? seek) (seek poss)
     (keyword? seek)(do
+                     (trx nil :fget=sees seek (:name @poss))
                      (= seek (:name @poss)))
     :else (do ;; (trx :fget=-else! seek)
               (= seek poss))))
@@ -148,14 +149,15 @@
             (and (:inside? options)
                  (if-let [kids (md-get where :kids)]
                    (do
+                     (trx nil :inside-kids!!! (:name @where))
                      (if-let [netkids (remove #{(:skip options)} kids)]
                        (do
                          (some #(fget what %
                                       :me? true
                                       :inside? true
                                       :up? false) netkids))
-                       (trx :no-net-kids)))
-                   (trx nil :inside-no-kids @where)))
+                       (trx nil :no-net-kids)))
+                   (trx nil :inside-no-kids (:name @where))))
 
             (and (:up? options)
                  (when-let [par (:par @where)]
