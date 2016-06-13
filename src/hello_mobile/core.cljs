@@ -23,13 +23,14 @@
    [tiltontec.qxia.macros
     :refer-macros [hbox vbox navigation-page form carousel
                     drawer collapsible group]]
+   [hello-mobile.dialog-demos :refer [make-dialog-demos]]
+   [hello-mobile.login-form :refer [make-login-form]]
    ))
 
 (def this-app (atom nil))
 
 (declare make-picker-test make-login make-overview
-  make-remembrance make-hhhack make-css-test
-  make-login-form)
+  make-remembrance  make-css-test)
 
 (defn ^:export appinit [this pager shower]
   (reset!
@@ -39,18 +40,14 @@
      :pager pager
      :shower shower
      :kids (c?kids
-             (make-hhhack)
-             ;;(make-login)
-             #_(make-overview)))))
+             (make-login)
+             (make-overview)))))
 
 (defn make-login []
   (navigation-page ["Login" "/"][]
-    #_(qx-make ::qxty/m.Scroll
-      :kids (c?kids
-              (make-login-form)))
-    (make-login-form)
-    
-    (qx-make ::qxty/m.Row
+    #_(make-login-form)
+
+    #_(qx-make ::qxty/m.Row
       :name :row-me
       :label "Voila"
       :css-class (c? (let [rg (fget :fav-css me)]
@@ -60,7 +57,7 @@
               (label "Hi Mom" :name :row-me-label)))
 
     (list
-      (button "Login"
+      #_(button "Login"
         :listeners {"tap"
                     #(let [login (qxme (fm! :login me))
                            vmgr (.getValidationManager login)]
@@ -71,137 +68,30 @@
       (make-picker-test)
 
       (carousel [:name :carousel
-                 :css-class "cool"]
-        (group [:showBorder true]
-          (label "one-a?") (label "one-b?") (label "one-c?"))
-        (hbox [] (label "two"))
-        (hbox [] (label "three")))
+                 :css-class "carousel"]
+        (make-dialog-demos)
 
-      ;; drawers do not work yet
+        (group [:showBorder true]
+          (label "<h4>Tell me a story.</>")
+          (qx-make ::qxty/m.TextArea
+            :label "Tell me a story."
+            :placeholder "Your story here."
+            :maxLength 300
+            :value (c-in nil)
+            :listeners  {"changeValue"
+                         (fn [evt me]
+                           (let [data (.getData evt)
+                                 jd (js->clj data)]
+                             (md-reset! me :value jd)))}))
+        (group [:showBorder true]
+          (collapsible "Click for a surprise" []
+            (label "Surprise."))))
+
+      ;; bottom drawers do not work yet
       #_(drawer "bottom" [:name :drawer :css-class "hot"]
           (hbox [] (label "socks"))
           (hbox [] (label "shirts")))
-
-      (collapsible "Click for a surprise" []
-        (label "Surprise.")))
-
-    
-    (qx-make ::qxty/m.TextArea
-      :label "Tell me a story."
-      :placeholder "Your story here."
-      :maxLength 300
-      :value (c-in nil)
-      :listeners  {"changeValue"
-                   (fn [evt me]
-                     (let [data (.getData evt)
-                           jd (js->clj data)]
-                       (md-reset! me :value jd)))})))
-        
-(defn make-login-form []
-  (form [][:name :login]
-    (list
-      (text-field "Username"
-        :name :u-name
-        :value (c-in "KennY")
-        :placeholder "Just type something"
-        :required true
-        :requiredInvalidMessage "Please share your user name")
-      (qx-make ::qxty/m.PasswordField
-        :name :p-word
-        :label "Password"
-        ;;:value "Zoommmmm"
-        :placeholder "Just type something"
-        :required true
-        :requiredInvalidMessage "Password is required")
-      (number-field "A 42-ish Quantity"
-        ;;:qx-new-args [42]
-
-        :placeholder "something from -42 to 420 divisible by 42"
-        :required true
-        :minimum -42
-        :step 42
-        :maximum 420
-        ;;:liveUpdate true
-        :invalidMessage "NOT Answer to universe"
-        :requiredInvalidMessage "Answer to universe is required"))
-
-    (qx-make ::qxty/m.RadioGroupStub
-      :name :fav-css
-      :header "How's the weather?"
-      :allowEmptySelection true
-      :selection (c-in :mild)
-      :kids (c? (let [mrb (fn [model & [label]]
-                            (qx-make ::qxty/m.RadioButton
-                              :model model
-                              :name model
-                              :qx-new-args [model]
-                              :label (or label
-                                       (capitalize (name model)))))]
-                  (the-kids
-                    (mrb :cool "Kinda Kool")
-                    (mrb :mild)
-                    (mrb :hot)))))
-
-    #_(make-remembrance)
-
-    #_(qx-make ::qxty/m.SelectBox
-      :label "How many?"
-      :selection (c-in 2)
-      :model (qx-data-array ["one" "two" "three"])
-      :placeholder "Pick a number, any number"
-      :listeners  {"changeSelection"
-                   (fn [evt me]
-                     (let [jd (js->clj (.getData evt))]
-                       (with-integrity (:change)
-                         (md-reset! me :selection (jd "index")))))})))
-
-(defn make-remembrance []
-  (list
-    (qx-make ::qxty/m.CheckBox
-      :name :remember-me
-      :label "Remember you?"
-      :qx-new-args (c? [(md-get me :value)])
-      :value (c-in false)
-      :listeners  {"changeValue"
-                   (fn [evt me]
-                     (let [data (.getData evt)
-                           jd (js->clj data)]
-                       (md-reset! me :value jd)))})
-
-    (qx-make ::qxty/m.ToggleButton
-      :name :really
-      :label "Really?"
-      :visibility (c? (if (mdv! :remember-me :value)
-                                  "visible" "excluded"))
-      :value (c-in false)
-      :qx-new-args (c? [(md-get me :value) "Yes" "Nahh"])
-      :listeners  {"changeValue"
-                   (fn [evt me]
-                     (let [data (.getData evt)
-                           jd (js->clj data)]
-                       (md-reset! me :value jd)))})
-
-    (qx-make ::qxty/m.Slider
-      :name :time-to-remember
-      :label "How long to remember?"
-      :displayValue "value"
-      :value (c-in 10)
-      :enabled (c? (and (mdv! :remember-me :value)
-                          (mdv! :really :value)))
-      :minimum 1 :maximum 30 :step 2
-      :listeners  {"changeValue"
-                   (fn [evt me]
-                     (let [data (.getData evt)
-                           jd (js->clj data)]
-                       (md-reset! me :value jd)))})
-
-    (text-field "Remember time"
-      :value (c?+ [:obs (fn-obs
-                          (when-let [q (qxme me)] ;; not at first
-                            (.setValue (qxme me) new)))]
-               (let [r (mdv! :time-to-remember :value)]
-                 (when r (str r " days"))))
-      :readOnly true)))
+      )))
 
 (defn make-picker-test []
   (vbox [:name :picker-vbox]
@@ -258,163 +148,12 @@
         (vbox [:css-class "cool"]
           (label "Hello")
           (label "World"))
-        
+
         (image "identica/mmedia/earth-from-moon.jpg"
           ;;:rotation -5
           ;;:scaleX 0.5 :scaleY 0.5
           ;; warning: specifiying the above suppresses css
           :css-class "warning")))))
-
-(defn mood-face [me]
-
-  ;; mood itself could have been passed in
-  ;; but this demonstrates that dependency is established
-  ;; even though md-get is inside a function...
-
-  (let [mood (md-get (:par @me) :mood)]
-    (fn [me]
-      (let [ctx (.getContext2d (qxme me))]
-        (.clearRect ctx 0 0 300 300)
-
-        (aset ctx "strokeStyle"
-          (case mood
-            :happy "#FF0"
-            :sad "#F00"
-            :whatever "#000"))
-
-        (aset ctx "lineWidth" 3)
-                     
-        (.beginPath ctx)
-        (.arc ctx 75 85 50 0 (* 2 Math.PI)  true)
-        (case mood
-          :sad (do
-                 (.moveTo ctx 60 110)
-                 (.arc ctx 75 110 15 Math.PI 0 false))
-          :whatever (do
-                      (.moveTo ctx 55 110)
-                      (.lineTo ctx 95 110))
-
-          :happy (do
-                   (.moveTo ctx 110 85)
-                   (.arc ctx 75 85 35 0 Math.PI false)))
-                     
-        (.moveTo ctx 65 75)
-        (.arc ctx 60 75 5 0 (* 2 Math.PI) true)
-        (.moveTo ctx 95 75)
-        (.arc ctx 90 75 5 0 (* 2 Math.PI) true)
-        (.stroke ctx)))))
-
-(defn make-hhhack []
-  (navigation-page ["HHHack" "/"][]
-    (qx-make ::qxty/m.Drawer
-      :orientation "top"
-      :kids (c?kids
-              (label "Socks")))
-    (qx-make ::qxty/m.Drawer
-      :orientation "left"
-      :kids (c?kids
-              (label "Jeans")))
-    (qx-make ::qxty/m.Drawer
-      :orientation "right"
-      :kids (c?kids
-              (label "T-Shirts")))
-    
-    (group [:showBorder true
-            :mood (c-in :whatever)]
-      (qx-make ::qxty/m.Html
-        :css-class "face-label"
-        :html (c? (let [m (md-get (:par @me) :mood)]
-                    (case m
-                      :happy "<h1>Hi mom!</>"
-                      :sad "<i>Uh-oh</>"
-                      "<h3>hmmm...</>"))))
-      
-      
-      (qx-make ::qxty/m.Canvas
-        :name :picasso
-        :width 175 :height 150
-        ;;:mood (c-in :happy)
-        :css-class (c? (case (md-get (:par @me) :mood)
-                         :sad "cool"
-                         :happy "hot"
-                         :whatever "mild"))
-        :drawing (c? (mood-face me))
-        :listeners {"click"
-                    (fn [e me]
-                      (md-reset! (:par @me) :mood
-                        (case (md-get (:par @me) :mood)
-                          :sad :happy
-                          :happy :whatever
-                          :whatever :sad)))}))
-    
-    (group [:name :dlgz
-            :showBorder true
-            :popper (c? (let [dlgz me]
-                         (qx-make ::qxty/m.Popup
-                           :anchor me
-                           :kids (c?kids (vbox []
-                                           (label "<h2>Told ya!</>")
-                                           (button "Bang"
-                                             :listeners {"click"
-                                                         (fn [e me]
-                                                           (.hide (qxme 
-                                                                    (:popper @dlgz))))}))))))
-            :itemz (c? (let [dlgz me]
-                         (qx-make ::qxty/m.Menu
-                           :anchor (let [hbox (first (md-get dlgz :kids))]
-                                     (nth (md-get hbox :kids) 1))
-                           :qx-new-args [(new js/qx.data.Array
-                                           (clj->js ["item1" "item2" "item3"]))]
-                           :listeners {"changeSelection"
-                                       (fn [evt me]
-                                         (let [jd (js->clj (.getData evt))]
-                                           (let [mo (fget :menu-order
-                                                        dlgz :up? false
-                                                              :inside? true)]
-                                             (assert dlgz)
-                                             (assert mo)
-                                             (md-reset!  mo
-                                               :order (get jd "item")))))})))
-            ;; :buzy (c? (let [dlgz me]
-            ;;              (qx-make ::qxty/m.BusyIndicator
-            ;;                :label "gogo"
-            ;;                :spinnerClass "loader"
-            ;;                :qx-new-args ["Patience..."])))
-            ]
-
-      (hbox []
-        (qx-make ::qxty/m.Atom
-          :label "Careful..."
-          :listeners {"click"
-                      (fn [e me]
-                        (let [dlgz (fget :dlgz me)]
-                          (when-let [pop (:popper @dlgz)]
-                            (.show (qxme pop)))))})
-        (qx-make ::qxty/m.Atom
-          :name :menu-order
-          :label "Choose..."
-          :order (c-in nil)
-          :listeners {"click"
-                      (fn [e me]
-                        (when-let [m (md-get (fget :dlgz me) :itemz)]
-                          (.show (qxme m))))})
-        (label (c? (if-let [item (md-get (fget :menu-order me) :order)]
-                     (str " I'll have " item)
-                     "nada, thx")))
-        #_ ;; no dice
-        (qx-make ::qxty/m.Atom
-          :label "Get Busy!"
-          :listeners {"click"
-                      (fn [e me]
-                        (when-let [dlg (md-get (fget :dlgz me) :buzy)]
-                          (println :bidlg!!!! (nil? dlg)
-                            (.getSpinnerClass (qxme dlg)))
-                          (let [app (qxme @this-app)
-                                root (.getRoot app)]
-                            (assert app)
-                            (assert root)
-                            (.add root (qxme dlg)))))})))))
-
 
 (defn make-css-test []
   (hbox []

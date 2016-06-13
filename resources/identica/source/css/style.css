@@ -28,6 +28,12 @@
   background-color: forestgreen;
 }
 
+
+.carousel {
+  background-color: Red;
+  min-height : 400px;
+}
+
 .loader {
   margin: 100px auto;
   font-size: 25px;

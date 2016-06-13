@@ -43,6 +43,7 @@
   (:name @me))
 
 (defn md-get [me slot]
+  ;;(trx :md-get slot me)
   (if-let [c  (md-cell me slot)]
     (c-get c)
     (slot @me)))
