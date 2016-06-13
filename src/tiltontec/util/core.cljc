@@ -113,5 +113,5 @@
   (if (coll? x) (vec x) [x]))
 
 (defn pln [& r]
-  (when (some #{(first r)} [])
+  (when (some #{(first r)} []) ;; [:qxme :addk])
     (println (pr-str r))))

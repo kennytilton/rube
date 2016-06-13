@@ -103,9 +103,9 @@
               (.add qx-form qxk label))))))))
 
 (defmethod qx-initialize ::qxty/m.Single [me]
-  (pln :qx-init-single-enqueues-qxme!!!!)
+  (pln :qxme :qx-init-single-enqueues-qxme!!!!)
   (with-integrity [:client [:2-post-make-qx me]]
-    (pln :qx-init-single-does--qxme!!!!)
+    (pln :qxme :qx-init-single-does--qxme!!!!)
     (let [kids (:kids @me)]
       (assert (= 1 (count kids)))
       (let [form (first kids)
@@ -114,25 +114,28 @@
         ;; forms differ from the usual add/remove children scheme and
         ;; must be provided to the constructor of a renderer
         ;; but the form child will not have its qx-me until now
-        (pln :qx-init-single-gets-qxme!!!!)
+        (pln :qxme :qx-init-single-gets-qxme!!!!)
         (swap! me assoc :qx-me (new js/qx.ui.mobile.form.renderer.Single qx-form))))))
 
 ;;; --- navigation page -------------------------------
 
 (defmethod qx-initialize ::qxty/m.NavigationPage [page]
   (let [qx-page (qxme page)]
+    (pln :qxme :page-deferring)
     (.addListener qx-page "initialize"
       (fn []
+        (pln :qxme :page-fires)
         (when-let [kids (md-getx :ini-nav page :kids)]
           (let [content (. qx-page (getContent))]
             (doseq [k kids]
               (let [qxk  (qxme k)]
-                (pln :navpage-initialize-add (ia-type k))
+                (pln :qxme :navpage-initialize-add (ia-type k))
                 (.add content qxk)))))
         qx-page))))
 
 (defmethod observe [:kids ::qxty/m.NavigationPage]
   [_ page newk oldk _]
+  (pln :addk :nav-page-grabs-kids-obs)
   (when (not= oldk unbound)
     (with-integrity [:client [:2-post-make-qx page]]
       (let [qx-page (qxme page)]
@@ -168,9 +171,17 @@
 
 (defmethod observe [:kids ::qxty/qx.Object]
   [_ me newk oldk _]
-  (pme :obs-kids!!!)
-  (with-integrity [:client [:2-post-make-qx me]]
-    (kids-refresh me newk oldk)))
+  (case (ia-type me)
+    ;; these next two deviate from the norm
+    ;; and need special handling by Qxia here
+    ;; and elsewhere.
+    ::qxty/m.Single (do)
+    ::qxty/m.RadioGroupStub (do)
+    (do
+      (pme :addk :Object-obs-kids!!!)
+      (with-integrity [:client [:2-post-make-qx me]]
+        (kids-refresh me newk oldk)))))
+
 
 ;;; this bit pretends to be efficient but we do not yet have
 ;;; a parent sometimes returning the "same" kids, so really
@@ -192,7 +203,7 @@
                  newk
                  (difference (set newk) (set oldk)))]
     (when-not (empty? new-ks)
-      (pln :compo-newks!!!!!!! (ia-type me) (count new-ks))
+      (pln :addk :compo-newks!!!!!!! (ia-type me) (count new-ks))
       (doseq [k new-ks]
         (when-not (ia-type? k ::m.Form) ;; inconceivable, but be safe
           (pln :addk :compo-newk-add (ia-type me)(ia-type k))

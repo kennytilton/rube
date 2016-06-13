@@ -76,6 +76,7 @@
         (throw (js/Error. (str "qxia-type-to-qx-class does not know about "
                             type))))))
 
+
 (defn qx-class-new [type iargs]
   ;; make sure each of these is mentioned in your Application.js
   (case type
@@ -157,9 +158,10 @@
 (defmulti  qx-initialize-all ia-type)
 (defmethod qx-initialize-all ::qxty/m.Single [me])
 (defmethod qx-initialize-all :default [me]
-  ;; n.b.: we do specify a property unless requested so
-  ;; we do not shadow qooxdoo defaults with nulls.
+  ;; n.b.: we do not specify a property unless requested
+  ;; so as not to shadow qooxdoo defaults with nulls.
   ;; ie, Qxia widget defaults are the qooxdoo defaults.
+
   (when-let [inits (for [k (qx-obj-properties me)
                          :let [val (md-getx :init-all me k)]
                          :when (not (nil? val))]
@@ -202,8 +204,8 @@
 (reset! +observe-default-handler+ qx-observe-default)
 
 (defn qx-add-kid [me kid]
-  (assert (qxme me) (str "no qxme me" (ia-type me) me))
-  (assert (qxme kid) (str "no qxme kid" (ia-type me)
+  (assert (qxme me) (str "qx-add-kid>no qxme me" (ia-type me) me))
+  (assert (qxme kid) (str "qx-add-kid> no qxme kid" (ia-type me)
                        (:name @me)
                        (ia-type kid) kid))
 

@@ -8,31 +8,30 @@
     :kids (tiltontec.model.core/c?kids
             ~@kids)))
 
-
 (defmacro vbox [[& hbox-args] & kids]
-  `(tiltontec.model.core/make :type
-     :tiltontec.qxia.types/m.Composite
+  `(tiltontec.model.core/make
+     :type :tiltontec.qxia.types/m.Composite
      :layout (new js/qx.ui.mobile.layout.VBox)
     ~@hbox-args
     :kids (tiltontec.model.core/c?kids ~@kids)))
 
 (defmacro group [[& my-args] & kids]
-  `(tiltontec.model.core/make :type
-     :tiltontec.qxia.types/m.Group
+  `(tiltontec.model.core/make
+     :type :tiltontec.qxia.types/m.Group
     ~@my-args
     :kids (tiltontec.model.core/c?kids ~@kids)))
 
 (defmacro navigation-page [[title end-point] [& top-args] & kids]
-  `(tiltontec.model.core/make :type
-     :tiltontec.qxia.types/m.NavigationPage
+  `(tiltontec.model.core/make
+     :type :tiltontec.qxia.types/m.NavigationPage
      :end-point ~end-point
      :title ~title
      ~@top-args
      :kids (tiltontec.model.core/c?kids ~@kids)))
 
 (defmacro form [[& top-args][& form-args] & kids]
-  `(tiltontec.model.core/make :type
-    :tiltontec.qxia.types/m.Single
+  `(tiltontec.model.core/make
+     :type :tiltontec.qxia.types/m.Single
     ~@top-args
     :kids (tiltontec.model.core/c?kids
             (tiltontec.model.core/make :type

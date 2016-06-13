@@ -45,9 +45,17 @@
 
 (defn make-login []
   (navigation-page ["Login" "/"][]
-    #_(make-login-form)
+    (make-login-form)
 
-    #_(qx-make ::qxty/m.Row
+    (button "Login"
+      :listeners {"tap"
+                  #(let [login (qxme (fm! :login me))
+                         vmgr (.getValidationManager login)]
+                     (assert vmgr)
+                     (when-let [ok (.validate login)]
+                       (routing-get "/overview")))})
+
+    (qx-make ::qxty/m.Row
       :name :row-me
       :label "Voila"
       :css-class (c? (let [rg (fget :fav-css me)]
@@ -56,14 +64,7 @@
       :kids (c?kids
               (label "Hi Mom" :name :row-me-label)))
 
-    (list
-      #_(button "Login"
-        :listeners {"tap"
-                    #(let [login (qxme (fm! :login me))
-                           vmgr (.getValidationManager login)]
-                       (assert vmgr)
-                       (when-let [ok (.validate login)]
-                         (routing-get "/overview")))})
+    (list ;; no problem if nested list -- the-kids flattens
 
       (make-picker-test)
 

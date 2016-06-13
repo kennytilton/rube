@@ -8,6 +8,7 @@
     }
   ],
 
+
   "export" :
   [
     "api",
@@ -145,6 +146,11 @@
       "add-css" : [
         { "uri" : "./resource/${MOBILE_THEME_PATH}" }
       ]
+      , "copy-files" :
+        {
+          "files"     : [ "css" ],
+
+        }
     },
 
     "source-all-script" :
