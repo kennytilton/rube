@@ -31,6 +31,29 @@
   (navigation-page ["Random Toys" "/randomtoys"]
     [:showBackButton true
      :backButtonText "Back"]
+    (qx-make ::qxty/m.Drawer
+      :orientation "top"
+      :css-class "cool"
+      :kids (c?kids
+              (label "Socks")))
+
+    (qx-make ::qxty/m.Drawer
+      :orientation "left"
+      :css-class "cool"
+      :kids (c?kids
+              (label "Jeans")))
+
+    (qx-make ::qxty/m.Drawer
+      :orientation "right"
+      :css-class "cool"
+      :kids (c?kids
+              (label "T-Shirts")))
+
+    (qx-make ::qxty/m.Drawer
+      :orientation "bottom"
+      :kids (c?kids
+              (label "<h3>It is not clear why this drawer is open.</>")))
+    (label "<h2>Looking for something?</><h3>You might want to check (swipe) the drawers</>")
     (form [][]
       (qx-make ::qxty/m.RadioGroupStub
         :name :fav-css
@@ -38,7 +61,6 @@
         :allowEmptySelection true
         :selection (c-in :mild)
         :kids (c? (let [mrb (fn [model & [label]]
-                              (println :here-come-rb model label)
                               (qx-make ::qxty/m.RadioButton
                                 :model model
                                 :name model
@@ -74,7 +96,6 @@
                           (md-reset! me :selection (jd "index")))))}))
 
     (make-picker-test)))
-
 
 (defn make-remembrance []
   (form [][]

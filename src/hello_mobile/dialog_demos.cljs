@@ -65,19 +65,6 @@
         (.stroke ctx)))))
 
 (defn make-dialog-demos[]
-  ;; (navigation-page ["HHHack" "/"][]
-  ;;   (qx-make ::qxty/m.Drawer
-  ;;     :orientation "top"
-  ;;     :kids (c?kids
-  ;;             (label "Socks")))
-  ;;   (qx-make ::qxty/m.Drawer
-  ;;     :orientation "left"
-  ;;     :kids (c?kids
-  ;;             (label "Jeans")))
-  ;;   (qx-make ::qxty/m.Drawer
-  ;;     :orientation "right"
-  ;;     :kids (c?kids
-  ;;             (label "T-Shirts")))
   (vbox []
     (group [:showBorder true
             :mood (c-in :whatever)]
@@ -167,7 +154,6 @@
                         (let [dlgz (fget :dlgz me)
                               pop-fn (:pop-fn @dlgz)]
                           (let [p (pop-fn me)]
-                            (println :pop (meta p))
                             (.show (qxme p)))))})
 
         (qx-make ::qxty/m.Atom

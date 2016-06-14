@@ -57,8 +57,13 @@
                      (assert vmgr)
                      (when-let [ok (.validate login)]
                        (routing-get "/overview")))})
+
+    (label "<h4>Or just goof around on this carousel...</>"
+      :translateY 24)
+
     (carousel [:name :carousel
-               :css-class "carousel"]
+               :css-class "carousel"
+               :translateY 48]
       (make-dialog-demos)
 
       (group [:showBorder true]
