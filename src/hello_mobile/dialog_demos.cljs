@@ -113,18 +113,40 @@
             :showBorder true
             :popper (c? (let [dlgz me]
                           (qx-make ::qxty/m.Popup
-                            :anchor me
+                            :anchor (let [hbox (first (md-get dlgz :kids))]
+                                     (nth (md-get hbox :kids) 1))
                             :kids (c?kids (vbox []
                                             (label "<h2>Told ya!</>")
-                                            (button "Bang"
+                                            (button "True that"
                                               :listeners {"click"
                                                           (fn [e me]
                                                             (.hide (qxme
                                                                      (:popper @dlgz))))}))))))
+            :pop-fn (fn [anchor]
+                      ;; this is tricky, cells-wise. We want this popup and its kids
+                      ;; immediately, not when the integrity engine gets around to it.
+                      ;; We know this is a standalone thingy with no dependencies, so
+                      ;; we tell the intergity engine to Just Do It(tm) by not 
+                      ;; passing an opcode that would set its priority.
+                      ;; Hmmm. Perhaps we should have a :just-do-it opcode..
+                      ;;
+                      (with-integrity []
+                        (qx-make ::qxty/m.Popup
+                          :anchor anchor
+                          :kids (c?kids
+                                  (vbox []
+                                    (label "<h2>Told ya!</>")
+                                    (button "True that"
+                                      :listeners {"click"
+                                                  (fn [e me]
+                                                    (let [p (fget ::qxty/m.Popup me)]
+                                                      (assert p (str "Popup not found above " me))
+                                                      (.hide (qxme p))))}))))))
+            
             :itemz (c? (let [dlgz me]
                          (qx-make ::qxty/m.Menu
                            :anchor (let [hbox (first (md-get dlgz :kids))]
-                                     (nth (md-get hbox :kids) 1))
+                                     (nth (md-get hbox :kids) 2))
                            :qx-new-args [(new js/qx.data.Array
                                            (clj->js ["item1" "item2" "item3"]))]
                            :listeners {"changeSelection"
@@ -145,16 +167,24 @@
             ]
 
       (hbox []
+        (label "Clickable! ->")
         (qx-make ::qxty/m.Atom
           :label "Careful..."
+          :css-class "hot"
+          :translateX 12
           :listeners {"click"
                       (fn [e me]
-                        (let [dlgz (fget :dlgz me)]
-                          (when-let [pop (:popper @dlgz)]
-                            (.show (qxme pop)))))})
+                        (let [dlgz (fget :dlgz me)
+                              pop-fn (:pop-fn @dlgz)]
+                          (let [p (pop-fn me)]
+                            (println :pop (meta p))
+                            (.show (qxme p)))))})
+
         (qx-make ::qxty/m.Atom
           :name :menu-order
           :label "Choose..."
+          :translateX 24
+          :css-class "cool"
           :order (c-in nil)
           :listeners {"click"
                       (fn [e me]
@@ -162,8 +192,9 @@
                           (.show (qxme m))))})
         (label (c? (if-let [item (md-get (fget :menu-order me) :order)]
                      (str " I'll have " item)
-                     "nada, thx")))
-        #_ ;; no dice
+                     "nada, thx"))
+          :translateX 48)
+        #_ ;; not working yet
         (qx-make ::qxty/m.Atom
           :label "Get Busy!"
           :listeners {"click"

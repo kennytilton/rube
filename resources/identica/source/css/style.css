@@ -20,6 +20,10 @@
   background-color: Red;
 }
 
+.uncrowded {
+  margin-left: 24px;
+}
+
 .cool {
   background-color: Cyan;
 }

@@ -25,6 +25,7 @@
                     drawer collapsible group]]
    [hello-mobile.dialog-demos :refer [make-dialog-demos]]
    [hello-mobile.login-form :refer [make-login-form]]
+   [hello-mobile.random-toys :refer [make-random-toys]]
    ))
 
 (def this-app (atom nil))
@@ -41,7 +42,8 @@
      :shower shower
      :kids (c?kids
              (make-login)
-             (make-overview)))))
+             ;;(make-overview)
+             #_(make-random-toys)))))
 
 
 (defn make-login []
@@ -55,107 +57,67 @@
                      (assert vmgr)
                      (when-let [ok (.validate login)]
                        (routing-get "/overview")))})
+    (carousel [:name :carousel
+               :css-class "carousel"]
+      (make-dialog-demos)
 
-    (qx-make ::qxty/m.Row
-      :name :row-me
-      :label "Voila"
-      :css-class (c? (let [rg (fget :fav-css me)]
-                       (when-let [css (md-get rg :selection)]
-                         [(name css)])))
-      :kids (c?kids
-              (label "Hi Mom" :name :row-me-label)))
-
-    (list ;; no problem if nested list -- the-kids flattens
-
-      (make-picker-test)
-
-      (carousel [:name :carousel
-                 :css-class "carousel"]
-        (make-dialog-demos)
-
-        (group [:showBorder true]
-          (label "<h4>Tell me a story.</>")
-          (qx-make ::qxty/m.TextArea
-            :label "Tell me a story."
-            :placeholder "Your story here."
-            :maxLength 300
-            :value (c-in nil)
-            :listeners  {"changeValue"
-                         (fn [evt me]
-                           (let [data (.getData evt)
-                                 jd (js->clj data)]
-                             (md-reset! me :value jd)))}))
-        (group [:showBorder true]
-          (collapsible "Click for a surprise" []
-            (label "Surprise."))))
+      (group [:showBorder true]
+        (label "<h4>Tell me a story.</>")
+        (qx-make ::qxty/m.TextArea
+          :label "Tell me a story."
+          :placeholder "Your story here."
+          :maxLength 300
+          :value (c-in nil)
+          :listeners  {"changeValue"
+                       (fn [evt me]
+                         (let [data (.getData evt)
+                               jd (js->clj data)]
+                           (md-reset! me :value jd)))}))
+      (group [:showBorder true]
+        (collapsible "Click for a surprise" []
+          (label "Surprise."))))
 
       ;; bottom drawers do not work yet
-      #_(drawer "bottom" [:name :drawer :css-class "hot"]
-          (hbox [] (label "socks"))
-          (hbox [] (label "shirts")))
+     #_ ;; this is in wrong place
+     (drawer "left" [:name :drawer :css-class "hot"]
+          (hbox [] (label "<h2>socks</>"))
+          ;;(hbox [] (label "shirts")))
       )))
-
-(defn make-picker-test []
-  (vbox [:name :picker-vbox]
-     (label (c? (let [myp (fget :my-pick me)]
-                 (str "Latest pick " (md-get myp :value)))))
-    (qx-make ::qxty/m.Picker
-      :name :my-pick
-      :height 100
-      :width 200
-      :visibleItems 3
-      :value (c-in "booya")
-      :listeners {"changeSelection"
-                  (fn [evt me]
-                    (let [data (.getData evt)
-                          jd (js->clj data)]
-                      (md-reset! me :value
-                        (get (get jd "item") "title"))))}
-
-      :slot-data (list
-                   [{:title "Windows Phone"
-                     :subtitle "R.I.P."
-                     :image "identica/mmedia/games.png"}
-                    {:title "iOS" :subtitle "Version 7.1"}
-                    {:title "Android"}]
-                   [{:title "Tablet"}
-                    {:title "Smartphone"}
-                    {:title "Phablet"}]))
-    #_(label (c? (let [myp (fget :my-pick me  {:me? false
-                          , :inside? false
-                          , :up? true
-                          , :wocd? true ;; without-c-dependency
-                          })]
-                 "xxx" #_
-                 (str (md-get myp :value)))))))
-
 
 (defn make-overview []
   (navigation-page ["Overview" "/overview"]
     [:name :oview
      :showButton true
-     :buttonText (c? (if (md-get me :greet?)
-                       "Who's there?"
-                       "Knock-Knock"))
+     :buttonText "Random Toys"
      :buttonIcon "identica/mmedia/games.png"
      :showBackButton true
      :backButtonText "Back"
-     :listeners
-     {"action" (fn [event me]
-                  (md-reset! me :greet? (not (md-get me :greet?))))}
-     :greet? (c-in false)
+     :action (fn [event me]
+                (routing-get "/random"))
      ]
-    (hbox [:name :stuff]
-      (if (md-get (qx-par me) :greet?)
-        (vbox [:css-class "cool"]
-          (label "Hello")
-          (label "World"))
+    (vbox [:name :greeter
+           :greet? (c-in false)]
+
+      (button (c? (if (md-get (qx-par me) :greet?)
+                       "Who's there?"
+                       "Knock-Knock"))
+        :listeners {"tap" (fn [event me]
+                            (let [g (fget :greeter me)]
+                              (assert g)
+                              (md-reset! g :greet?
+                                (not (md-get g :greet?)))))})
+
+      (hbox [:name :stuff]
+        (if (md-get (qx-par me) :greet?)
+          (label "<h1>hello, world</>"
+            :css-class "cool")
 
         (image "identica/mmedia/earth-from-moon.jpg"
           ;;:rotation -5
-          ;;:scaleX 0.5 :scaleY 0.5
+          :scaleX 0.5 :scaleY 0.5
           ;; warning: specifiying the above suppresses css
-          :css-class "warning")))))
+          ;;:css-class "warning"
+          ))))))
 
 (defn make-css-test []
   (hbox []

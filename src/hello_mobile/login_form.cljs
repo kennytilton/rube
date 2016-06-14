@@ -55,22 +55,6 @@
         :invalidMessage "NOT Answer to universe"
         :requiredInvalidMessage "Answer to universe is required"))
 
-    (qx-make ::qxty/m.RadioGroupStub
-      :name :fav-css
-      :header "How's the weather?"
-      :allowEmptySelection true
-      :selection (c-in :mild)
-      :kids (c? (let [mrb (fn [model & [label]]
-                            (qx-make ::qxty/m.RadioButton
-                              :model model
-                              :name model
-                              :qx-new-args [model]
-                              :label (or label
-                                       (capitalize (name model)))))]
-                  (the-kids
-                    (mrb :cool "Kinda Kool")
-                    (mrb :mild)
-                    (mrb :hot)))))
 
     #_(make-remembrance)
 

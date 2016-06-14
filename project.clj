@@ -27,7 +27,7 @@
                                   ;; qooxdoo mobile is dead fast source or build, so I use that
                                   ;; which is here (via 'lein cljsbuild auto qxia):
                                   ;;
-                                 :qxia {:source-paths ["src"]
+                                 :hellomobile {:source-paths ["src"]
                                        :compiler {:externs ["externs.js"]
                                                   :foreign-libs [{:file "resources/identica/source/script/identica.js"
                                                                    :provides ["identica"]}]
@@ -40,18 +40,18 @@
                                   ;; before './generate.py build' and invariable lose a minute
                                   ;; scratching my head):
                                   ;;
-                                 :qxiabuild {:source-paths ["src"]
+                                 :hmbuild {:source-paths ["src"]
                                        :compiler {:externs ["externs.js"]
                                                   :foreign-libs [{:file "resources/identica/source/script/identica.js"
                                                                    :provides ["identica"]}]
                                                   :output-to "resources/identica/build/script/qxia.js"
                                                   :output-dir "resources/identica/build/script/out"
                                                   :optimizations :whitespace}}
-                                 :dev {:source-paths ["src"]
+                                 :cellsdev {:source-paths ["src"]
                                        :compiler {:output-to "resources/public/js/main.js"
                                                   :output-dir "resources/public/js/out"
                                                   :optimizations :whitespace}}
-                                 :test {:source-paths ["src" "test"]
+                                 :cellstest {:source-paths ["src" "test"]
                                         :compiler {:output-to "resources/public/js/main-test.js"
                                                    :optimizations :whitespace
                                                    :pretty-print true}}

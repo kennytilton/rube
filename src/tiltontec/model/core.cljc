@@ -129,8 +129,9 @@
   (cond
     (fn? seek) (seek poss)
     (keyword? seek)(do
-                     (trx nil :fget=sees seek (:name @poss))
-                     (= seek (:name @poss)))
+                     (trx :fget=sees seek (:name @poss) (ia-type poss))
+                     (or (= seek (:name @poss))
+                       (isa? (ia-type poss) seek)))
     :else (do ;; (trx :fget=-else! seek)
               (= seek poss))))
 
