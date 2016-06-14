@@ -18,6 +18,7 @@
    [tiltontec.qxia.types :as qxty]
    [tiltontec.qxia.base
     :refer [qxme qx-obj-properties
+            form-build-radio-group-stub
             qx-property-observe
             qx-class-new qx-initialize
             qxme qx-add-kid qx-data-array]]
@@ -49,38 +50,6 @@
   (when-let [lyo (:layout @me)]
     (.setLayout (qxme me) lyo)))
 
-(defn form-build-radio-group-stub [form stub]
-  ;; qooxdoo does not make radio groups very
-  ;; easy to work with, so...
-  (let [qx-form (qxme form)]
-
-    (when-let [h (:header @stub)]
-      (do (.addGroupHeader qx-form h)))
-
-    (let [group (new js/qx.ui.mobile.form.RadioGroup)]
-      (.setAllowEmptySelection group
-        (or (:allowEmptySelection @stub) false))
-
-      (with-integrity [:client [:3-post-assembly stub]]
-        ;; qx sets selection as each rb added so
-        ;; defer selection change handling
-        (.addListener group "changeSelection"
-          (fn [e]
-            (let [rb (first (js->clj (.getData e)))]
-              (when rb
-                (md-reset! stub :selection 
-                  (keyword (.getModel rb))))))))
-
-      (doseq [rb (md-get stub :kids)]
-        (.add group (qxme rb))
-        (.add qx-form (qxme rb) (:label @rb)))
-
-      (if-let [s (md-get stub :selection)]
-        (let [gs (filter (fn [rb]
-                           (= s (:model @rb)))
-                   (md-get stub :kids))]
-          (.setSelection group (clj->js (map qxme gs))))
-        (.resetSelection group)))))
 
 ;;; --- forms + single renderer ------------------------
 

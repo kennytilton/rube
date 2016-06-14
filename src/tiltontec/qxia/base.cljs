@@ -11,7 +11,7 @@
    [tiltontec.cell.observer :refer [observe +observe-default-handler+]]
    [tiltontec.model.base :refer [md-awaken-before]
     :as mdb]
-   [tiltontec.model.core :refer [md-get md-getx]]
+   [tiltontec.model.core :refer [md-get md-getx md-reset!]]
    [tiltontec.qxia.types :as qxty]
 
    ))
@@ -25,6 +25,7 @@
 
 (defn app-routing []
   (let [app  (js/qx.core.Init.getApplication)]
+    (assert app)
     (.getRouting app)))
 
 (defn qx-data-array [items]
@@ -202,12 +203,46 @@
 
 (reset! +observe-default-handler+ qx-observe-default)
 
+(defn form-build-radio-group-stub [form stub]
+  ;; qooxdoo does not make radio groups very
+  ;; easy to work with, so...
+  (let [qx-form (qxme form)]
+    (assert (ia-type? form ::qxty/m.Form)
+      (str "radio groups must be added to ::m.Form's, not "
+        (ia-type form)))
+    
+    (when-let [h (:header @stub)]
+      (do (.addGroupHeader qx-form h)))
+
+    (let [group (new js/qx.ui.mobile.form.RadioGroup)]
+      (.setAllowEmptySelection group
+        (or (:allowEmptySelection @stub) false))
+
+      (with-integrity [:client [:3-post-assembly stub]]
+        ;; qx sets selection as each rb added so
+        ;; defer selection change handling
+        (.addListener group "changeSelection"
+          (fn [e]
+            (let [rb (first (js->clj (.getData e)))]
+              (when rb
+                (md-reset! stub :selection 
+                  (keyword (.getModel rb))))))))
+      (doseq [rb (md-get stub :kids)]
+        (.add group (qxme rb))
+        (.add qx-form (qxme rb) (:label @rb)))
+      
+      (if-let [s (md-get stub :selection)]
+        (let [gs (filter (fn [rb]
+                           (= s (:model @rb)))
+                   (md-get stub :kids))]
+          (.setSelection group (clj->js (map qxme gs))))
+        (.resetSelection group)))))
+
 (defn qx-add-kid [me kid]
   (assert (qxme me) (str "qx-add-kid>no qxme me" (ia-type me) me))
   (assert (qxme kid) (str "qx-add-kid> no qxme kid" (ia-type me)
                        (:name @me)
                        (ia-type kid) kid))
-
   (if-let [flex (:flex @kid)]
     (.add (qxme me) (qxme kid) #js {:flex flex})
     (.add (qxme me) (qxme kid))))

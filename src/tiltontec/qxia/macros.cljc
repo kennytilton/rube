@@ -30,11 +30,11 @@
      :kids (tiltontec.model.core/c?kids ~@kids)))
 
 (defmacro form [[& top-args][& form-args] & kids]
-  `(tiltontec.model.core/make
-     :type :tiltontec.qxia.types/m.Single
+  `(tiltontec.qxia.core/qx-make
+     :tiltontec.qxia.types/m.Single
     ~@top-args
     :kids (tiltontec.model.core/c?kids
-            (tiltontec.model.core/make :type
+            (tiltontec.qxia.core/qx-make
               :tiltontec.qxia.types/m.Form
               ~@form-args
               :kids (tiltontec.model.core/c?kids ~@kids)))))

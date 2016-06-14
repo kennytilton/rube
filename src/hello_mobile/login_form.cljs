@@ -28,46 +28,45 @@
 
 (defn make-login-form []
   (form [][:name :login]
-    (list
-      (text-field "Username"
-        :name :u-name
-        :value (c-in "KennY")
-        :placeholder "Just type something"
-        :required true
-        :requiredInvalidMessage "Please share your user name")
-      (qx-make ::qxty/m.PasswordField
-        :name :p-word
-        :label "Password"
-        ;;:value "Zoommmmm"
-        :placeholder "Just type something"
-        :required true
-        :requiredInvalidMessage "Password is required")
+    (text-field "Username"
+      :name :u-name
+      :value (c-in "KennY")
+      :placeholder "Just type something"
+      :required true
+      :requiredInvalidMessage "Please share your user name")
+    (qx-make ::qxty/m.PasswordField
+      :name :p-word
+      :label "Password"
+      :value "Zoommmmm"
+      :placeholder "Just type something"
+      :required true
+      :requiredInvalidMessage "Password is required")
 
-      (number-field "A 42-ish Quantity"
-        ;;:qx-new-args [42]
+    (number-field "A 42-ish Quantity"
+      ;;:qx-new-args [42]
 
-        :placeholder "something from -42 to 420 divisible by 42"
-        ;;:required true
-        :minimum -42
-        :step 42
-        :maximum 420
-        ;;:liveUpdate true
-        :invalidMessage "NOT Answer to universe"
-        :requiredInvalidMessage "Answer to universe is required"))
+      :placeholder "something from -42 to 420 divisible by 42"
+      ;;:required true
+      :minimum -42
+      :step 42
+      :maximum 420
+      ;;:liveUpdate true
+      :invalidMessage "NOT Answer to universe"
+      :requiredInvalidMessage "Answer to universe is required")
 
 
     #_(make-remembrance)
 
     #_(qx-make ::qxty/m.SelectBox
-      :label "How many?"
-      :selection (c-in 2)
-      :model (qx-data-array ["one" "two" "three"])
-      :placeholder "Pick a number, any number"
-      :listeners  {"changeSelection"
-                   (fn [evt me]
-                     (let [jd (js->clj (.getData evt))]
-                       (with-integrity (:change)
-                         (md-reset! me :selection (jd "index")))))})))
+        :label "How many?"
+        :selection (c-in 2)
+        :model (qx-data-array ["one" "two" "three"])
+        :placeholder "Pick a number, any number"
+        :listeners  {"changeSelection"
+                     (fn [evt me]
+                       (let [jd (js->clj (.getData evt))]
+                         (with-integrity (:change)
+                           (md-reset! me :selection (jd "index")))))})))
 
 
 (defn make-remembrance []

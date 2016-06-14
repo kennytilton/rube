@@ -42,8 +42,8 @@
      :shower shower
      :kids (c?kids
              (make-login)
-             ;;(make-overview)
-             #_(make-random-toys)))))
+             (make-overview)
+             (make-random-toys)))))
 
 
 (defn make-login []
@@ -92,33 +92,40 @@
      :buttonIcon "identica/mmedia/games.png"
      :showBackButton true
      :backButtonText "Back"
-     :action (fn [event me]
-                (routing-get "/random"))
-     ]
+     :listeners {"action" (fn [event me]
+                            (routing-get "/randomtoys"))}]
+    
     (vbox [:name :greeter
            :greet? (c-in false)]
-
-      (button (c? (if (md-get (qx-par me) :greet?)
-                       "Who's there?"
-                       "Knock-Knock"))
+      
+      (qx-make ::qxty/m.Button
+        :translateY 48
+        :label (c? (if (md-get (qx-par me) :greet?)
+                     "Who's there?"
+                     "Knock-Knock"))
         :listeners {"tap" (fn [event me]
                             (let [g (fget :greeter me)]
                               (assert g)
                               (md-reset! g :greet?
                                 (not (md-get g :greet?)))))})
 
-      (hbox [:name :stuff]
-        (if (md-get (qx-par me) :greet?)
-          (label "<h1>hello, world</>"
-            :css-class "cool")
+      (hbox [:name :stuff
+             :translateY 72
+             :css-class ["notsobig"]]
+          (if (md-get (fget :greeter me) :greet?)
+            (label "<h1>hello, world</>"
+              :css-class "cool"
+              :translateX 200
+              :translateY 100)
 
-        (image "identica/mmedia/earth-from-moon.jpg"
-          ;;:rotation -5
-          :scaleX 0.5 :scaleY 0.5
-          ;; warning: specifiying the above suppresses css
-          ;;:css-class "warning"
-          ))))))
+            (image "identica/mmedia/earth-from-moon.jpg"
+              ;;:rotation -5
+              ;;:scaleX 0.5 :scaleY 0.5
+              ;; warning: specifiying the above suppresses css
+              ;;:css-class "warning"
+              ))))))
 
+;; next guy not in use just now
 (defn make-css-test []
   (hbox []
     (label "Hello cool222"

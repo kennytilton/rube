@@ -87,7 +87,7 @@
                     (case m
                       :happy "<h1>Hi mom!</>"
                       :sad "<i>Uh-oh</>"
-                      "<h3>hmmm...</>"))))
+                      "<h3>hmmmm...</>"))))
 
 
       (qx-make ::qxty/m.Canvas
@@ -111,17 +111,7 @@
 
     (group [:name :dlgz
             :showBorder true
-            :popper (c? (let [dlgz me]
-                          (qx-make ::qxty/m.Popup
-                            :anchor (let [hbox (first (md-get dlgz :kids))]
-                                     (nth (md-get hbox :kids) 1))
-                            :kids (c?kids (vbox []
-                                            (label "<h2>Told ya!</>")
-                                            (button "True that"
-                                              :listeners {"click"
-                                                          (fn [e me]
-                                                            (.hide (qxme
-                                                                     (:popper @dlgz))))}))))))
+            :translateY 18
             :pop-fn (fn [anchor]
                       ;; this is tricky, cells-wise. We want this popup and its kids
                       ;; immediately, not when the integrity engine gets around to it.
@@ -143,21 +133,21 @@
                                                       (assert p (str "Popup not found above " me))
                                                       (.hide (qxme p))))}))))))
             
-            :itemz (c? (let [dlgz me]
-                         (qx-make ::qxty/m.Menu
-                           :anchor (let [hbox (first (md-get dlgz :kids))]
-                                     (nth (md-get hbox :kids) 2))
-                           :qx-new-args [(new js/qx.data.Array
-                                           (clj->js ["item1" "item2" "item3"]))]
-                           :listeners {"changeSelection"
-                                       (fn [evt me]
-                                         (let [jd (js->clj (.getData evt))]
-                                           (let [mo (fget :menu-order
-                                                      dlgz :up? false
-                                                      :inside? true)]
-                                             (assert dlgz)
-                                             (assert mo)
-                                             (md-reset!  mo
+            :itemz (fn [dlgz anchor]
+                     (with-integrity []
+                       (qx-make ::qxty/m.Menu
+                         :anchor anchor
+                         :qx-new-args [(new js/qx.data.Array
+                                         (clj->js ["item1" "item2" "item3"]))]
+                         :listeners {"changeSelection"
+                                     (fn [evt me]
+                                       (let [jd (js->clj (.getData evt))]
+                                         (let [mo (fget :menu-order
+                                                    dlgz :up? false
+                                                    :inside? true)]
+                                           (assert dlgz)
+                                           (assert mo)
+                                           (md-reset!  mo
                                                :order (get jd "item")))))})))
             ;; :buzy (c? (let [dlgz me]
             ;;              (qx-make ::qxty/m.BusyIndicator
@@ -167,7 +157,7 @@
             ]
 
       (hbox []
-        (label "Clickable! ->")
+        (label "Also clickable! ->")
         (qx-make ::qxty/m.Atom
           :label "Careful..."
           :css-class "hot"
@@ -188,8 +178,12 @@
           :order (c-in nil)
           :listeners {"click"
                       (fn [e me]
-                        (when-let [m (md-get (fget :dlgz me) :itemz)]
-                          (.show (qxme m))))})
+                        (let [dlgz (fget :dlgz me)
+                              itemz (:itemz @dlgz)]
+                          (let [p (itemz dlgz me)]
+                            (println :pop (meta p))
+                            (.show (qxme p)))))})
+
         (label (c? (if-let [item (md-get (fget :menu-order me) :order)]
                      (str " I'll have " item)
                      "nada, thx"))

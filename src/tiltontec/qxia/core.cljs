@@ -1,10 +1,10 @@
 (ns tiltontec.qxia.core
   (:require
-   [tiltontec.cell.base :refer [ia-type ]]
+   [tiltontec.cell.base :refer [ia-type ia-type?]]
    [tiltontec.cell.core
              :refer-macros [c? c?+ c-reset-next! c?once c?n]
              :refer [c-in c-reset! make-cell]]
-   [tiltontec.model.core :refer [md-get make] :as md]
+   [tiltontec.model.core :refer [*par* md-get make] :as md]
    [tiltontec.qxia.types :as qxty]
     [tiltontec.qxia.base
     :refer [qxme qx-class-new qx-initialize qx-initialize-all
@@ -13,15 +13,26 @@
    ))
 
 (defn routing-get [end-point]
-  (.executeGet (app-routing) end-point))
+  (let [rtg (app-routing)]
+    (assert rtg)
+    (.executeGet rtg end-point)))
 
 (defn qx-make [type & iargs]
   (assert (isa? type ::qxty/qx.Object)
     (str "First argument to qx-make " type
       " is not a descendant of qx.Object"))
+
   (assert (even? (count iargs))
     (str "arglist after type " type " is not of even length: "
       iargs))
+
+  (cond 
+    (isa? type ::qxty/m.Single)
+    (do
+      (assert (ia-type? *par* ::qxty/m.NavigationPage)
+        (str "Forms' m.Singles must be kids of NavigationPages, not "
+          (ia-type *par*)))))
+
   (apply md/make :type type iargs))
 
 (defn image [source & iargs]

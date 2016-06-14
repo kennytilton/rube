@@ -69,16 +69,17 @@
         (err str "change to slot not mediated by cell and map lacks slot" slot)))))
   ;;(rmap-setf [slot me] new-value))))
 
-(defn make [& iargs]
+(defn make [& arg-list]
   (cond
-    (odd? (count iargs)) (apply make :type iargs)
+    (odd? (count arg-list)) (apply make :type arg-list)
     :else
     (#?(:clj dosync :cljs do)
      ;;(println (str :md-making (nth iargs 1)))
       
-     (let [me (#?(:clj ref :cljs atom)
+     (let [iargs (apply hash-map arg-list)
+           me (#?(:clj ref :cljs atom)
                (merge {:par *par*}
-                      (->> iargs
+                      (->> arg-list
                            (partition 2)
                            (filter (fn [[slot v]]
                                      (not (= :type slot))))
@@ -87,18 +88,14 @@
                                               unbound
                                               v))))
                            (into {})))
-               :meta (merge {:state :nascent}
-                            (->> iargs
-                                 (partition 2)
-                                 (filter (fn [[slot v]]
-                                           (= :type slot)))
-                                 (map vec)
-                                 (into {}))))]
+               :meta (merge
+                       {:state :nascent}
+                       (select-keys iargs [:type])))]
        (assert (meta me))
-
+         
        (rmap-meta-setf
         [:cz me]
-        (->> iargs
+        (->> arg-list
              (partition 2)
              (filter (fn [[slot v]]
                        (md-install-cell me slot v)))
@@ -129,7 +126,7 @@
   (cond
     (fn? seek) (seek poss)
     (keyword? seek)(do
-                     (trx :fget=sees seek (:name @poss) (ia-type poss))
+                     ;; (trx :fget=sees seek (:name @poss) (ia-type poss))
                      (or (= seek (:name @poss))
                        (isa? (ia-type poss) seek)))
     :else (do ;; (trx :fget=-else! seek)
@@ -187,6 +184,5 @@
 
 (defmacro c?kids [& tree]
   `(c? (the-kids ~@tree)))
-
 
 
