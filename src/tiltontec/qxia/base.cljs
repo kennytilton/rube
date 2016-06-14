@@ -76,7 +76,6 @@
         (throw (js/Error. (str "qxia-type-to-qx-class does not know about "
                             type))))))
 
-
 (defn qx-class-new [type iargs]
   ;; make sure each of these is mentioned in your Application.js
   (case type

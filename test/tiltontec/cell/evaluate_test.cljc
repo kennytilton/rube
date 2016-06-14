@@ -13,7 +13,7 @@
       :cljs [tiltontec.cell.base
              :refer-macros [without-c-dependency]
              :refer [cells-init c-optimized-away? c-formula? c-value c-optimize
-                     c-unbound? c-input? ia-type? ia-types
+                     c-unbound? c-input? ia-type?
                      c-model mdead? c-valid? c-useds c-ref? md-ref?
                      c-state +pulse+ c-pulse-observed
                      *call-stack* *defer-changes*
@@ -56,7 +56,7 @@
 
 (deftest t-formula
   (let [c (c? (+ 40 2))]
-    (is (isa? ia-types ::cty/c-formula ::cty/cell))
+    (is (isa? ::cty/c-formula ::cty/cell))
     (is (ia-type? c ::cty/cell))
     (is (ia-type? c ::cty/c-formula))
     (is (= (c-value-state c) :unbound))

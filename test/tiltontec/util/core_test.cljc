@@ -62,29 +62,30 @@
 
 
 (deftest err-handling
-    (is (thrown? #?(:cljs js/Error :clj Exception)
-                 (err "boom")))
-    (is (thrown-with-msg?
-         #?(:cljs js/Error :clj Exception)
-         #"oom"
-         (err "boom")))
-    (is (thrown-with-msg?
-         #?(:cljs js/Error :clj Exception)
-         #"Hi mom"
-         (err str "Hi " 'mom)))
-    (are [x] (not (any-ref? x))
-      nil
-      42
-      [])
-    (is (= "...... cool: 1, 2, 3\n:bingo\n"
+  (is (thrown? #?(:cljs js/Error :clj Exception)
+        (err "boom")))
+  (is (thrown-with-msg?
+        #?(:cljs js/Error :clj Exception)
+        #"oom"
+        (err "boom")))
+  (is (thrown-with-msg?
+        #?(:cljs js/Error :clj Exception)
+        #"Hi mom"
+        (err str "Hi " 'mom)))
+  (are [x] (not (any-ref? x))
+    nil
+    42
+    [])
+  #?(:clj
+     (is (= "...... cool: 1, 2, 3\n:bingo\n"
            (with-out-str
              (binding [*trxdepth* 5]
                (wtrx (0 100 "cool" 1 2 3)
-                     (println :bingo))))))
-    (is (= ". test: 3\n.. test: 2\n... test: 1\n.... test: 0\n"
+                 (println :bingo)))))))
+  #?(:cljs
+     (is (= ". test: 3\n.. test: 2\n... test: 1\n.... test: 0\n"
            (with-out-str
-             (wtrx-test 3))))
-    )
+             (wtrx-test 3))))))
 
 (deftest fifo-build
     (let [q (make-fifo-queue)]

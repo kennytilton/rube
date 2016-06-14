@@ -12,7 +12,7 @@
       :cljs [tiltontec.cell.base
              :refer-macros [without-c-dependency]
              :refer [cells-init c-optimized-away? c-formula? c-value c-optimize
-                     c-unbound? c-input? ia-type? ia-types
+                     c-unbound? c-input? ia-type?
                      c-model mdead? c-valid? c-useds c-ref? md-ref?
                      c-state +pulse+ c-pulse-observed
                      *call-stack* *defer-changes* unbound
@@ -39,11 +39,14 @@
    [tiltontec.model.base :refer [md-cz md-cell]]
    #?(:clj [tiltontec.model.core :refer :all :as md]
       :cljs [tiltontec.model.core
-             :refer-macros [the-kids mdv!]
+             :refer-macros [c?kids the-kids mdv!]
              :refer [md-get md-name fget fm! make md-reset! md-getx]
              :as md])
    ))
 
+#?(:cljs
+   (set! *print-level* 2)
+   :clj (set! *print-level* 2))
 
 (deftest fm-0
   (cells-init)
@@ -152,7 +155,7 @@
     (c-reset! (md-cell u :kon) true)
     (is (:kon @u))
     (is (md-cell u :kon))
-    (is (= 4 (count (:kids @u))))
+    (is (= 3 (count (:kids @u))))
     (is (fget :konzo u :inside? true))
     ))
 
@@ -162,20 +165,19 @@
             :kids (c? (the-kids
                         (md/make :name :picker
                           :value (c-in 42)
-                          :kids (c?
-                                  (md/make
-                                    :name :aax)
-                                  (md/make
-                                    :name :bbx)))
+                          :kids (c? (the-kids
+                                      (md/make
+                                        :name :aax)
+                                      (md/make
+                                        :name :bbx))))
                         (md/make :name :dd
                          :kzo (c? (let [p (fget :picker me)]
                                     (println :bingo p)
                                     (md-get p :value)))))))]
     (is (= 42 (mdv! :picker :value u)))
-    (is (= 43 (mdv! :dd :kzo u)))))
+    (is (= 42 (mdv! :dd :kzo u)))))
 
-
-(derive cty/ia-types ::typetest ::cty/model)
+(derive ::typetest ::cty/model)
 
 (deftest mm-typed
   (let [me (md/make

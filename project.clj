@@ -12,7 +12,21 @@
                        :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}}
             :plugins [[lein-cljsbuild "1.1.3"]]
             :test-paths ["test"]
-            :cljsbuild {:builds {;; go back to 5/26 for minify
+            :cljsbuild {:builds {;; [note to self: go back to 5/26 for minify]
+                                  ;;
+                                  ;; qooxdoo will generate runnable directories as
+                                  ;; "source" (slower, better issue detection) or
+                                  ;; "build" (minified, let's things slide)
+                                  ;;
+                                  ;; desktop qooxdoo is mad slow in source mode and I can
+                                  ;; go for months on one "build" version, so I develop
+                                  ;; against build and jump to source only when a bug might
+                                  ;; be in the qooxdoo code and I am hoping the source build will
+                                  ;; show me my error.
+                                  ;;
+                                  ;; qooxdoo mobile is dead fast source or build, so I use that
+                                  ;; which is here (via 'lein cljsbuild auto qxia):
+                                  ;;
                                  :qxia {:source-paths ["src"]
                                        :compiler {:externs ["externs.js"]
                                                   :foreign-libs [{:file "resources/identica/source/script/identica.js"
@@ -20,6 +34,12 @@
                                                   :output-to "resources/identica/source/script/qxia.js"
                                                   :output-dir "resources/identica/source/script/out"
                                                   :optimizations :whitespace}}
+                                  ;;
+                                  ;; this next build is needed only for the cordova emulate/run
+                                  ;; (which I do so rarely I forget to 'lein cljsbuild qxiabuild'
+                                  ;; before './generate.py build' and invariable lose a minute
+                                  ;; scratching my head):
+                                  ;;
                                  :qxiabuild {:source-paths ["src"]
                                        :compiler {:externs ["externs.js"]
                                                   :foreign-libs [{:file "resources/identica/source/script/identica.js"
@@ -27,14 +47,14 @@
                                                   :output-to "resources/identica/build/script/qxia.js"
                                                   :output-dir "resources/identica/build/script/out"
                                                   :optimizations :whitespace}}
-                                 ;; :dev {:source-paths ["src"]
-                                 ;;       :compiler {:output-to "resources/public/js/main.js"
-                                 ;;                  :output-dir "resources/public/js/out"
-                                 ;;                  :optimizations :whitespace}}
-                                 ;; :test {:source-paths ["src" "test"]
-                                 ;;       :compiler {:output-to "resources/public/js/main-test.js"
-                                 ;;                  :optimizations :whitespace
-                                 ;;                  :pretty-print true}}
+                                 :dev {:source-paths ["src"]
+                                       :compiler {:output-to "resources/public/js/main.js"
+                                                  :output-dir "resources/public/js/out"
+                                                  :optimizations :whitespace}}
+                                 :test {:source-paths ["src" "test"]
+                                        :compiler {:output-to "resources/public/js/main-test.js"
+                                                   :optimizations :whitespace
+                                                   :pretty-print true}}
                                  }
                         :test-commands {"unit" ["phantomjs"
                                                 "resources/test/phantom/runner.js"

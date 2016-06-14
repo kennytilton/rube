@@ -6,7 +6,8 @@
                       :refer :all])))
 
 #?(:cljs
-   (set! *print-level* 2)) ;; lose this if we lose recursive data structures
+   (set! *print-level* 2)
+   :clj (set! *print-level* 2)) ;; lose this if we lose recursive data structures
 
 (defn type-of [x] (type x))
 

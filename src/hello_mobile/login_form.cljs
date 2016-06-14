@@ -42,11 +42,12 @@
         :placeholder "Just type something"
         :required true
         :requiredInvalidMessage "Password is required")
+
       (number-field "A 42-ish Quantity"
         ;;:qx-new-args [42]
 
         :placeholder "something from -42 to 420 divisible by 42"
-        :required true
+        ;;:required true
         :minimum -42
         :step 42
         :maximum 420
@@ -83,6 +84,7 @@
                      (let [jd (js->clj (.getData evt))]
                        (with-integrity (:change)
                          (md-reset! me :selection (jd "index")))))})))
+
 
 (defn make-remembrance []
   (list

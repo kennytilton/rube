@@ -33,7 +33,7 @@
   (if-let [obs @+observe-default-handler+]
     (do ;; (println :app-def-obs!!!)
         (obs slot me new-val old-val c))
-    (println :obs-fall-thru  slot (type-cljc me))))
+    #_(println :obs-fall-thru  slot (type-cljc me))))
 
 (defmacro defobserver [slot types params & body]
      (assert (keyword? slot) "defobserver> slot should be a keyword.")
@@ -63,6 +63,7 @@ call parameters: slot, me, new, old, and c."
    ;; (trx :cobs-3 (c-slot c) why)
    (assert (c-ref? c))
    (rmap-setf [:pulse-observed c] @+pulse+)
+   #_
    (if-let [me (c-model c)]
      (pme :c-observe!!!! (c-slot c) why @+pulse+ (nil? (:obs @c)))
      (trx :c-observe-no-me!!!! (c-slot c) why @+pulse+ (nil? (:obs @c))))
