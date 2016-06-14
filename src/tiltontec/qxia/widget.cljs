@@ -225,3 +225,9 @@
     (when new-anchor
       (.setAnchor (qxme me)
         (qxme new-anchor)))))
+
+
+(defmethod observe [:value ::qxty/TextField]
+   [_ me new _ _]
+   (with-integrity [:client [:post-make-qx me]]
+     (.setValue (qxme me) new)))

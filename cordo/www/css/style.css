@@ -16,8 +16,17 @@
   transform         : scale(0.5, 0.5);
 }
 
+.notsobig {
+  max-width: 500px;
+  max-height: 500px;
+}
+
 .hot {
   background-color: Red;
+}
+
+.uncrowded {
+  margin-left: 24px;
 }
 
 .cool {
