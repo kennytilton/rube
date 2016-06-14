@@ -23,34 +23,31 @@
    [tiltontec.qxia.macros
     :refer-macros [hbox vbox navigation-page form carousel
                     drawer collapsible group]]
-   [hello-mobile.dialog-demos :refer [make-dialog-demos]]
-   ))
+   [hello-mobile.dialog-demos :refer [make-dialog-demos]]))
 
 (defn make-login-form []
   (form [][:name :login]
     (text-field "Username"
       :name :u-name
-      :value (c-in "KennY")
+      :value (c-in nil)
       :placeholder "Just type something"
       :required true
       :requiredInvalidMessage "Please share your user name")
+
     (qx-make ::qxty/m.PasswordField
       :name :p-word
       :label "Password"
-      :value (c-in "zzoom")
+      :value (c-in nil)
       :placeholder "Just type something"
       :required true
       :requiredInvalidMessage "Password is required")
 
     (number-field "A 42-ish Quantity"
-      ;;:qx-new-args [42]
-
       :placeholder "something from -42 to 420 divisible by 42"
       ;;:required true
       :minimum -42
       :step 42
       :maximum 420
-      ;;:liveUpdate true
       :invalidMessage "NOT Answer to universe"
       :requiredInvalidMessage "Answer to universe is required")))
 

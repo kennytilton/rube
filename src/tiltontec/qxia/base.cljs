@@ -265,5 +265,4 @@
                        (difference (set newv)
                          (set (ensure-vec old))))]
           (when-not (empty? gained)
-            (println :adding-cass!!!! gained (ia-type me))
             (.addCssClasses (qxme me) (clj->js (vec gained)))))))))
