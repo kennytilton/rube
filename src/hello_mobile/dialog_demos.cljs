@@ -53,7 +53,6 @@
           :whatever (do
                       (.moveTo ctx 55 110)
                       (.lineTo ctx 95 110))
-
           :happy (do
                    (.moveTo ctx 110 85)
                    (.arc ctx 75 85 35 0 Math.PI false)))
@@ -80,12 +79,11 @@
       (qx-make ::qxty/m.Canvas
         :name :picasso
         :width 175 :height 150
-        ;;:mood (c-in :happy)
         :css-class (c? (case (md-get (:par @me) :mood)
                          :sad "cool"
                          :happy "hot"
                          :whatever "mild"))
-        :drawing (c? (mood-face me))
+        :drawing (c? (mood-face me)) ;; no lexical dependency, but it tracks
         :listeners {"click"
                     (fn [e me]
                       (md-reset! (:par @me) :mood
@@ -107,6 +105,10 @@
                       ;; passing an opcode that would set its priority.
                       ;; Hmmm. Perhaps we should have a :just-do-it opcode..
                       ;;
+                      ;; Another (and the original approach) was to make the PopUp
+                      ;; here in a pop formula (c? (qx-make etc...) and then just 
+                      ;; show it when the "Careful" widget is clicked.
+                      ;;
                       (with-integrity []
                         (qx-make ::qxty/m.Popup
                           :anchor anchor
@@ -117,10 +119,9 @@
                                       :listeners {"click"
                                                   (fn [e me]
                                                     (let [p (fget ::qxty/m.Popup me)]
-                                                      (assert p (str "Popup not found above " me))
                                                       (.hide (qxme p))))}))))))
             
-            :itemz (fn [dlgz anchor]
+            :itemz-fn (fn [dlgz anchor]
                      (with-integrity []
                        (qx-make ::qxty/m.Menu
                          :anchor anchor
@@ -132,10 +133,9 @@
                                          (let [mo (fget :menu-order
                                                     dlgz :up? false
                                                     :inside? true)]
-                                           (assert dlgz)
-                                           (assert mo)
                                            (md-reset!  mo
                                                :order (get jd "item")))))})))
+            ;; no luck yet with this one....
             ;; :buzy (c? (let [dlgz me]
             ;;              (qx-make ::qxty/m.BusyIndicator
             ;;                :label "gogo"
@@ -153,8 +153,7 @@
                       (fn [e me]
                         (let [dlgz (fget :dlgz me)
                               pop-fn (:pop-fn @dlgz)]
-                          (let [p (pop-fn me)]
-                            (.show (qxme p)))))})
+                            (.show (qxme (pop-fn me)))))})
 
         (qx-make ::qxty/m.Atom
           :name :menu-order
@@ -165,10 +164,8 @@
           :listeners {"click"
                       (fn [e me]
                         (let [dlgz (fget :dlgz me)
-                              itemz (:itemz @dlgz)]
-                          (let [p (itemz dlgz me)]
-                            (println :pop (meta p))
-                            (.show (qxme p)))))})
+                              itemz-fn (:itemz-fn @dlgz)]
+                          (.show (qxme (itemz-fn dlgz me)))))})
 
         (label (c? (if-let [item (md-get (fget :menu-order me) :order)]
                      (str " I'll have " item)
