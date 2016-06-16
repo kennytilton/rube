@@ -95,7 +95,7 @@
     [:name :oview
      :showButton true
      :buttonText "Random Toys"
-     :buttonIcon "identica/mmedia/games.png"
+     :buttonIcon "qxiacore/mmedia/games.png"
      :showBackButton true
      :backButtonText "Back"
      :listeners {"action" (fn [event me]
@@ -124,7 +124,7 @@
               :translateX 200
               :translateY 100)
 
-            (image "identica/mmedia/earth-from-moon.jpg"
+            (image "qxiacore/mmedia/earth-from-moon.jpg"
               ;;:rotation -5
               ;;:scaleX 0.5 :scaleY 0.5
               ;; warning: specifiying the above suppresses css

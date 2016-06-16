@@ -52,7 +52,7 @@
     ::qxty/m.Image js/qx.ui.mobile.basic.Image
     ::qxty/m.Label js/qx.ui.mobile.basic.Label
 
-    ::qxty/m.NavigationPage js/identica.NaviBack
+    ::qxty/m.NavigationPage js/qxiacore.NaviBack
     ::qxty/m.Form js/qx.ui.mobile.form.Form
     ::qxty/m.Group js/qx.ui.mobile.form.Group
 

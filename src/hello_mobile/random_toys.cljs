@@ -162,7 +162,7 @@
       :slot-data (list
                    [{:title "Windows Phone"
                      :subtitle "R.I.P."
-                     :image "identica/mmedia/games.png"}
+                     :image "qxiacore/mmedia/games.png"}
                     {:title "iOS" :subtitle "Version 7.1"}
                     {:title "Android"}]
                    [{:title "Tablet"}
