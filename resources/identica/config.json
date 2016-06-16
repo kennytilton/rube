@@ -98,7 +98,6 @@
       [
         "${APPLICATION}.Application"
       ],
-
       "environment" :
       {
         "qx.theme" : "${MOBILE_THEME}"
@@ -123,6 +122,7 @@
       "add-css" : [
         { "uri" : "./resource/${MOBILE_THEME_PATH}" }
       ],
+      "include" : ["qx.ui.mobile.page.Manager"],
 
       "run": ["compile-scss"]
     },

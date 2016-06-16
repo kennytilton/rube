@@ -33,12 +33,13 @@
 (declare make-picker-test make-login make-overview
   make-remembrance  make-css-test)
 
-(defn ^:export appinit [this pager shower]
+
+(defn ^:export appinit [this shower]
   (reset!
    this-app
    (qx-make ::qxty/Mobile
      :qx-me this
-     :pager pager
+     :pager (new js/qx.ui.mobile.page.Manager false)
      :shower shower
      :kids (c?kids
              (make-login)

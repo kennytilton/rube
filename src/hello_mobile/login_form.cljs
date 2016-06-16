@@ -29,7 +29,7 @@
   (form [][:name :login]
     (text-field "Username"
       :name :u-name
-      :value (c-in nil)
+      :value (c-in "KennY")
       :placeholder "Just type something"
       :required true
       :requiredInvalidMessage "Please share your user name")
@@ -37,7 +37,7 @@
     (qx-make ::qxty/m.PasswordField
       :name :p-word
       :label "Password"
-      :value (c-in nil)
+      :value (c-in "xyz")
       :placeholder "Just type something"
       :required true
       :requiredInvalidMessage "Password is required")

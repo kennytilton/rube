@@ -28,7 +28,7 @@
                                   ;; which is here (via 'lein cljsbuild auto qxia):
                                   ;;
                                  :hellomobile {:source-paths ["src"]
-                                       :compiler {:externs ["externs.js"]
+                                       :compiler {;;:externs ["externs.js"]
                                                   :foreign-libs [{:file "resources/identica/source/script/identica.js"
                                                                    :provides ["identica"]}]
                                                   :output-to "resources/identica/source/script/qxia.js"

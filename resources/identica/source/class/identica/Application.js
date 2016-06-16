@@ -52,7 +52,7 @@ qx.Class.define("identica.Application",
       before using them. (Just build if that's the way you roll.)
 
       */
-
+      qx.ui.mobile.page.Manager;
       // qx.ui.mobile.page.NavigationPage;
       identica.NaviBack; // above back button does not work
       qx.ui.mobile.dialog.Popup;
@@ -84,7 +84,8 @@ qx.Class.define("identica.Application",
       qx.ui.mobile.control.Picker;
 
       hello_mobile.core.appinit
-        (this, new qx.ui.mobile.page.Manager(false), this._show);
+        (this // , new qx.ui.mobile.page.Manager(false)
+         , this._show);
 
       this.getRouting().init();
     },
