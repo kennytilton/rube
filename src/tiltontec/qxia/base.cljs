@@ -31,7 +31,9 @@
 (defn qx-data-array [items]
   (new js/qx.data.Array (clj->js items)))
 
-(defn qxia-type-to-qx-class [type]
+(defmulti qxia-type-to-qx-class identity)
+
+(defmethod qxia-type-to-qx-class :default [type]
   ;; make sure each of these is mentioned in your Application.js
   (case type
     ::qxty/Mobile qx.application.Mobile
@@ -52,7 +54,7 @@
     ::qxty/m.Image js/qx.ui.mobile.basic.Image
     ::qxty/m.Label js/qx.ui.mobile.basic.Label
 
-    ::qxty/m.NavigationPage js/qxiacore.NaviBack
+    ::qxty/m.NavigationPage js/qx.ui.mobile.page.NavigationPage
     ::qxty/m.Form js/qx.ui.mobile.form.Form
     ::qxty/m.Group js/qx.ui.mobile.form.Group
 

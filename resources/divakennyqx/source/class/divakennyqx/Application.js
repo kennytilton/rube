@@ -12,6 +12,7 @@
  * This is the main application class of your custom application "divakennyqx"
  *
  * @asset(divakennyqx/*)
+ * @ignore(divakenny.core.divakenny)
  */
 qx.Class.define("divakennyqx.Application",
 {
@@ -47,7 +48,7 @@ qx.Class.define("divakennyqx.Application",
       -------------------------------------------------------------------------
       */
 
-      var login = new divakennyqx.page.Login();
+      /* var login = new divakennyqx.page.Login();
       var overview = new divakennyqx.page.Overview();
 
       // Add the pages to the page manager.
@@ -60,6 +61,12 @@ qx.Class.define("divakennyqx.Application",
       // Initialize the application routing
       this.getRouting().onGet("/", this._show, login);
       this.getRouting().onGet("/overview", this._show, overview);
+      */
+
+      qx.ui.mobile.page.Manager;
+      divakennyqx.NaviBack;
+
+      divakenny.core.divakenny(this, this._show);
 
       this.getRouting().init();
     },

@@ -95,7 +95,7 @@
     [:name :oview
      :showButton true
      :buttonText "Random Toys"
-     :buttonIcon "qxiacore/mmedia/games.png"
+     :buttonIcon "identica/mmedia/games.png"
      :showBackButton true
      :backButtonText "Back"
      :listeners {"action" (fn [event me]
@@ -124,12 +124,13 @@
               :translateX 200
               :translateY 100)
 
-            (image "qxiacore/mmedia/earth-from-moon.jpg"
+            (image "identica/mmedia/earth-from-moon.jpg"
               ;;:rotation -5
               ;;:scaleX 0.5 :scaleY 0.5
               ;; warning: specifiying the above suppresses css
               ;;:css-class "warning"
               ))))))
+
 
 ;; next guy not in use just now
 (defn make-css-test []

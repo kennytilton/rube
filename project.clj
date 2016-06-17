@@ -28,11 +28,18 @@
                                   ;; which is here (via 'lein cljsbuild auto qxia):
                                   ;;
                                  :divakenny {:source-paths ["src"]
-                                       :compiler {:foreign-libs [{:file "resources/qxiacore/source/script/qxiacore.js"
-                                                                   :provides ["qxiacore"]}]
-                                                  :output-to "resources/qxiacore/source/script/divakenny.js"
-                                                  :output-dir "resources/qxiacore/source/script/out"
+                                       :compiler {:foreign-libs [{:file "resources/divakennyqx/source/script/divakenny.js"
+                                                                   :provides ["divakenny"]}]
+                                                  :output-to "resources/divakennyqx/source/script/divakenny.js"
+                                                  :output-dir "resources/divakennyqx/source/script/out"
                                                   :optimizations :whitespace}}
+                                 :dkbuild {:source-paths ["src"]
+                                           :compiler {:foreign-libs [{:file "resources/divakennyqx/source/script/divakenny.js"
+                                                                      :provides ["divakenny"]}]
+                                                      :output-to "resources/divakennyqx/build/script/divakenny.js"
+                                                      :output-dir "resources/divakennyqx/build/script/out"
+                                                      :optimizations :whitespace}}
+
                                  :hellomobile {:source-paths ["src"]
                                        :compiler {;;:externs ["externs.js"]
                                                   :foreign-libs [{:file "resources/identica/source/script/identica.js"
@@ -40,14 +47,8 @@
                                                   :output-to "resources/identica/source/script/qxia.js"
                                                   :output-dir "resources/identica/source/script/out"
                                                   :optimizations :whitespace}}
-                                  ;;
-                                  ;; this next build is needed only for the cordova emulate/run
-                                  ;; (which I do so rarely I forget to 'lein cljsbuild qxiabuild'
-                                  ;; before './generate.py build' and invariable lose a minute
-                                  ;; scratching my head):
-                                  ;;
                                  :hmbuild {:source-paths ["src"]
-                                       :compiler {:externs ["externs.js"]
+                                       :compiler {;;:externs ["externs.js"]
                                                   :foreign-libs [{:file "resources/identica/source/script/identica.js"
                                                                    :provides ["identica"]}]
                                                   :output-to "resources/identica/build/script/qxia.js"
