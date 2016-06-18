@@ -27,18 +27,6 @@
                                   ;; qooxdoo mobile is dead fast source or build, so I use that
                                   ;; which is here (via 'lein cljsbuild auto qxia):
                                   ;;
-                                 :divakenny {:source-paths ["src"]
-                                       :compiler {:foreign-libs [{:file "resources/divakennyqx/source/script/divakenny.js"
-                                                                   :provides ["divakenny"]}]
-                                                  :output-to "resources/divakennyqx/source/script/divakenny.js"
-                                                  :output-dir "resources/divakennyqx/source/script/out"
-                                                  :optimizations :whitespace}}
-                                 :dkbuild {:source-paths ["src"]
-                                           :compiler {:foreign-libs [{:file "resources/divakennyqx/source/script/divakenny.js"
-                                                                      :provides ["divakenny"]}]
-                                                      :output-to "resources/divakennyqx/build/script/divakenny.js"
-                                                      :output-dir "resources/divakennyqx/build/script/out"
-                                                      :optimizations :whitespace}}
 
                                  :hellomobile {:source-paths ["src"]
                                        :compiler {;;:externs ["externs.js"]
